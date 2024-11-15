@@ -10,14 +10,14 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <freetype2/ft2build.h>
+#include <ft2build.h>
 #include FT_FREETYPE_H  
 
 
 #include <iostream>
 
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
-void processInput(GLFWwindow *window);
+void processInput(GLFWwindow* window);
 
 // settings
 const unsigned int SCR_WIDTH = 800;
@@ -60,26 +60,26 @@ int main(int argc, char** argv)
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
     {
         std::cout << "Failed to initialize GLAD" << std::endl;
-    }    
+    }
 
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
     {
         std::cout << "ERROR::FREETYPE: Could not init FreeType Library" << std::endl;
-        return -1;
     }
 
     FT_Face face;
     if (FT_New_Face(ft, "fonts/arial.ttf", 0, &face))
     {
-        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;  
-        return -1;
+        std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
     }
 
     ma_result result;
     ma_decoder decoder;
     ma_device_config deviceConfig;
     ma_device device;
+
+    std::cout << "Number : " << glm::fract((float)glm::abs(-98) + 0.1f) << "\n";
 
     if (argc < 2) {
         printf("No input file.\n");
@@ -91,11 +91,11 @@ int main(int argc, char** argv)
     }
 
     deviceConfig = ma_device_config_init(ma_device_type_playback);
-    deviceConfig.playback.format   = decoder.outputFormat;
+    deviceConfig.playback.format = decoder.outputFormat;
     deviceConfig.playback.channels = decoder.outputChannels;
-    deviceConfig.sampleRate        = decoder.outputSampleRate;
-    deviceConfig.dataCallback      = data_callback;
-    deviceConfig.pUserData         = &decoder;
+    deviceConfig.sampleRate = decoder.outputSampleRate;
+    deviceConfig.dataCallback = data_callback;
+    deviceConfig.pUserData = &decoder;
 
     if (ma_device_init(NULL, &deviceConfig, &device) != MA_SUCCESS) {
         printf("Failed to open playback device.\n");
@@ -143,9 +143,9 @@ int main(int argc, char** argv)
 
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 // ---------------------------------------------------------------------------------------------------------
-void processInput(GLFWwindow *window)
+void processInput(GLFWwindow* window)
 {
-    if(glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
+    if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
 }
 

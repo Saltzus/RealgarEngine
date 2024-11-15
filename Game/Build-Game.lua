@@ -5,6 +5,8 @@ project "Game"
    targetdir "Binaries/%{cfg.buildcfg}"
    staticruntime "off"
 
+
+   libdirs { "../Libraries/glfw-3.4", "../Libraries/freetype/freetype2/include" }
    files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/freetype/src/**.c"}
 
 
@@ -26,7 +28,8 @@ project "Game"
       -- miniaudio
       "../Libraries/miniaudio",
       -- freetype
-      "../Libraries/freetype/freetype2/include"
+      "../Libraries/freetype/freetype2/include",
+      "../Libraries/freetype/"
    }
 
    links
