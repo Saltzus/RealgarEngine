@@ -5,7 +5,8 @@ project "Game"
    targetdir "Binaries/%{cfg.buildcfg}"
    staticruntime "off"
 
-   files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c"}
+   files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/freetype/src/**.c"}
+
 
    includedirs
    {
@@ -17,13 +18,22 @@ project "Game"
       -- glfw
       "../Libraries/glfw-3.4/include",
       -- Opengl / glad
-      "../Libraries/glad/include"
+      "../Libraries/glad/include",
+      -- glm
+      "../Libraries/glm",
+      -- stb_image
+      "../Libraries/stb_image",
+      -- miniaudio
+      "../Libraries/miniaudio",
+      -- freetype
+      "../Libraries/freetype/freetype2/include"
    }
 
    links
    {
       "Core",
-      "glfw3"
+      "glfw3",
+      "freetype"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
