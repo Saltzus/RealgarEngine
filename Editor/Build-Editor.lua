@@ -46,6 +46,9 @@ project "Editor"
        systemversion "latest"
        defines { "WINDOWS" }
 
+    filter "system:linux"
+       links { "png", "z", "bz2" }
+
    filter "configurations:Debug"
        defines { "DEBUG" }
        runtime "Debug"
