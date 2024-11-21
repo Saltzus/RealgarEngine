@@ -1,5 +1,12 @@
 {
     "files.associations": {
         "iostream": "cpp"
-    }
+    },
+    "makefile.launchConfigurations": [
+        {
+            "cwd": "/home/saltzus/Desktop/Binaries/linux-x86_64/Debug/Game",
+            "binaryPath": "/home/saltzus/Desktop/Binaries/linux-x86_64/Debug/Game/Game",
+            "binaryArgs": []
+        }
+    ]
 }

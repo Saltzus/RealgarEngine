@@ -10,7 +10,7 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-#include <freetype2/ft2build.h>
+#include <ft2build.h>
 #include FT_FREETYPE_H  
 
 
