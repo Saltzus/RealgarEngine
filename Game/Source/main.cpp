@@ -29,7 +29,7 @@ void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uin
     if (pDecoder == NULL) {
         return;
     }
-
+    
     ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
 
     (void)pInput;
@@ -54,7 +54,7 @@ int main(int argc, char** argv)
     }
     glfwMakeContextCurrent(window);
     glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-
+    
     // glad: load all OpenGL function pointers
     // ---------------------------------------
     if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
