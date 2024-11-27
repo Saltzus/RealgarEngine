@@ -29,7 +29,6 @@ void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uin
     if (pDecoder == NULL) {
         return;
     }
-    
     ma_decoder_read_pcm_frames(pDecoder, pOutput, frameCount, NULL);
 
     (void)pInput;
@@ -37,30 +36,27 @@ void data_callback(ma_device* pDevice, void* pOutput, const void* pInput, ma_uin
 
 int main(int argc, char** argv)
 {
-    // glfw: initialize and configure
-    // ------------------------------
-    glfwInit();
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-    glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-    glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+    RED::Window window("RED - Test", 800, 600);
+    RED::Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.f,0.f,-4.f));
+    RED::Shader shader("Game/Resources/Shaders/default.vert", "Game/Resources/Shaders/default.frag");
 
-    // glfw window creation
-    // --------------------
-    GLFWwindow* window = glfwCreateWindow(SCR_WIDTH, SCR_HEIGHT, "RED", NULL, NULL);
-    if (window == NULL)
-    {
-        std::cout << "Failed to create GLFW window" << std::endl;
-        glfwTerminate();
-    }
-    glfwMakeContextCurrent(window);
-    glfwSetFramebufferSizeCallback(window, framebuffer_size_callback);
-    
-    // glad: load all OpenGL function pointers
-    // ---------------------------------------
-    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-    {
-        std::cout << "Failed to initialize GLAD" << std::endl;
-    }
+    std::vector<GLfloat> vertices =
+	{
+		// positions         // texture coords
+		 0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
+		 0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
+		-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
+		-0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
+	};
+
+	// Indices for vertices order
+	std::vector<GLuint> indices =
+	{
+		0, 1, 3, // first triangle
+		1, 2, 3  // second triangle
+	};
+
+    RED::Opengl::OpenglRenderer renderer(indices, vertices);
 
     FT_Library ft;
     if (FT_Init_FreeType(&ft))
@@ -108,31 +104,39 @@ int main(int argc, char** argv)
         ma_decoder_uninit(&decoder);
     }
 
-    printf("Press Enter to quit...");
-    getchar();
-
     ma_device_uninit(&device);
     ma_decoder_uninit(&decoder);
 
     std::cout << " test : " << glm::round(glm::abs(-100)) << "\n";
 
     // render loop
+
+    int sus = 0;
     // -----------
     while (!glfwWindowShouldClose(window))
     {
-        // input
-        // -----
+        glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+        sus ++;
         processInput(window);
 
-        // render
-        // ------
-        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
-        glClear(GL_COLOR_BUFFER_BIT);
+        camera.Inputs(window, 1);
+        // Updates and exports the camera matrix to the Vertex Shader
+        camera.updateMatrix(45.0f, 0.1f, 100.0f, false);
+
+        renderer.Render(&shader, &camera);
+        renderer.scale = glm::vec3(4,4,4);
+        renderer.rotation.y += 0.1f;
+        renderer.scale = glm::vec3(4,4 + glm::sin(sus/4) / 4,4);
+        renderer.translation.y = glm::sin(sus/4) / 4;
 
         // glfw: swap buffers and poll IO events (keys pressed/released, mouse moved etc.)
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();
+
+        glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+        glClear(GL_COLOR_BUFFER_BIT);
     }
 
     // glfw: terminate, clearing all previously allocated GLFW resources.

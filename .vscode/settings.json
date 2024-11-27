@@ -1,16 +1,49 @@
 {
     "files.associations": {
-        "iostream": "cpp"
+        "iostream": "cpp",
+        "vector": "cpp",
+        "bit": "cpp",
+        "*.tcc": "cpp",
+        "cctype": "cpp",
+        "clocale": "cpp",
+        "cmath": "cpp",
+        "compare": "cpp",
+        "concepts": "cpp",
+        "cstddef": "cpp",
+        "cstdint": "cpp",
+        "cstdio": "cpp",
+        "cstdlib": "cpp",
+        "cstring": "cpp",
+        "cwchar": "cpp",
+        "cwctype": "cpp",
+        "exception": "cpp",
+        "initializer_list": "cpp",
+        "iosfwd": "cpp",
+        "istream": "cpp",
+        "limits": "cpp",
+        "new": "cpp",
+        "numbers": "cpp",
+        "ostream": "cpp",
+        "stdexcept": "cpp",
+        "streambuf": "cpp",
+        "string": "cpp",
+        "string_view": "cpp",
+        "system_error": "cpp",
+        "tuple": "cpp",
+        "type_traits": "cpp",
+        "typeinfo": "cpp",
+        "fstream": "cpp",
+        "sstream": "cpp"
     },
     "makefile.launchConfigurations": [
         {
-            "cwd": "/home/saltzus/Desktop/Binaries/linux-x86_64/Debug/Game",
-            "binaryPath": "/home/saltzus/Desktop/Binaries/linux-x86_64/Debug/Game/Game",
+            "cwd": "/home/saltzus/Desktop/RED/Binaries/linux-x86_64/Debug/Editor",
+            "binaryPath": "/home/saltzus/Desktop/RED/Binaries/linux-x86_64/Debug/Editor/Editor",
             "binaryArgs": []
         },
         {
-            "cwd": "/home/saltzus/Desktop/Binaries/linux-x86_64/Debug/Editor",
-            "binaryPath": "/home/saltzus/Desktop/Binaries/linux-x86_64/Debug/Editor/Editor",
+            "cwd": "/home/saltzus/Desktop/RED/Binaries/linux-x86_64/Debug/Game",
+            "binaryPath": "/home/saltzus/Desktop/RED/Binaries/linux-x86_64/Debug/Game/Game",
             "binaryArgs": []
         }
     ],

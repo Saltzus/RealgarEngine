@@ -2,5 +2,5 @@
 
 int main()
 {
-	Core::PrintHelloWorld();
+	return 0;
 }

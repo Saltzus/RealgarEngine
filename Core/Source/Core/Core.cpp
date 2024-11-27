@@ -2,7 +2,8 @@
 
 #include <iostream>
 
-namespace Core {
+namespace RED 
+{
 
 	void PrintHelloWorld()
 	{
