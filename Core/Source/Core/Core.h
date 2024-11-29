@@ -3,11 +3,11 @@
 #include "Window.h"
 #include "Shader.h"
 #include "Camera.h"
-#include "OpenGlManager.h"
-
+#include "Input.h"
+#include "Renderer.h"
+#include "Sprite.h"
+#include "Audio.h"
 
 namespace RED {
-
-	void PrintHelloWorld();
-
+	void Display(Window& window);
 }

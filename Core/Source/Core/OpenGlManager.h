@@ -7,10 +7,11 @@
 #include <stb_image/stb_image.h>
 
 #include <glm/glm.hpp>
-#include "glm/gtc/matrix_transform.hpp"
-#include "glm/gtc/type_ptr.hpp"
+#include <glm/gtc/matrix_transform.hpp>
+#include <glm/gtc/type_ptr.hpp>
 #include <glm/gtx/rotate_vector.hpp>
 
+#include "RenderImpl.h"
 #include "Shader.h"
 #include "Camera.h"
 
@@ -23,25 +24,29 @@ namespace RED::Opengl
     	glm::vec2 texUV;
     };
     
-    class OpenglRenderer
+    class OpenglTexture : public TextureImpl
+    {
+    public:
+        OpenglTexture(const char* filePath);
+        OpenglTexture(unsigned char* data, int format, int width, int height);
+        ~OpenglTexture();  
+        void Bind() override;
+    private:
+        GLuint texture;
+    };
+
+    class OpenglRenderer : public RendererImpl
     {
     public:
         OpenglRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices);
         ~OpenglRenderer();    
 
-	    glm::mat4 model = glm::mat4(1.0f);
-	    glm::vec3 translation = glm::vec3(0.f, 0.f, 0.f);
-	    glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
-	    glm::vec3 scale = glm::vec3(0.7f, 0.7f, 0.7f);
+        void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw
 
-	    void Render(Shader* shader, Camera* camera, glm::mat4 model = glm::mat4(1.0f));
-
-        private:
-            GLuint VAO;
-	        GLuint VBO;
-    	    GLuint EBO;
-
-            GLuint texture;
+    private:
+        GLuint VAO;
+	    GLuint VBO;
+    	GLuint EBO;
     };
 }
     

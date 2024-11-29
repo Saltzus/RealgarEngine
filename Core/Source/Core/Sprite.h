@@ -1,0 +1,43 @@
+#pragma once
+
+#include "Renderer.h"
+#include "Texture.h"
+
+namespace RED
+{
+    class Sprite
+    {
+    public:
+        Sprite();
+        ~Sprite();
+
+        void Render(Shader* shader, Camera* camera, glm::mat4 model = glm::mat4(1.0f));
+
+		Texture texture;  
+
+        glm::mat4 model = glm::mat4(1.0f);
+	    glm::vec3 translation = glm::vec3(0.f, 0.f, 0.f);
+	    glm::vec3 rotation = glm::vec3(0.0f, 0.0f, 0.0f);
+	    glm::vec3 scale = glm::vec3(0.7f, 0.7f, 0.7f);
+
+    private:
+        Renderer* renderer;
+
+        std::vector<GLfloat> vertices =
+	    {
+	    	// positions         // texture coords
+	    	 0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
+	    	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
+	    	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
+	    	-0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
+	    };
+
+	    // Indices for vertices order
+	    std::vector<GLuint> indices =
+	    {
+	    	0, 1, 3, // first triangle
+	    	1, 2, 3  // second triangle
+	    };
+    };
+    
+} 
