@@ -1,7 +1,8 @@
 #pragma once
 
 #include <vector>
-#include "OpenGlManager.h"
+#include "graphicsApi/opengl/OpenGlManager.h"
+#include "graphicsApi/vulkan/vulkanManager.h"
 #include "Shader.h"
 #include "Camera.h"
 
@@ -20,7 +21,7 @@ namespace RED
     {
     private:
         RendererImpl* impl = nullptr;
-        static const GraphicsApis graphicApi = GraphicsApis::OpenGL;
+        static const GraphicsApis graphicApi = GraphicsApis::Vulkan;
 
     public:
         Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices);

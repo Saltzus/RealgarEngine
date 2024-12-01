@@ -1,6 +1,6 @@
 #pragma once
 
-#include "glad/glad.h"
+#include <glad/glad.h>
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -8,31 +8,25 @@
 #include <cerrno>
 #include <vector>
 
+#include "Renderer.h"
+
+class ShaderImpl;
+
 std::string get_file_contents(const char* filename);
 
 namespace RED
 {
     class Shader
     {
-    public:
-    	// Reference ID of the Shader Program
-    	GLuint ID;
-    	// Constructor that build the Shader Program from 2 different shaders
-    	Shader(const char* vertexFile, const char* fragmentFile);
-
-    	// Activates the Shader Program
-    	void Activate();
-    	// Deletes the Shader Program
-    	void Delete();
-
-    	static unsigned int AddShaderToList(Shader* shader);
-    	static Shader* GetShaderByID(unsigned int id);
-
     private:
-    	// Checks if the different Shaders have compiled properly
-    	void compileErrors(unsigned int shader, const char* type);
+        ShaderImpl* impl = nullptr;
+    public:
 
-    	static std::vector<Shader*> shaders;
-    	static unsigned int shaderIds;
+
+        Shader(const char* vertexFile, const char* fragmentFile);
+        ~Shader();
+        void Activate();
+        void Delete();
+        unsigned int& ID();
     };
 }

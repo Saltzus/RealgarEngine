@@ -4,9 +4,17 @@ namespace RED
 {
     Renderer::Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices)
     {
-        if (this->graphicApi == GraphicsApis::OpenGL)
+        switch (this->graphicApi)
         {
+        case GraphicsApis::OpenGL:
             this->impl = new RED::Opengl::OpenglRenderer(indices, vertices);
+            break;
+        case GraphicsApis::Vulkan:
+            this->impl = new RED::Vulkan::VulkanRenderer(indices, vertices);
+            break;
+        default:
+            this->impl = new RED::Opengl::OpenglRenderer(indices, vertices);
+            break;
         }
     }
     

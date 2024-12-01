@@ -2,6 +2,7 @@
 
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
+#include "Renderer.h"
 
 #include <iostream>
 
@@ -24,7 +25,7 @@ namespace RED
 
 		~Window();
 
-
+		void Display();
 		void Update();
 
 		int width = 0;

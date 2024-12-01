@@ -9,5 +9,5 @@
 #include "Audio.h"
 
 namespace RED {
-	void Display(Window& window);
+	
 }

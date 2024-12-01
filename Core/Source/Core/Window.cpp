@@ -22,11 +22,19 @@ namespace RED
 	    height = WinHeight;
 	
 		glfwInit();
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
-		glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
-		glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
 
-	
+		if (Renderer::GetGraphicsApi() == GraphicsApis::Vulkan)
+		{
+			glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
+		}
+		if (Renderer::GetGraphicsApi() == GraphicsApis::OpenGL)
+		{
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MAJOR, 3);
+			glfwWindowHint(GLFW_CONTEXT_VERSION_MINOR, 3);
+			glfwWindowHint(GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE);
+
+		}
+
 		GLFW_Window = glfwCreateWindow(WinWidth, WinHeight, WinName, monitor, window);
 	    glfwSetWindowUserPointer(GLFW_Window, this);
 	
@@ -39,12 +47,14 @@ namespace RED
 	    glfwMakeContextCurrent(GLFW_Window);
 	    glfwSetFramebufferSizeCallback(GLFW_Window, framebuffer_size_callback);
 	
-	    if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
-	    {
-	        std::cout << "Failed to initialize GLAD" << std::endl;
-	    }
-	
-	    glEnable(GL_DEPTH_TEST);
+		if (Renderer::GetGraphicsApi() == GraphicsApis::OpenGL)
+		{
+			if (!gladLoadGLLoader((GLADloadproc)glfwGetProcAddress))
+			{
+				std::cout << "Failed to initialize GLAD" << std::endl;
+			}
+			glEnable(GL_DEPTH_TEST);
+		}
 	}
 	
 	void framebuffer_size_callback(GLFWwindow* window, int width, int height)
@@ -59,6 +69,21 @@ namespace RED
 	    {
 	        windowInstance->onResize(width, height);
 	    }
+	}
+
+	void Window::Display()
+	{
+		glfwSwapBuffers(GLFW_Window);
+		glfwPollEvents();
+
+		if (Renderer::GetGraphicsApi() == GraphicsApis::Vulkan)
+		{
+		}
+		if (Renderer::GetGraphicsApi() == GraphicsApis::OpenGL)
+		{
+			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
+			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
 	}
 	
 	void Window::Update()

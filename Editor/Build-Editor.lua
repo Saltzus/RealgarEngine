@@ -6,7 +6,7 @@ project "Editor"
    staticruntime "off"
 
 
-   libdirs { "../Libraries/glfw-3.4", "../Libraries/freetype/freetype2/include" }
+   libdirs { "../Libraries/glfw-3.4", "../Libraries/freetype/freetype2/include", "../Libraries/vulkan/Lib"}
    files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/freetype/src/**.c"}
 
 
@@ -21,6 +21,8 @@ project "Editor"
       "../Libraries/glfw-3.4/include",
       -- Opengl / glad
       "../Libraries/glad/include",
+      -- Vulkan
+      "../Libraries/vulkan/Include",
       -- glm
       "../Libraries/glm",
       -- stb_image
@@ -36,7 +38,8 @@ project "Editor"
    {
       "Core",
       "glfw3",
-      "freetype"
+      "freetype",
+      "vulkan-1"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")

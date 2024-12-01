@@ -5,7 +5,6 @@
 #include <glad/glad.h>
 #include <GLFW/glfw3.h>
 
-
 #include <iostream>
 
 // settings
@@ -13,14 +12,13 @@ const unsigned int SCR_WIDTH = 800;
 const unsigned int SCR_HEIGHT = 600;
 
 
-
-
-
 int main(int argc, char** argv)
 {
     RED::Window window("RED - Test", 800, 600);
     RED::Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.f,0.f,-4.f));
-    RED::Shader shader("Game/Resources/Shaders/default.vert", "Game/Resources/Shaders/default.frag");
+
+    //RED::Shader shader("Game/Resources/Shaders/default.vert", "Game/Resources/Shaders/default.frag");
+    RED::Shader shader("Resources/Shaders/default.vert", "Resources/Shaders/default.frag");
 
     RED::Audio audio;
     audio.PlayAudio("Game/Resources/Audio/BIG-Trouble.ogg");
@@ -43,9 +41,8 @@ int main(int argc, char** argv)
         sprite1.translation.y = glm::sin(sus/4) / 3;
 
 
-
         RED::Input::processInput(window);
-        RED::Display(window);
+        window.Display();
     }
 
     glfwTerminate();

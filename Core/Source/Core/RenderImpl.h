@@ -1,10 +1,14 @@
 #pragma once
 
-#include "Shader.h"
-#include "Camera.h"
+#define GLM_ENABLE_EXPERIMENTAL
+#include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 namespace RED
 {
+    class Shader;
+    class Camera;
+
     class RendererImpl 
     {
     public:
@@ -18,4 +22,13 @@ namespace RED
         virtual ~TextureImpl() {}
         virtual void Bind() = 0;
     };
+
+	class ShaderImpl
+	{
+    public:
+        virtual ~ShaderImpl() {}
+        virtual void Activate() = 0;
+        virtual void Delete() = 0;
+        virtual unsigned int& Id() = 0;
+	};
 }
