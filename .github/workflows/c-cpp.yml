@@ -25,6 +25,10 @@ jobs:
     - name: Generate Visual Studio Project with Premake
       run: premake5 --file=Build.lua gmake2
 
+    - name: Create required directories
+      run: mkdir -p ../Binaries/Intermediates/windows-x86_64/Debug
+
+
     - name: Build Project
       run: make
 
