@@ -13,8 +13,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - name: Setup premake
-      uses: abel0b/setup-premake@v2.4
+    - uses: abel0b/setup-premake@v2.4
+      with:
+        version: "5.0.0-beta2"
     - name: configure
       run: ./configure
     - name: make
