@@ -25,9 +25,6 @@ jobs:
     - name: Generate Visual Studio Project with Premake
       run: premake5 --file=Build.lua vs2022
 
-    - name: Clone GLFW Source
-      run: git clone https://github.com/glfw/glfw.git Libraries/glfw-3.4
-
     - name: Build GLFW
       run: |
         cd Libraries/glfw-3.4
