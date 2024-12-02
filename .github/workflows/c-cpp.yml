@@ -32,6 +32,17 @@ jobs:
         cmake --build . --config Release
         copy src\Release\glfw3.lib D:\a\RED\RED\Libraries\glfw-3.4
 
+    - name: Clone FreeType Source
+      run: git clone https://github.com/freetype/freetype.git Libraries/freetype
+
+    - name: Build FreeType
+      run: |
+        cd Libraries/freetype
+        cmake -G "Visual Studio 17 2022" -D BUILD_SHARED_LIBS=OFF -A x64 .
+        cmake --build . --config Release
+        copy Release\freetype.lib D:\a\RED\RED\Libraries\freetype\lib
+
+
     - name: Clean Build Directory
       run: msbuild RED.sln -t:clean -verbosity:minimal
 
