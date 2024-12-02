@@ -25,24 +25,6 @@ jobs:
     - name: Generate Visual Studio Project with Premake
       run: premake5 --file=Build.lua gmake2
 
-    - name: Build GLFW
-      run: |
-        cd Libraries/glfw-3.4
-        cmake -G "Visual Studio 17 2022" -D BUILD_SHARED_LIBS=OFF .
-        cmake --build . --config Release
-        copy src\Release\glfw3.lib D:\a\RED\RED\Libraries\glfw-3.4
-
-    - name: Clone FreeType Source
-      run: git clone https://github.com/freetype/freetype.git Libraries/freetype
-
-    - name: Build FreeType
-      run: |
-        cd Libraries/freetype
-        cmake -G "Visual Studio 17 2022" -D BUILD_SHARED_LIBS=OFF -A x64 .
-        cmake --build . --config Release
-        copy Release\freetype.lib D:\a\RED\RED\Libraries\freetype\lib
-
-
     - name: Build Project
       run: make
 
