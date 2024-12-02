@@ -23,7 +23,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
 
     - name: Generate Visual Studio Project with Premake
-      run: premake5 --file=Build.lua vs2022
+      run: premake5 --file=Build.lua gmake2
 
     - name: Build GLFW
       run: |
@@ -43,8 +43,8 @@ jobs:
         copy Release\freetype.lib D:\a\RED\RED\Libraries\freetype\lib
 
 
-    - name: Clean Build Directory
-      run: msbuild RED.sln -t:clean -verbosity:minimal
+    - name: Build Project
+      run: make
 
     - name: Build app for Release (x64)
       run: msbuild RED.sln -t:rebuild -verbosity:diag -property:Configuration=Release -property:Platform=x64
