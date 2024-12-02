@@ -23,8 +23,11 @@ jobs:
     - name: Generate Visual Studio Project with Premake
       run: premake5 --file=Build.lua vs2022
       
+    - name: Debug Library Files
+      run: dir /s libraries
+
     - name: Build app for release
-      run: msbuild RED.sln -t:rebuild -property:Configuration=Release -property:Platform=x64
+      run: msbuild RED.sln -t:rebuild -verbosity:diag -property:Configuration=Release -property:Platform=x64
 
     - name: Run Tests
       run: |
