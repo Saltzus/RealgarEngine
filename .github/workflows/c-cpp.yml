@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: C/C++ CI (Windows)
 
 on:
   push:
@@ -8,7 +8,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -17,14 +17,19 @@ jobs:
       with:
         version: "5.0.0-beta2"
 
-    - name: Generate Makefiles with Premake
-      run: premake5 --file=Build.lua gmake2
+    - name: Generate Visual Studio Project with Premake
+      run: premake5 --file=Build.lua vs2022
 
     - name: Build Project
-      run: make
+      run: |
+        MSBuild.exe MyProject.sln /p:Configuration=Release
 
     - name: Run Tests
-      run: make check
+      run: |
+        cd bin\Release
+        MyTests.exe
 
     - name: Verify Distribution Build
-      run: make distcheck
+      run: |
+        cd bin\Release
+        MyExecutable.exe --distcheck
