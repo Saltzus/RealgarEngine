@@ -25,11 +25,15 @@ jobs:
     - name: Generate Visual Studio Project with Premake
       run: premake5 --file=Build.lua vs2022
 
-    - name: Download Precompiled GLFW
+    - name: Debug 
+      run: dir
+
+    - name: Download and Extract Precompiled GLFW
       run: |
         curl -L -o glfw.zip https://github.com/glfw/glfw/releases/download/3.4.0/glfw-3.4.0.bin.WIN64.zip
-        tar -xf glfw.zip
-        copy glfw-3.4.0.bin.WIN64\lib-vc2022\glfw3.lib D:\a\RED\RED\Libraries\glfw-3.4
+        Expand-Archive -Path glfw.zip -DestinationPath glfw
+        copy glfw\lib-vc2022\glfw3.lib D:\a\RED\RED\Libraries\glfw-3.4
+
 
     - name: Clean Build Directory
       run: msbuild RED.sln -t:clean -verbosity:minimal
