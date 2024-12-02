@@ -16,27 +16,6 @@ jobs:
     - uses: abel0b/setup-premake@v2.4
       with:
         version: "5.0.0-beta2"
-
-    - name: Generate Visual Studio Project with Premake
-      run: premake5 --file=Build.lua vs2022
-    name: C/C++ CI (Windows)
-
-on:
-  push:
-    branches: [ "master" ]
-  pull_request:
-    branches: [ "master" ]
-
-jobs:
-  build:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - uses: abel0b/setup-premake@v2.4
-      with:
-        version: "5.0.0-beta2"
         
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
