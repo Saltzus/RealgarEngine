@@ -8,20 +8,23 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
+
     - uses: abel0b/setup-premake@v2.4
       with:
         version: "5.0.0-beta2"
-    - name: configure
-      run: ./configure
-    - name: make
-      run: make
-    - name: make check
-      run: make check
-    - name: make distcheck
-      run: make distcheck
 
+    - name: Generate Makefiles with Premake
+      run: premake5 gmake2
+
+    - name: Build Project
+      run: make
+
+    - name: Run Tests
+      run: make check
+
+    - name: Verify Distribution Build
+      run: make distcheck
