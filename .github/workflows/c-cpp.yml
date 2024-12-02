@@ -18,7 +18,7 @@ jobs:
         version: "5.0.0-beta2"
 
     - name: Generate Makefiles with Premake
-      run: Build gmake2
+      run: premake5 --file=Build.lua gmake2
 
     - name: Build Project
       run: make
