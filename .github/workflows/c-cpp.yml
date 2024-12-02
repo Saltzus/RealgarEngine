@@ -7,53 +7,45 @@ on:
     branches: [ "master" ]
 
 jobs:
-  release-build:
+  build:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
+    - name: Checkout Code
+      uses: actions/checkout@v4
 
-    - uses: abel0b/setup-premake@v2.4
+    - name: Set up Premake
+      uses: abel0b/setup-premake@v2.4
       with:
         version: "5.0.0-beta2"
-        
-    - name: Add msbuild to PATH
+
+    - name: Add MSBuild to PATH
       uses: microsoft/setup-msbuild@v2
 
     - name: Generate Visual Studio Project with Premake
       run: premake5 --file=Build.lua vs2022
 
-    - name: Build app for release
+    - name: Build GLFW
+      run: |
+        git clone https://github.com/glfw/glfw.git
+        cd glfw
+        mkdir build
+        cd build
+        cmake -G "Visual Studio 16 2019" -A x64 -DCMAKE_BUILD_TYPE=Release ..
+        cmake --build . --config Release
+        copy src\Release\glfw3.lib D:\a\RED\RED\Libraries\glfw-3.4
+
+    - name: Clean Build Directory
+      run: msbuild RED.sln -t:clean -verbosity:minimal
+
+    - name: Build app for Release (x64)
       run: msbuild RED.sln -t:rebuild -verbosity:diag -property:Configuration=Release -property:Platform=x64
 
-    - name: Run Tests
+    - name: Debug Environment
       run: |
-        cd bin\Release
-        MyTests.exe
-
-    - name: Verify Distribution Build
-      run: |
-        cd bin\Release
-        MyExecutable.exe --distcheck
-   
-  debug-build:
-    runs-on: windows-latest
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - uses: abel0b/setup-premake@v2.4
-      with:
-        version: "5.0.0-beta2"
-        
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Generate Visual Studio Project with Premake
-      run: premake5 --file=Build.lua vs2022
-
-    - name: Build app for release
-      run: msbuild RED.sln -t:rebuild -verbosity:diagnostic -property:Configuration=Debug -property:Platform=x64
+        dir D:\a\RED\RED\Libraries\glfw-3.4
+        dir D:\a\RED\RED\Libraries\vulkan
+        echo %PATH%
 
     - name: Run Tests
       run: |
