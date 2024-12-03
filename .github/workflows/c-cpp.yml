@@ -16,15 +16,9 @@ jobs:
     - name: Install System Dependencies
       run: sudo apt-get update && sudo apt-get install -y mesa-common-dev libgl1-mesa-dev
 
-    - name: Clone GLFW
-      run: ls
-
-    - name: Clone GLFW2
-      run: ../ls
-
     - name: Build and Install GLFW
       run: |
-        cd ../Libraries/glfw-3.4
+        cd ./Libraries/glfw-3.4
         cmake -Bbuild -H. -DBUILD_SHARED_LIBS=ON
         make -C build
         sudo make install
