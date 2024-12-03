@@ -1,4 +1,4 @@
-name: C/C++ CI
+name: C/C++ Build
 
 on:
   push:
@@ -13,8 +13,11 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Install Dependencies
+    - name: Install System Dependencies
       run: sudo apt-get update && sudo apt-get install -y mesa-common-dev libgl1-mesa-dev
+
+    - name: Clone GLFW
+      run: git clone --branch 3.4-stable https://github.com/glfw/glfw ../Libraries/glfw-3.4
 
     - name: Build and Install GLFW
       run: |
@@ -22,7 +25,6 @@ jobs:
         cmake -Bbuild -H. -DBUILD_SHARED_LIBS=ON
         make -C build
         sudo make install
-
 
     - uses: abel0b/setup-premake@v2.4
       with:
@@ -33,4 +35,3 @@ jobs:
 
     - name: Build Project
       run: make
-
