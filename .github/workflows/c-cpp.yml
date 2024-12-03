@@ -1,4 +1,4 @@
-name: C/C++ CI (Windows)
+name: C/C++ CI
 
 on:
   push:
@@ -8,45 +8,23 @@ on:
 
 jobs:
   build:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
 
     steps:
-    - name: Checkout Code
-      uses: actions/checkout@v4
+    - uses: actions/checkout@v4
 
-    - name: Set up Premake
-      uses: abel0b/setup-premake@v2.4
+    - uses: abel0b/setup-premake@v2.4
       with:
         version: "5.0.0-beta2"
 
-    - name: Add MSBuild to PATH
-      uses: microsoft/setup-msbuild@v2
-
-    - name: Generate Visual Studio Project with Premake
+    - name: Generate Makefiles with Premake
       run: premake5 --file=Build.lua gmake2
-
-    - name: Create required directories
-      run: mkdir -p ../Binaries/Intermediates/windows-x86_64/Debug
-
 
     - name: Build Project
       run: make
 
-    - name: Build app for Release (x64)
-      run: msbuild RED.sln -t:rebuild -verbosity:diag -property:Configuration=Release -property:Platform=x64
-
-    - name: Debug Environment
-      run: |
-        dir D:\a\RED\RED\Libraries\glfw-3.4
-        dir D:\a\RED\RED\Libraries\vulkan
-        echo %PATH%
-
     - name: Run Tests
-      run: |
-        cd bin\Release
-        MyTests.exe
+      run: make check
 
     - name: Verify Distribution Build
-      run: |
-        cd bin\Release
-        MyExecutable.exe --distcheck
+      run: make distcheck
