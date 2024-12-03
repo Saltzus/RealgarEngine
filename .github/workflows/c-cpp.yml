@@ -32,14 +32,13 @@ jobs:
     - name: Clean Previous Build
       run: rm -rf ./Libraries/glfw-3.4/build ./Libraries/glfw-3.4/CMakeCache.txt
 
-    - name: Build GLFW
+    - name: Build and Install GLFW
       run: |
-        cd ./Libraries/glfw-3.4
-        mkdir -p build
-        cd build
-        cmake -DBUILD_SHARED_LIBS=ON -DGLFW_USE_WAYLAND=OFF -DGLFW_USE_X11=OFF ..
-        make
+        cd ../Libraries/glfw-3.4
+        cmake -Bbuild -H. -DBUILD_SHARED_LIBS=ON
+        make -C build
         sudo make install
+
 
 
     - uses: abel0b/setup-premake@v2.4
