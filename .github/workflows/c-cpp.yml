@@ -16,25 +16,18 @@ jobs:
     - name: Install System Dependencies
       run: sudo apt-get update && sudo apt-get install -y mesa-common-dev libgl1-mesa-dev
       
-    - name: Install Wayland Dependencies
-      run: sudo apt-get update && sudo apt-get install -y wayland-protocols libwayland-dev
-
-    - name: Install xkbcommon
-      run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev
-
-    - name: Install RandR Dependencies
-      run: sudo apt-get update && sudo apt-get install -y libxrandr-dev
-
-
     - name: Clean Previous Build
       run: rm -rf ./Libraries/glfw-3.4/build ./Libraries/glfw-3.4/CMakeCache.txt
 
-    - name: Build and Install GLFW
+    - name: Build GLFW
       run: |
         cd ./Libraries/glfw-3.4
-        cmake -Bbuild -H. -DBUILD_SHARED_LIBS=ON
-        make -C build
+        mkdir -p build
+        cd build
+        cmake -DBUILD_SHARED_LIBS=ON -DGLFW_USE_WAYLAND=OFF -DGLFW_USE_X11=OFF ..
+        make
         sudo make install
+
 
     - uses: abel0b/setup-premake@v2.4
       with:
