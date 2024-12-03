@@ -13,6 +13,7 @@ project "Core"
    includedirs
    {
       "Source",
+      "Source/**",
 
       -- glfw
       "../Libraries/glfw-3.4/include",
