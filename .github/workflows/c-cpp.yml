@@ -34,7 +34,7 @@ jobs:
 
     - name: Build and Install GLFW
       run: |
-        cd ../Libraries/glfw-3.4
+        cd ./Libraries/glfw-3.4
         cmake -Bbuild -H. -DBUILD_SHARED_LIBS=ON
         make -C build
         sudo make install
