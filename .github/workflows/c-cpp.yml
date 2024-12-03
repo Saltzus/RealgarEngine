@@ -15,10 +15,9 @@ jobs:
 
     - name: Install System Dependencies
       run: sudo apt-get update && sudo apt-get install -y mesa-common-dev libgl1-mesa-dev
-
+      
     - name: Install Wayland Dependencies
-      run: sudo apt-get update && sudo apt-get install -y wayland-protocols wayland-devel
-
+      run: sudo apt-get update && sudo apt-get install -y wayland-protocols libwayland-dev
 
     - name: Clean Previous Build
       run: rm -rf ./Libraries/glfw-3.4/build ./Libraries/glfw-3.4/CMakeCache.txt
