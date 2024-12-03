@@ -16,6 +16,10 @@ jobs:
     - name: Install Dependencies
       run: sudo apt-get update && sudo apt-get install -y mesa-common-dev libgl1-mesa-dev
 
+    - name: Install GLFW
+      run: sudo apt-get install -y libglfw3-dev
+
+
     - uses: abel0b/setup-premake@v2.4
       with:
         version: "5.0.0-beta2"
