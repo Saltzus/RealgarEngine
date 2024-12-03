@@ -15,7 +15,20 @@ jobs:
 
     - name: Install System Dependencies
       run: sudo apt-get update && sudo apt-get install -y mesa-common-dev libgl1-mesa-dev
-      
+
+    - name: Install Wayland Dependencies
+      run: sudo apt-get update && sudo apt-get install -y wayland-protocols libwayland-dev
+
+    - name: Install xkbcommon
+      run: sudo apt-get update && sudo apt-get install -y libxkbcommon-dev
+
+    - name: Install RandR Dependencies
+      run: sudo apt-get update && sudo apt-get install -y libxrandr-dev
+
+    - name: Install Xinerama Dependencies
+      run: sudo apt-get update && sudo apt-get install -y libxinerama-dev
+
+
     - name: Clean Previous Build
       run: rm -rf ./Libraries/glfw-3.4/build ./Libraries/glfw-3.4/CMakeCache.txt
 
