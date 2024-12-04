@@ -21,7 +21,7 @@ namespace RED
     {
     private:
         RendererImpl* impl = nullptr;
-        static const GraphicsApis graphicApi = GraphicsApis::OpenGL;
+        static const GraphicsApis graphicApi = GraphicsApis::Vulkan;
 
     public:
         Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices);

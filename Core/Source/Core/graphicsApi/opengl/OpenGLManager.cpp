@@ -110,7 +110,6 @@ namespace RED::Opengl
 
     void OpenglRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model) 
     {
-
         int modelLocation = glGetUniformLocation(shader->ID(), "model");
         glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
 
