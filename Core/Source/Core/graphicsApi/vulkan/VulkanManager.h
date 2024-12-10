@@ -8,6 +8,9 @@
 #include <stb_image/stb_image.h>
 #include <vector>
 #include <optional>
+#include <set>
+
+#include <GLFW/glfw3.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -39,7 +42,7 @@ namespace RED::Vulkan
     class Vulkan
     {
     public:
-        Vulkan();
+        Vulkan(GLFWwindow* GLFW_Window);
         ~Vulkan();
 
     private:
@@ -51,12 +54,42 @@ namespace RED::Vulkan
         void pickPhysicalDevice();
         bool isDeviceSuitable(VkPhysicalDevice device);
         QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+        void createSurface(GLFWwindow* window);
+
+        struct SwapChainSupportDetails;
+        void createSwapChain();
+        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+        
+        void createImageViews();
+
+        void createGraphicsPipeline();
+        VkShaderModule createShaderModule(const std::vector<char>& code);
+
+        GLFWwindow* window;
 
         VkInstance instance;
         VkDebugUtilsMessengerEXT debugMessenger;
+        VkSurfaceKHR surface;
+
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
         VkDevice device;
+
         VkQueue graphicsQueue;
+        VkQueue presentQueue;
+
+        VkSwapchainKHR swapChain;
+        std::vector<VkImage> swapChainImages;
+        VkFormat swapChainImageFormat;
+        VkExtent2D swapChainExtent;
+        std::vector<VkImageView> swapChainImageViews;
+
+        VkRenderPass renderPass;
+        VkPipelineLayout pipelineLayout;
+
+        void createRenderPass();
 
         void createLogicalDevice();
 
@@ -71,7 +104,7 @@ namespace RED::Vulkan
     class VulkanRenderer : public RendererImpl
     {
     public:
-        VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices);
+        VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices, GLFWwindow* window);
         ~VulkanRenderer();
 
         void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw

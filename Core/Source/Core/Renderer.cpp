@@ -2,7 +2,7 @@
 
 namespace RED
 {
-    Renderer::Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices)
+    Renderer::Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices, GLFWwindow* window)
     {
         switch (this->graphicApi)
         {
@@ -10,7 +10,7 @@ namespace RED
             this->impl = new RED::Opengl::OpenglRenderer(indices, vertices);
             break;
         case GraphicsApis::Vulkan:
-            this->impl = new RED::Vulkan::VulkanRenderer(indices, vertices);
+            this->impl = new RED::Vulkan::VulkanRenderer(indices, vertices, window);
             break;
         default:
             this->impl = new RED::Opengl::OpenglRenderer(indices, vertices);

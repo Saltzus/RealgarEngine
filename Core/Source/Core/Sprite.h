@@ -8,7 +8,7 @@ namespace RED
     class Sprite
     {
     public:
-        Sprite();
+        Sprite(GLFWwindow* window);
         ~Sprite();
 
         void Render(Shader* shader, Camera* camera, glm::mat4 model = glm::mat4(1.0f));

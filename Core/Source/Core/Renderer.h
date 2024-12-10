@@ -24,7 +24,7 @@ namespace RED
         static const GraphicsApis graphicApi = GraphicsApis::Vulkan;
 
     public:
-        Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices);
+        Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices, GLFWwindow* window);
         ~Renderer();
 
         void Render(Shader* shader, Camera* camera, glm::mat4 model = glm::mat4(1.0f));
