@@ -45,28 +45,10 @@ namespace RED::Vulkan
         Vulkan(GLFWwindow* GLFW_Window);
         ~Vulkan();
 
+        void renderEnd();
+        void render();
+
     private:
-        void createInstance();
-        VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
-        void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
-        
-        struct QueueFamilyIndices;
-        void pickPhysicalDevice();
-        bool isDeviceSuitable(VkPhysicalDevice device);
-        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
-        void createSurface(GLFWwindow* window);
-
-        struct SwapChainSupportDetails;
-        void createSwapChain();
-        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
-        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
-        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
-        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
-        
-        void createImageViews();
-
-        void createGraphicsPipeline();
-        VkShaderModule createShaderModule(const std::vector<char>& code);
 
         GLFWwindow* window;
 
@@ -85,12 +67,50 @@ namespace RED::Vulkan
         VkFormat swapChainImageFormat;
         VkExtent2D swapChainExtent;
         std::vector<VkImageView> swapChainImageViews;
+        std::vector<VkFramebuffer> swapChainFramebuffers;
 
         VkRenderPass renderPass;
         VkPipelineLayout pipelineLayout;
+        VkPipeline graphicsPipeline;
+
+        VkCommandPool commandPool;
+        VkCommandBuffer commandBuffer;
+
+        VkSemaphore imageAvailableSemaphore;
+        VkSemaphore renderFinishedSemaphore;
+        VkFence inFlightFence;
+
+        void createInstance();
+        VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
+        void DestroyDebugUtilsMessengerEXT(VkInstance instance, VkDebugUtilsMessengerEXT debugMessenger, const VkAllocationCallbacks* pAllocator);
+        
+        struct QueueFamilyIndices;
+        void pickPhysicalDevice();
+        bool isDeviceSuitable(VkPhysicalDevice device);
+        QueueFamilyIndices findQueueFamilies(VkPhysicalDevice device);
+        void createSurface(GLFWwindow* window);
+
+        struct SwapChainSupportDetails;
+        void createSwapChain();
+        VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
+        VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
+        VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
+        SwapChainSupportDetails querySwapChainSupport(VkPhysicalDevice device);
+        
+        void createImageViews();
+        void createFramebuffers();
+
+        void createGraphicsPipeline();
+        VkShaderModule createShaderModule(const std::vector<char>& code);
+
+        void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+        void createCommandPool();
+        void createCommandBuffer();
+
+        void drawFrame();
+        void createSyncObjects();
 
         void createRenderPass();
-
         void createLogicalDevice();
 
         void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);
@@ -110,6 +130,8 @@ namespace RED::Vulkan
         void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw
 
     private:
+        Vulkan* vulkan;
+
         GLuint VAO;
 	    GLuint VBO;
     	GLuint EBO;
