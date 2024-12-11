@@ -18,6 +18,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 
 #include "../../RenderImpl.h"
+#include "../../Window.h"
 
 namespace RED::Vulkan
 {
@@ -74,11 +75,14 @@ namespace RED::Vulkan
         VkPipeline graphicsPipeline;
 
         VkCommandPool commandPool;
-        VkCommandBuffer commandBuffer;
+        std::vector<VkCommandBuffer> commandBuffers;
 
-        VkSemaphore imageAvailableSemaphore;
-        VkSemaphore renderFinishedSemaphore;
-        VkFence inFlightFence;
+        std::vector<VkSemaphore> imageAvailableSemaphores;
+        std::vector<VkSemaphore> renderFinishedSemaphores;
+        std::vector<VkFence> inFlightFences;
+        uint32_t currentFrame = 0;
+
+        bool framebufferResized = false;
 
         void createInstance();
         VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
@@ -92,6 +96,8 @@ namespace RED::Vulkan
 
         struct SwapChainSupportDetails;
         void createSwapChain();
+        void cleanupSwapChain();
+        void recreateSwapChain();
         VkSurfaceFormatKHR chooseSwapSurfaceFormat(const std::vector<VkSurfaceFormatKHR>& availableFormats);
         VkPresentModeKHR chooseSwapPresentMode(const std::vector<VkPresentModeKHR>& availablePresentModes);
         VkExtent2D chooseSwapExtent(const VkSurfaceCapabilitiesKHR& capabilities);
@@ -105,7 +111,7 @@ namespace RED::Vulkan
 
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
         void createCommandPool();
-        void createCommandBuffer();
+        void createCommandBuffers();
 
         void drawFrame();
         void createSyncObjects();

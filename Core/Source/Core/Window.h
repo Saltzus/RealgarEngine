@@ -30,7 +30,7 @@ namespace RED
 
 		int width = 0;
 		int height = 0;
-
+		bool resised = false;
 
 		operator GLFWwindow* () const 
 		{
@@ -38,6 +38,7 @@ namespace RED
 		}
 
 	private:
+		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 		static void window_size_callback(GLFWwindow* glfwWindow, int width, int height);
 		void onResize(int width, int height);
 	};
