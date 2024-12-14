@@ -2,6 +2,7 @@
 
 namespace RED
 {
+
     Renderer::Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices, GLFWwindow* window)
     {
         switch (this->graphicApi)
