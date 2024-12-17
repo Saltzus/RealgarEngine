@@ -82,7 +82,6 @@ namespace RED::Vulkan
         void render();
 
     private:
-
         GLFWwindow* window;
 
         VkInstance instance;
@@ -109,6 +108,9 @@ namespace RED::Vulkan
 
         VkCommandPool commandPool;
 
+        VkImage textureImage;
+        VkDeviceMemory textureImageMemory;
+
         VkBuffer vertexBuffer;
         VkDeviceMemory vertexBufferMemory;
         VkBuffer indexBuffer;
@@ -129,6 +131,7 @@ namespace RED::Vulkan
         uint32_t currentFrame = 0;
 
         bool framebufferResized = false;
+
 
         void createInstance();
         VkResult CreateDebugUtilsMessengerEXT(VkInstance instance, const VkDebugUtilsMessengerCreateInfoEXT* pCreateInfo, const VkAllocationCallbacks* pAllocator, VkDebugUtilsMessengerEXT* pDebugMessenger);
@@ -152,6 +155,11 @@ namespace RED::Vulkan
         void createImageViews();
         void createFramebuffers();
 
+        void createTextureImage();
+        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+        void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+
         void createVertexBuffer();
         void createIndexBuffer();
         void createUniformBuffers();
@@ -159,6 +167,9 @@ namespace RED::Vulkan
 
         void createDescriptorPool();
         void createDescriptorSets();
+
+        VkCommandBuffer beginSingleTimeCommands();
+        void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
         void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
