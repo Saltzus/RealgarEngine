@@ -340,6 +340,7 @@ namespace RED::Vulkan
         }
 
         VkPhysicalDeviceFeatures deviceFeatures{};
+        deviceFeatures.samplerAnisotropy = VK_TRUE;
 
         VkDeviceCreateInfo createInfo{};
         createInfo.sType = VK_STRUCTURE_TYPE_DEVICE_CREATE_INFO;
@@ -592,7 +593,8 @@ namespace RED::Vulkan
         return buffer;
     }
     void Vulkan::createGraphicsPipeline() {
-        auto vertShaderCode = readFile("Resources/Shaders/defaultVulkanvert.spv");
+        VulkanGraphicsPipeline sus(" ", " ", device, descriptorSetLayout, renderPass, pipelineLayout, graphicsPipeline);
+        /*auto vertShaderCode = readFile("Resources/Shaders/defaultVulkanvert.spv");
         auto fragShaderCode = readFile("Resources/Shaders/defaultVulkanfrag.spv");
 
         VkShaderModule vertShaderModule = createShaderModule(vertShaderCode);
@@ -711,7 +713,7 @@ namespace RED::Vulkan
         }
 
         vkDestroyShaderModule(device, fragShaderModule, nullptr);
-        vkDestroyShaderModule(device, vertShaderModule, nullptr);
+        vkDestroyShaderModule(device, vertShaderModule, nullptr);*/
     }
     VkShaderModule Vulkan::createShaderModule(const std::vector<char>& code) {
         VkShaderModuleCreateInfo createInfo{};
