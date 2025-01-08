@@ -24,15 +24,13 @@ namespace RED
         Renderer* renderer;
 
         std::vector<GLfloat> vertices =
-	    {
-	    	// positions         // texture coords
-	    	 0.5f,  0.5f, 0.0f,   1.0f, 1.0f, // top right
-	    	 0.5f, -0.5f, 0.0f,   1.0f, 0.0f, // bottom right
-	    	-0.5f, -0.5f, 0.0f,   0.0f, 0.0f, // bottom left
-	    	-0.5f,  0.5f, 0.0f,   0.0f, 1.0f  // top left 
-	    };
-
-	    // Indices for vertices order
+        {
+            -0.5f, -0.5f, -0.5f,    1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,    0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,    0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,    1.0f, 1.0f, 1.0f,   1.0f, 1.0f
+        };
+	    //Indices for vertices order
 	    std::vector<GLuint> indices =
 	    {
 	    	0, 1, 3, // first triangle

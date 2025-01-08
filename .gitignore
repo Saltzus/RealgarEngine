@@ -12,3 +12,4 @@ Makefile
 
 # Exclude
 !Vendor/Binaries
+/Drawing multiple objects _ r_vulkan_files

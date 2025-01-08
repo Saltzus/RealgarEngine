@@ -52,7 +52,7 @@ namespace RED::Vulkan
     }
 
 #ifdef DEBUG
-    const bool enableValidationLayers = true;
+    const bool enableValidationLayers = false;
 #else
     const bool enableValidationLayers = false;
 #endif
@@ -64,22 +64,31 @@ namespace RED::Vulkan
     };
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-    const std::vector<Vertex> vertices = {
-        {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-        {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}},
+    //const std::vector<Vertex> vertices = 
+    //{
+    //    {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+    //    {{ 0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+    //    {{ 0.5f,  0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
+    //    {{-0.5f,  0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
+    //};
+    //
 
-        {{-0.5f, -0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
-        {{0.5f, -0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
-        {{0.5f, 0.5f, -0.5f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
-        {{-0.5f, 0.5f, -0.5f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
-    };
+    //const std::vector<Vertex> vertices2 = 
+    //{
+    //    {{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f}, {1.0f, 0.0f}},
+    //    {{ 0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f}, {0.0f, 0.0f}},
+    //    {{ 0.5f,  0.5f, 0.0f}, {0.0f, 0.0f, 1.0f}, {0.0f, 1.0f}},
+    //    {{-0.5f,  0.5f, 0.0f}, {1.0f, 1.0f, 1.0f}, {1.0f, 1.0f}}
+    //};
+    //
 
     const std::vector<uint16_t> indices = {
-        0, 1, 2, 2, 3, 0,
-        4, 5, 6, 6, 7, 4
+        0, 1, 2, 2, 3, 0
     };
+
+    //const std::vector<uint16_t> indices2 = {
+    //0, 1, 2, 2, 3, 0
+    //};
 
     Vulkan::Vulkan(GLFWwindow* window)
     {
@@ -101,8 +110,8 @@ namespace RED::Vulkan
         createTextureImage();
         createTextureImageView();
         createTextureSampler();
-        createVertexBuffer();
-        createIndexBuffer();
+        //createVertexBuffer();
+        //createIndexBuffer();
         createUniformBuffers();
         createDescriptorPool();
         createDescriptorSets();
@@ -133,11 +142,17 @@ namespace RED::Vulkan
 
         vkDestroyDescriptorSetLayout(device, descriptorSetLayout, nullptr);
 
-        vkDestroyBuffer(device, indexBuffer, nullptr);
-        vkFreeMemory(device, indexBufferMemory, nullptr);
+        for (size_t i = 0; i < indexBuffers.size(); i++)
+            vkDestroyBuffer(device, indexBuffers[i], nullptr);
 
-        vkDestroyBuffer(device, vertexBuffer, nullptr);
-        vkFreeMemory(device, vertexBufferMemory, nullptr);
+        for (size_t i = 0; i < indexBufferMemorys.size(); i++)
+            vkFreeMemory(device, indexBufferMemorys[i], nullptr);
+
+        for (size_t i = 0; i < vertexBuffers.size(); i++)
+            vkDestroyBuffer(device, vertexBuffers[i], nullptr);
+
+        for (size_t i = 0; i < vertexBufferMemorys.size(); i++)
+            vkFreeMemory(device, vertexBufferMemorys[i], nullptr);
 
         for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
             vkDestroySemaphore(device, renderFinishedSemaphores[i], nullptr);
@@ -769,15 +784,17 @@ namespace RED::Vulkan
         scissor.extent = swapChainExtent;
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
-        VkBuffer vertexBuffers[] = { vertexBuffer };
         VkDeviceSize offsets[] = { 0 };
-        vkCmdBindVertexBuffers(commandBuffer, 0, 1, vertexBuffers, offsets);
+        for (size_t i = 0; i < vertexBuffers.size(); i++)
+        {
+            vkCmdBindVertexBuffers(commandBuffer, 0, 1, &vertexBuffers[i], offsets);
+            vkCmdBindIndexBuffer(commandBuffer, indexBuffers[i], 0, VK_INDEX_TYPE_UINT16);
 
-        vkCmdBindIndexBuffer(commandBuffer, indexBuffer, 0, VK_INDEX_TYPE_UINT16);
+            vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
 
-        vkCmdBindDescriptorSets(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, pipelineLayout, 0, 1, &descriptorSets[currentFrame], 0, nullptr);
+            vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(6), 1, 0, 0, 0);
+        }
 
-        vkCmdDrawIndexed(commandBuffer, static_cast<uint32_t>(indices.size()), 1, 0, 0, 0);
 
         vkCmdEndRenderPass(commandBuffer);
 
@@ -910,7 +927,7 @@ namespace RED::Vulkan
             throw std::runtime_error("failed to acquire swap chain image!");
         }
 
-        updateUniformBuffer(currentFrame);
+        //updateUniformBuffer(currentFrame); /////////////////
 
         vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
@@ -1223,30 +1240,45 @@ namespace RED::Vulkan
         endSingleTimeCommands(commandBuffer);
     }
 
-    void Vulkan::createVertexBuffer() {
+    void Vulkan::createVertexBuffer(std::vector<GLfloat>& verticess) 
+    {
+        std::vector<Vertex> vertices = fromGLFloats(verticess);
+
         VkDeviceSize bufferSize = sizeof(vertices[0]) * vertices.size();
+
+        vertexBuffers.push_back(VkBuffer());
+        vertexBufferMemorys.push_back(VkDeviceMemory());
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
+
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
-        void* data;
-        vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
-        memcpy(data, vertices.data(), (size_t)bufferSize);
+        {
+            void* data;
+            vkMapMemory(device, stagingBufferMemory, 0, bufferSize, 0, &data);
+            memcpy(data, vertices.data(), (size_t)bufferSize);
+        }
+
         vkUnmapMemory(device, stagingBufferMemory);
 
-        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffer, vertexBufferMemory);
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_VERTEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, vertexBuffers[vertexBuffers.size() - 1], vertexBufferMemorys[vertexBufferMemorys.size() - 1]);
+        copyBuffer(stagingBuffer, vertexBuffers[vertexBuffers.size() - 1], bufferSize);
 
-        copyBuffer(stagingBuffer, vertexBuffer, bufferSize);
 
         vkDestroyBuffer(device, stagingBuffer, nullptr);
         vkFreeMemory(device, stagingBufferMemory, nullptr);
     }
-    void Vulkan::createIndexBuffer() {
+    void Vulkan::createIndexBuffer(std::vector<uint16_t> indices) {
+        
         VkDeviceSize bufferSize = sizeof(indices[0]) * indices.size();
+
+        indexBuffers.push_back(VkBuffer());
+        indexBufferMemorys.push_back(VkDeviceMemory());
 
         VkBuffer stagingBuffer;
         VkDeviceMemory stagingBufferMemory;
+
         createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
 
         void* data;
@@ -1254,9 +1286,9 @@ namespace RED::Vulkan
         memcpy(data, indices.data(), (size_t)bufferSize);
         vkUnmapMemory(device, stagingBufferMemory);
 
-        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffer, indexBufferMemory);
+        createBuffer(bufferSize, VK_BUFFER_USAGE_TRANSFER_DST_BIT | VK_BUFFER_USAGE_INDEX_BUFFER_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, indexBuffers[indexBuffers.size() - 1], indexBufferMemorys[indexBufferMemorys.size() - 1]);
 
-        copyBuffer(stagingBuffer, indexBuffer, bufferSize);
+        copyBuffer(stagingBuffer, indexBuffers[indexBuffers.size() - 1], bufferSize);
 
         vkDestroyBuffer(device, stagingBuffer, nullptr);
         vkFreeMemory(device, stagingBufferMemory, nullptr);
@@ -1483,9 +1515,34 @@ namespace RED::Vulkan
         return VK_FALSE;
     }
 
+    Vulkan* VulkanRenderer::vulkan = nullptr;
+
+    std::vector<uint16_t> convertIndices(const std::vector<GLuint>& indices) {
+        std::vector<uint16_t> converted;
+        converted.reserve(indices.size());  // Reserve space for efficiency
+
+        for (GLuint index : indices) {
+            if (index > std::numeric_limits<uint16_t>::max()) {
+                // Handle out-of-range indices if needed
+                // For example, you could throw an exception or clamp the value
+                converted.push_back(std::numeric_limits<uint16_t>::max());
+            }
+            else {
+                converted.push_back(static_cast<uint16_t>(index));
+            }
+        }
+
+        return converted;
+    }
+
     VulkanRenderer::VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices, GLFWwindow* window)
     {
-        vulkan = new Vulkan(window);
+        if (vulkan == nullptr)
+            vulkan = new Vulkan(window);
+
+        vulkan->createVertexBuffer(vertices);
+        vulkan->createIndexBuffer(convertIndices(indices));
+
     }
     
     VulkanRenderer::~VulkanRenderer()
@@ -1495,6 +1552,7 @@ namespace RED::Vulkan
 
     void VulkanRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model)
     {
+        vulkan->updateUniformBuffer(vulkan->getCurrentFrame());
         vulkan->render();
     }
 }

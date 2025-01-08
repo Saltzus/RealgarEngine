@@ -89,6 +89,13 @@ namespace RED::Vulkan
         void renderEnd();
         void render();
 
+        void createVertexBuffer(std::vector<GLfloat>& vertices);
+        void createIndexBuffer(std::vector<uint16_t> indices);
+        void createUniformBuffers();
+        void updateUniformBuffer(uint32_t currentImage);
+
+        uint32_t getCurrentFrame() { return currentFrame; }
+
     private:
         GLFWwindow* window;
 
@@ -125,10 +132,10 @@ namespace RED::Vulkan
         VkImageView textureImageView;
         VkSampler textureSampler;
 
-        VkBuffer vertexBuffer;
-        VkDeviceMemory vertexBufferMemory;
-        VkBuffer indexBuffer;
-        VkDeviceMemory indexBufferMemory;
+        std::vector<VkBuffer> vertexBuffers;
+        std::vector<VkDeviceMemory> vertexBufferMemorys;
+        std::vector<VkBuffer> indexBuffers;
+        std::vector<VkDeviceMemory> indexBufferMemorys;
 
         std::vector<VkBuffer> uniformBuffers;
         std::vector<VkDeviceMemory> uniformBuffersMemory;
@@ -179,10 +186,7 @@ namespace RED::Vulkan
         void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
         void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
 
-        void createVertexBuffer();
-        void createIndexBuffer();
-        void createUniformBuffers();
-        void updateUniformBuffer(uint32_t currentImage);
+
 
         void createDescriptorPool();
         void createDescriptorSets();
@@ -230,7 +234,7 @@ namespace RED::Vulkan
         void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw
 
     private:
-        Vulkan* vulkan;
+        static Vulkan* vulkan;
 
         GLuint VAO;
 	    GLuint VBO;

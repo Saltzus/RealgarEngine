@@ -9,6 +9,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <glm/glm.hpp>
+#include <glad/glad.h>
 
 
 namespace RED::Vulkan
@@ -50,4 +51,16 @@ namespace RED::Vulkan
             return attributeDescriptions;
         }
     };
+
+    static std::vector<Vertex> fromGLFloats(const std::vector<GLfloat>& vertexData) {
+        std::vector<Vertex> vertices;
+        for (size_t i = 0; i < vertexData.size(); i += 8) {
+            Vertex vertex;
+            vertex.pos = glm::vec3(vertexData[i], vertexData[i + 1], vertexData[i + 2]);
+            vertex.color = glm::vec3(vertexData[i + 3], vertexData[i + 4], vertexData[i + 5]);
+            vertex.texCoord = glm::vec2(vertexData[i + 6], vertexData[i + 7]);
+            vertices.push_back(vertex);
+        }
+        return vertices;
+    }
 }
