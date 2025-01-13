@@ -72,6 +72,8 @@ namespace RED::Opengl
 
     void OpenglTexture::Bind()
     {
+        // Bind the texture to the specified texture unit
+        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture);
     }
 
@@ -83,6 +85,8 @@ namespace RED::Opengl
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
 
+        glGenBuffers(1, &UBO);
+
         glBindVertexArray(VAO);
 
         // adds vertices and indices inside buffers
@@ -92,13 +96,22 @@ namespace RED::Opengl
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
 
+        // adds uniform buffer
+        glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 3, NULL, GL_STATIC_DRAW);
+        glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 3 * sizeof(glm::mat4));
+
         // position attribute
-        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)0);
+        glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
         glEnableVertexAttribArray(0);
 
+        // vertex color
+        glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(3 * sizeof(float)));
+        glEnableVertexAttribArray(1); 
+
         // Texture position attribute
-        glVertexAttribPointer(1, 2, GL_FLOAT, GL_FALSE, 5 * sizeof(float), (void*)(3 * sizeof(float)));
-        glEnableVertexAttribArray(1);
+        glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
+        glEnableVertexAttribArray(2);
     }
     
     OpenglRenderer::~OpenglRenderer()
@@ -110,11 +123,19 @@ namespace RED::Opengl
 
     void OpenglRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model) 
     {
-        int modelLocation = glGetUniformLocation(shader->ID(), "model");
-        glUniformMatrix4fv(modelLocation, 1, GL_FALSE, glm::value_ptr(model));
+        glm::mat4 matrices[3];
+        matrices[0] = model;
+        matrices[1] = camera->view;
+        matrices[2] = camera->projection;
 
-        int viewLocation = glGetUniformLocation(shader->ID(), "camera");
-        glUniformMatrix4fv(viewLocation, 1, GL_FALSE, glm::value_ptr(camera->cameraMatrix));
+        GLuint blockIndex = glGetUniformBlockIndex(shader->ID(), "UniformBufferObject");
+        glUniformBlockBinding(shader->ID(), blockIndex, 0);
+
+        // Update the UBO with matrix data
+        glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4) * 3, &matrices[0]);
+
+        glUniform1i(glGetUniformLocation(shader->ID(), "texSampler"), 0);
 
         // Draws the pixel
         glBindVertexArray(VAO);

@@ -40,6 +40,6 @@ namespace RED
 
     void Texture::Bind()
     {
-        this->Bind();
+        impl->Bind();
     }
 }

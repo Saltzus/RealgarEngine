@@ -15,30 +15,36 @@ const unsigned int SCR_HEIGHT = 600;
 int main(int argc, char** argv)
 {
     RED::Window window("RED - Test", 800, 600);
-    RED::Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.f,0.f,-4.f));
+    RED::Camera camera(SCR_WIDTH, SCR_HEIGHT, glm::vec3(0.f,0.f,-8.f));
 
     //RED::Shader shader("Game/Resources/Shaders/default.vert", "Game/Resources/Shaders/default.frag");
-    RED::Shader shader("Resources/Shaders/default.vert", "Resources/Shaders/default.frag");
+    RED::Shader shader("Resources/Shaders/defaultVulkan.vert", "Resources/Shaders/defaultVulkan.frag");
 
     RED::Audio audio;
     audio.PlayAudio("Game/Resources/Audio/BIG-Trouble.ogg");
 
     int sus = 0;
-    RED::Sprite sprite1(window);
+    RED::Sprite sprite(window);
 
     while (!glfwWindowShouldClose(window))
     {
+        static auto startTime = std::chrono::high_resolution_clock::now();
+
+        auto currentTime = std::chrono::high_resolution_clock::now();
+        float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
+
         sus ++;
+        camera.updateMatrix(45.0f, 0.01f, 10000.0f, true);
 
 
-        camera.Inputs(window, 1);
-        camera.updateMatrix(45.0f, 0.1f, 10000.0f, false);
+        sprite.scale = glm::vec3(1, 1, 1);
+        sprite.rotation.y = time * 180.0f;
+        sprite.rotation.x = 45;
+        sprite.translation = { 2, 0, -1 };
 
-        sprite1.Render(&shader, &camera);
-        sprite1.scale = glm::vec3(4,4,4);
-        sprite1.rotation.y += 0.1f;
-        sprite1.scale = glm::vec3(4,4 + glm::sin(sus/4) / 4,4);
-        sprite1.translation.y = glm::sin(sus/4) / 3;
+        sprite.Render(&shader, &camera);
+
+
 
 
         RED::Input::processInput(window);

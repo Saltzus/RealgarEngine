@@ -45,6 +45,8 @@ namespace RED::Opengl
         GLuint VAO;
 	    GLuint VBO;
     	GLuint EBO;
+
+        GLuint UBO;
     };
 }
     

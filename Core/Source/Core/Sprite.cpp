@@ -5,18 +5,21 @@ namespace RED
     Sprite::Sprite(GLFWwindow* window)
     {
         //texture = Texture("Game/Resources/Textures/PixelText.png");
-        texture = Texture("Resources/Textures/PixelText.png");
+        texture = new Texture("Resources/Textures/PixelText.png");
+
         this->renderer = new Renderer(indices, vertices, window);
     }
     
     Sprite::~Sprite()
     {
         delete this->renderer;
+        delete this->texture;
     }
 
     void Sprite::Render(Shader* shader, Camera* camera, glm::mat4 model)
     {
         shader->Activate();  
+        texture->Bind();
 
         model = glm::translate(model, translation);
 

@@ -13,7 +13,7 @@ namespace RED
 
         void Render(Shader* shader, Camera* camera, glm::mat4 model = glm::mat4(1.0f));
 
-		Texture texture;  
+		Texture* texture = nullptr;  
 
         glm::mat4 model = glm::mat4(1.0f);
 	    glm::vec3 translation = glm::vec3(0.f, 0.f, 0.f);

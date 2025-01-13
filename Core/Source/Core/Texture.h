@@ -10,10 +10,9 @@ namespace RED
     private:
         TextureImpl* impl = nullptr;
     public:
-        Texture() {};
         Texture(const char* filePath);
         Texture(unsigned char* data, int format, int width, int height);
         ~Texture();
-        void Bind();
+        void virtual Bind();
     };
 } 
