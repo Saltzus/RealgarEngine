@@ -25,6 +25,7 @@ int main(int argc, char** argv)
 
     int sus = 0;
     RED::Sprite sprite(window);
+    RED::Sprite sprite1(window);
 
     while (!glfwWindowShouldClose(window))
     {
@@ -44,6 +45,12 @@ int main(int argc, char** argv)
 
         sprite.Render(&shader, &camera);
 
+        sprite1.scale = glm::vec3(1, 1, 1);
+        sprite1.rotation.y = time * 180.0f;
+        sprite1.rotation.x = 45;
+        sprite1.translation = { -2, 0, -1 };
+
+        sprite1.Render(&shader, &camera);
 
 
 

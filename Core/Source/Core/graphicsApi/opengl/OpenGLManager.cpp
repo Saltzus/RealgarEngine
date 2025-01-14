@@ -77,7 +77,7 @@ namespace RED::Opengl
         glBindTexture(GL_TEXTURE_2D, texture);
     }
 
-
+    GLuint OpenglRenderer::UBO = 0;
 
     OpenglRenderer::OpenglRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices)
     {
@@ -85,7 +85,13 @@ namespace RED::Opengl
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
 
-        glGenBuffers(1, &UBO);
+        if (UBO == 0)
+        {
+            glGenBuffers(1, &UBO);
+            glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+            glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 3, NULL, GL_STATIC_DRAW);
+            glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 3 * sizeof(glm::mat4));
+        }
 
         glBindVertexArray(VAO);
 
@@ -95,11 +101,6 @@ namespace RED::Opengl
 
         glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, EBO);
         glBufferData(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLuint), indices.data(), GL_STATIC_DRAW);
-
-        // adds uniform buffer
-        glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 3, NULL, GL_STATIC_DRAW);
-        glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 3 * sizeof(glm::mat4));
 
         // position attribute
         glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)0);
