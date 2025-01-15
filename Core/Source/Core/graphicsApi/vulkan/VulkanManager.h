@@ -52,10 +52,15 @@ namespace RED::Vulkan
         void renderEnd();
         void render();
 
+        std::vector<UniformBufferObject> ubo;
+
         void createVertexBuffer(std::vector<GLfloat>& vertices);
         void createIndexBuffer(std::vector<uint16_t> indices);
         void createUniformBuffers();
         void updateUniformBuffer(uint32_t currentImage, UniformBufferObject ubo);
+
+        void createDescriptorPool();
+        void createDescriptorSets();
 
         uint32_t getCurrentFrame() { return currentFrame; }
 
@@ -151,8 +156,7 @@ namespace RED::Vulkan
 
 
 
-        void createDescriptorPool();
-        void createDescriptorSets();
+
 
         VkCommandBuffer beginSingleTimeCommands();
         void endSingleTimeCommands(VkCommandBuffer commandBuffer);
