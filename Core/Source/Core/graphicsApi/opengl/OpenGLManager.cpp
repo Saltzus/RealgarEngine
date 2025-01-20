@@ -65,33 +65,35 @@ namespace RED::Opengl
         glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
         glGenerateMipmap(GL_TEXTURE_2D);
     }
-
     OpenglTexture::~OpenglTexture()
     {
     }
-
     void OpenglTexture::Bind()
     {
         // Bind the texture to the specified texture unit
         glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture);
     }
+    
 
-    GLuint OpenglRenderer::UBO = 0;
+    GLuint Opengl::UBO = 0;
+    Opengl::Opengl(GLFWwindow* window)
+    {
+        glGenBuffers(1, &UBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 3, NULL, GL_STATIC_DRAW);
+        glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 3 * sizeof(glm::mat4));
+    }
+    Opengl::~Opengl()
+    {
+        glDeleteBuffers(1, &UBO);
+    }
 
-    OpenglRenderer::OpenglRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices)
+    OpenglRenderer::OpenglRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices) : opengl(opengl)
     {
         glGenVertexArrays(1, &VAO);
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
-
-        if (UBO == 0)
-        {
-            glGenBuffers(1, &UBO);
-            glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-            glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 3, NULL, GL_STATIC_DRAW);
-            glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 3 * sizeof(glm::mat4));
-        }
 
         glBindVertexArray(VAO);
 
@@ -114,7 +116,6 @@ namespace RED::Opengl
         glVertexAttribPointer(2, 2, GL_FLOAT, GL_FALSE, 8 * sizeof(float), (void*)(6 * sizeof(float)));
         glEnableVertexAttribArray(2);
     }
-    
     OpenglRenderer::~OpenglRenderer()
     {
         glDeleteVertexArrays(1, &VAO);
@@ -133,7 +134,7 @@ namespace RED::Opengl
         glUniformBlockBinding(shader->ID(), blockIndex, 0);
 
         // Update the UBO with matrix data
-        glBindBuffer(GL_UNIFORM_BUFFER, UBO);
+        glBindBuffer(GL_UNIFORM_BUFFER, Opengl::UBO);
         glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4) * 3, &matrices[0]);
 
         glUniform1i(glGetUniformLocation(shader->ID(), "texSampler"), 0);

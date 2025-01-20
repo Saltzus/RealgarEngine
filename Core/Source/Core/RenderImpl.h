@@ -16,6 +16,12 @@ namespace RED
         virtual void Render(Shader* shader, Camera* camera, glm::mat4 model) = 0;
     };
 
+    class ApiImpl
+    {
+    public:
+        virtual ~ApiImpl() {}
+    };
+
     class TextureImpl
     {
     public:

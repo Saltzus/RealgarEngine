@@ -7,7 +7,7 @@ namespace RED
         //texture = Texture("Game/Resources/Textures/PixelText.png");
         texture = new Texture("Resources/Textures/PixelText.png");
 
-        this->renderer = new Renderer(indices, vertices, window);
+        this->renderer = new Renderer(indices, vertices);
     }
     
     Sprite::~Sprite()

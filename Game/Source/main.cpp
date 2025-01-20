@@ -24,6 +24,8 @@ int main(int argc, char** argv)
     audio.PlayAudio("Game/Resources/Audio/BIG-Trouble.ogg");
 
     int sus = 0;
+
+    RED::Renderer::InitApi(window);
     RED::Sprite sprite(window);
     RED::Sprite sprite1(window);
 

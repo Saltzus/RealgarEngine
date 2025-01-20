@@ -3,6 +3,7 @@
 #define GLM_ENABLE_EXPERIMENTAL
 
 #include <glad/glad.h>
+#include <GLFW/glfw3.h>
 #include <vector>
 #include <stb_image/stb_image.h>
 
@@ -33,20 +34,29 @@ namespace RED::Opengl
         GLuint texture;
     };
 
+    class Opengl : public ApiImpl
+    {
+    public:
+        Opengl(GLFWwindow* window);
+        ~Opengl();
+
+        static GLuint UBO;
+    private:
+    };
+
     class OpenglRenderer : public RendererImpl
     {
     public:
         OpenglRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices);
         ~OpenglRenderer();    
 
-        void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw
-
+        virtual void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw
     private:
+        Opengl& opengl;
+
         GLuint VAO;
 	    GLuint VBO;
     	GLuint EBO;
-
-        static GLuint UBO;
     };
 }
     

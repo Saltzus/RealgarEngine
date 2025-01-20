@@ -43,7 +43,7 @@ namespace RED::Vulkan
         GLuint texture;
     };
 
-    class Vulkan
+    class Vulkan : public ApiImpl
     {
     public:
         Vulkan(GLFWwindow* GLFW_Window);
@@ -51,6 +51,8 @@ namespace RED::Vulkan
 
         void renderEnd();
         void render();
+
+        static Vulkan* vulkan;
 
         std::vector<UniformBufferObject> ubo;
 
@@ -195,14 +197,11 @@ namespace RED::Vulkan
     class VulkanRenderer : public RendererImpl
     {
     public:
-        VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices, GLFWwindow* window);
+        VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices);
         ~VulkanRenderer();
 
-        void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw
-
+        virtual void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw
     private:
-        static Vulkan* vulkan;
-
         GLuint VAO;
 	    GLuint VBO;
     	GLuint EBO;

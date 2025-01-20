@@ -32,9 +32,11 @@ namespace RED::Vulkan
     };
     const int MAX_FRAMES_IN_FLIGHT = 2;
 
-
+    Vulkan* Vulkan::vulkan = nullptr;
     Vulkan::Vulkan(GLFWwindow* window)
     {
+        Vulkan::vulkan = this;
+
         this->window = window;
 
         createInstance();
@@ -114,6 +116,7 @@ namespace RED::Vulkan
         vkDestroySurfaceKHR(instance, surface, nullptr);
         vkDestroyInstance(instance, nullptr);
 
+        delete vulkan;
     }
 
     void Vulkan::cleanupSwapChain() {
@@ -1339,8 +1342,6 @@ namespace RED::Vulkan
         return VK_FALSE;
     }
 
-    Vulkan* VulkanRenderer::vulkan = nullptr;
-
     std::vector<uint16_t> convertIndices(const std::vector<GLuint>& indices) {
         std::vector<uint16_t> converted;
         converted.reserve(indices.size());  // Reserve space for efficiency
@@ -1359,10 +1360,9 @@ namespace RED::Vulkan
         return converted;
     }
 
-    VulkanRenderer::VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices, GLFWwindow* window)
-    {
-        if (vulkan == nullptr)
-            vulkan = new Vulkan(window);
+    VulkanRenderer::VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices)
+    {   
+        Vulkan* vulkan = Vulkan::vulkan;
 
         vulkan->createVertexBuffer(vertices);
         vulkan->createIndexBuffer(convertIndices(indices));
@@ -1373,13 +1373,14 @@ namespace RED::Vulkan
     
     VulkanRenderer::~VulkanRenderer()
     {
-        delete vulkan;
     }
 
     int i = 0;
 
     void VulkanRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model)
     {
+        Vulkan* vulkan = Vulkan::vulkan;
+
         UniformBufferObject ubo;
 
         ubo.model = model;
