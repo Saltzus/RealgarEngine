@@ -21,6 +21,9 @@ namespace RED::Vulkan
         void Delete();
         unsigned int& Id() { return ID; };
 
+        std::vector<char> vertShaderCode;
+        std::vector<char> fragShaderCode;
+
     private:
 
 

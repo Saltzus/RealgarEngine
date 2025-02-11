@@ -5,8 +5,10 @@
 
 namespace RED
 {
-    Shader::Shader(const char* vertexFile, const char* fragmentFile)
+    Shader::Shader(const char* vertexFile, const char* fragmentFile) 
     {
+        shader = { vertexFile, fragmentFile };
+
         switch (Renderer::GetGraphicsApi())
         {
         case GraphicsApis::OpenGL:

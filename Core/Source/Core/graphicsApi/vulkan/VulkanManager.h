@@ -7,6 +7,7 @@
 #include <vulkan/vulkan.hpp>
 #include <stb_image/stb_image.h>
 #include <vector>
+#include <map>
 #include <optional>
 #include <set>
 #include <chrono>
@@ -65,12 +66,15 @@ namespace RED::Vulkan
         VkImageView textureImageView;
         VkSampler textureSampler;
 
+        std::map<std::pair<const char*, const char*>,VkPipeline> graphicsPipelines;
+
         VkDescriptorPool descriptorPool;
         std::vector<VkDescriptorSet> descriptorSets;
 
         void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
         VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+        void createGraphicsPipeline(const char* vertexFile, const char* fragmentFile);
 
 
         void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
@@ -109,6 +113,7 @@ namespace RED::Vulkan
         VkDescriptorSetLayout descriptorSetLayout;
         VkPipelineLayout pipelineLayout;
         VkPipeline graphicsPipeline;
+
 
         VkCommandPool commandPool;
 
@@ -175,7 +180,6 @@ namespace RED::Vulkan
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
         void createDescriptorSetLayout();
-        void createGraphicsPipeline();
         VkShaderModule createShaderModule(const std::vector<char>& code);
 
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
@@ -205,9 +209,13 @@ namespace RED::Vulkan
     {
     public:
         unsigned int id;
+        int PipelineID = 0;
+
         VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices);
         ~VulkanRenderer();
 
+        std::pair<const char*, const char*>* shader;
+        
         std::pair<VkBuffer, VkDeviceMemory> vertexBuffer_vertexBufferMemory;
         std::pair<VkBuffer, VkDeviceMemory> indexBuffer_indexBufferMemory;
         std::pair <std::vector<VkBuffer>, std::vector<void*>> uniformBuffers_uniformBuffersMapped;

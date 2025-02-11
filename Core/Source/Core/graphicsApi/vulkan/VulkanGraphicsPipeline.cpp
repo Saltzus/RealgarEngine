@@ -37,8 +37,14 @@ namespace RED::Vulkan
 	// Constructor that build the Shader Program from 2 different shaders
 	VulkanGraphicsPipeline::VulkanGraphicsPipeline(const char* vertexFile, const char* fragmentFile, VkDevice& device, VkDescriptorSetLayout& descriptorSetLayout, VkRenderPass& renderPass, VkPipelineLayout& pipelineLayout, VkPipeline& graphicsPipeline)
 	{
-        auto vertShaderCode = readFile("Resources/Shaders/defaultVulkanvert.spv");
-        auto fragShaderCode = readFile("Resources/Shaders/defaultVulkanfrag.spv");
+        std::string vulkanVertexFile = vertexFile;
+        vulkanVertexFile += ".spv";
+
+        std::string vulkanFragmentFile = fragmentFile;
+        vulkanFragmentFile += ".spv";
+
+        vertShaderCode = readFile(vulkanVertexFile);
+        fragShaderCode = readFile(vulkanFragmentFile);
 
         VkShaderModule vertShaderModule = createShaderModule(device, vertShaderCode);
         VkShaderModule fragShaderModule = createShaderModule(device, fragShaderCode);
