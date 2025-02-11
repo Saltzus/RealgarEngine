@@ -42,4 +42,10 @@ namespace RED
     {
         impl->Bind();
     }
+
+    Texture* Texture::GetDefaultTexture()
+    {
+        static Texture* DEFAULT_TEXTURE = new Texture("Resources/Textures/PixelText.png");
+        return DEFAULT_TEXTURE;
+    }
 }

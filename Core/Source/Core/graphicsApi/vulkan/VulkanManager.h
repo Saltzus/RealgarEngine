@@ -26,6 +26,9 @@
 
 namespace RED::Vulkan
 {
+
+    class VulkanRenderer;
+
     struct UniformBufferObject {
         alignas(16) glm::mat4 model;
         alignas(16) glm::mat4 view;
@@ -40,7 +43,9 @@ namespace RED::Vulkan
         ~VulkanTexture();
         void Bind() override;
     private:
-        GLuint texture;
+        VkImage textureImage;
+        VkDeviceMemory textureImageMemory;
+        VkImageView textureImageViewTex;
     };
 
     class Vulkan : public ApiImpl
@@ -50,19 +55,34 @@ namespace RED::Vulkan
         ~Vulkan();
 
         void renderEnd();
-        void render();
+        void render() override;
 
         static Vulkan* vulkan;
 
         std::vector<UniformBufferObject> ubo;
 
-        void createVertexBuffer(std::vector<GLfloat>& vertices);
-        void createIndexBuffer(std::vector<uint16_t> indices);
-        void createUniformBuffers();
-        void updateUniformBuffer(uint32_t currentImage, UniformBufferObject ubo);
+        VkDevice device;
+        VkImageView textureImageView;
+        VkSampler textureSampler;
+
+        VkDescriptorPool descriptorPool;
+        std::vector<VkDescriptorSet> descriptorSets;
+
+        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
+        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
+        VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
+
+
+        void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
+        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
+
+        std::pair<VkBuffer, VkDeviceMemory> createVertexBuffer(std::vector<GLfloat>& vertices);
+        std::pair<VkBuffer, VkDeviceMemory> createIndexBuffer(std::vector<uint16_t> indices);
+        std::pair<std::vector<VkBuffer>, std::vector<void*>> createUniformBuffers();
+        void updateUniformBuffer(uint32_t currentImage, VulkanRenderer* object);
 
         void createDescriptorPool();
-        void createDescriptorSets();
+        std::vector<VkDescriptorSet> createDescriptorSets();
 
         uint32_t getCurrentFrame() { return currentFrame; }
 
@@ -74,7 +94,6 @@ namespace RED::Vulkan
         VkSurfaceKHR surface;
 
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
-        VkDevice device;
 
         VkQueue graphicsQueue;
         VkQueue presentQueue;
@@ -99,20 +118,17 @@ namespace RED::Vulkan
 
         VkImage textureImage;
         VkDeviceMemory textureImageMemory;
-        VkImageView textureImageView;
-        VkSampler textureSampler;
 
-        std::vector<VkBuffer> vertexBuffers;
-        std::vector<VkDeviceMemory> vertexBufferMemorys;
-        std::vector<VkBuffer> indexBuffers;
-        std::vector<VkDeviceMemory> indexBufferMemorys;
+        VkBuffer vertexBuffer;
+        VkDeviceMemory vertexBufferMemory;
+        VkBuffer indexBuffer;
+        VkDeviceMemory indexBufferMemory;
 
         std::vector<VkBuffer> uniformBuffers;
         std::vector<VkDeviceMemory> uniformBuffersMemory;
         std::vector<void*> uniformBuffersMapped;
 
-        VkDescriptorPool descriptorPool;
-        std::vector<VkDescriptorSet> descriptorSets;
+
 
         std::vector<VkCommandBuffer> commandBuffers;
 
@@ -147,23 +163,14 @@ namespace RED::Vulkan
         void createImageViews();
         void createFramebuffers();
 
-        void createTextureImage();
+        //void createTextureImage();
         void createTextureImageView();
         void createTextureSampler();
-        VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-
-        void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
-        void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
-        void copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height);
-
-
-
 
 
         VkCommandBuffer beginSingleTimeCommands();
         void endSingleTimeCommands(VkCommandBuffer commandBuffer);
 
-        void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
 
@@ -197,11 +204,21 @@ namespace RED::Vulkan
     class VulkanRenderer : public RendererImpl
     {
     public:
+        unsigned int id;
         VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices);
         ~VulkanRenderer();
 
+        std::pair<VkBuffer, VkDeviceMemory> vertexBuffer_vertexBufferMemory;
+        std::pair<VkBuffer, VkDeviceMemory> indexBuffer_indexBufferMemory;
+        std::pair <std::vector<VkBuffer>, std::vector<void*>> uniformBuffers_uniformBuffersMapped;
+
+        std::vector<VkDescriptorSet> descriptorSets;
+        UniformBufferObject ubo;
+
         virtual void Render(Shader* shader, Camera* camera, glm::mat4 model) override; // Declare draw
     private:
+        void* lastTexture;
+
         GLuint VAO;
 	    GLuint VBO;
     	GLuint EBO;

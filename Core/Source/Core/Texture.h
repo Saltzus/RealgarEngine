@@ -14,5 +14,9 @@ namespace RED
         Texture(unsigned char* data, int format, int width, int height);
         ~Texture();
         void virtual Bind();
+
+        static Texture* GetDefaultTexture();
     };
+
+    
 } 

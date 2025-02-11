@@ -71,14 +71,16 @@ namespace RED::Opengl
     void OpenglTexture::Bind()
     {
         // Bind the texture to the specified texture unit
-        glActiveTexture(GL_TEXTURE1);
         glBindTexture(GL_TEXTURE_2D, texture);
     }
     
 
     GLuint Opengl::UBO = 0;
+
     Opengl::Opengl(GLFWwindow* window)
     {
+        
+
         glGenBuffers(1, &UBO);
         glBindBuffer(GL_UNIFORM_BUFFER, UBO);
         glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 3, NULL, GL_STATIC_DRAW);
@@ -87,11 +89,13 @@ namespace RED::Opengl
     Opengl::~Opengl()
     {
         glDeleteBuffers(1, &UBO);
+        
     }
-
+    int d = 0;
     OpenglRenderer::OpenglRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices) : opengl(opengl)
     {
         glGenVertexArrays(1, &VAO);
+        
         glGenBuffers(1, &VBO);
         glGenBuffers(1, &EBO);
 
@@ -123,6 +127,8 @@ namespace RED::Opengl
         glDeleteBuffers(1, &EBO);
     }
 
+    int i = 0;
+
     void OpenglRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model) 
     {
         glm::mat4 matrices[3];
@@ -141,6 +147,7 @@ namespace RED::Opengl
 
         // Draws the pixel
         glBindVertexArray(VAO);
-        glDrawElements(GL_TRIANGLES, 6, GL_UNSIGNED_INT, 0);
+
+        glDrawElements(GL_TRIANGLES, 6 * 2, GL_UNSIGNED_INT, 0);
     }
 }

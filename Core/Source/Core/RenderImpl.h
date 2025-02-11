@@ -20,6 +20,7 @@ namespace RED
     {
     public:
         virtual ~ApiImpl() {}
+        virtual void render() {}
     };
 
     class TextureImpl

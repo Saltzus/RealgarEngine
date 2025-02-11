@@ -2,11 +2,11 @@
 
 namespace RED
 {
+    
+
     Sprite::Sprite(GLFWwindow* window)
     {
-        //texture = Texture("Game/Resources/Textures/PixelText.png");
-        texture = new Texture("Resources/Textures/PixelText.png");
-
+        texture = Texture::GetDefaultTexture();
         this->renderer = new Renderer(indices, vertices);
     }
     

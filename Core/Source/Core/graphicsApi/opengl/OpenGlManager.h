@@ -41,6 +41,8 @@ namespace RED::Opengl
         ~Opengl();
 
         static GLuint UBO;
+
+        static std::vector<std::pair<GLuint, GLuint>> vbos_ebos;
     private:
     };
 

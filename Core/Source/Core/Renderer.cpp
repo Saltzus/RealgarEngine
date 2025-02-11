@@ -46,4 +46,10 @@ namespace RED
             break;
         }
     }
+
+    void Renderer::RenderGraphics()
+    {
+        if (graphicApi == GraphicsApis::Vulkan)
+            Api->render();
+    }
 }
