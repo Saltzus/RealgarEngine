@@ -89,7 +89,7 @@ namespace RED::Vulkan
     }
 
 #ifdef DEBUG
-    const bool enableValidationLayers = false;
+    const bool enableValidationLayers = true;
 #else
     const bool enableValidationLayers = false;
 #endif
@@ -117,7 +117,7 @@ namespace RED::Vulkan
         createImageViews();
         createRenderPass();
         createDescriptorSetLayout();
-        createGraphicsPipeline();
+        //createGraphicsPipeline("Resources/Shaders/default.vert.spv", "Resources/Shaders/default.frag.spv");
         createCommandPool();
         createDepthResources();
         createFramebuffers();
@@ -484,7 +484,8 @@ namespace RED::Vulkan
             return actualExtent;
         }
     }
-    Vulkan::SwapChainSupportDetails Vulkan::querySwapChainSupport(VkPhysicalDevice device) {
+    Vulkan::SwapChainSupportDetails Vulkan::querySwapChainSupport(VkPhysicalDevice device) 
+    {
         SwapChainSupportDetails details;
 
         vkGetPhysicalDeviceSurfaceCapabilitiesKHR(device, surface, &details.capabilities);
@@ -492,14 +493,16 @@ namespace RED::Vulkan
         uint32_t formatCount;
         vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, nullptr);
 
-        if (formatCount != 0) {
+        if (formatCount != 0) 
+        {
             details.formats.resize(formatCount);
             vkGetPhysicalDeviceSurfaceFormatsKHR(device, surface, &formatCount, details.formats.data());
         }
         uint32_t presentModeCount;
         vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, nullptr);
 
-        if (presentModeCount != 0) {
+        if (presentModeCount != 0) 
+        {
             details.presentModes.resize(presentModeCount);
             vkGetPhysicalDeviceSurfacePresentModesKHR(device, surface, &presentModeCount, details.presentModes.data());
         }
@@ -507,10 +510,12 @@ namespace RED::Vulkan
         return details;
     }
 
-    void Vulkan::createImageViews() {
+    void Vulkan::createImageViews() 
+    {
         swapChainImageViews.resize(swapChainImages.size());
 
-        for (size_t i = 0; i < swapChainImages.size(); i++) {
+        for (size_t i = 0; i < swapChainImages.size(); i++) 
+        {
             VkImageViewCreateInfo createInfo{};
             createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
             createInfo.image = swapChainImages[i];
@@ -526,12 +531,14 @@ namespace RED::Vulkan
             createInfo.subresourceRange.baseArrayLayer = 0;
             createInfo.subresourceRange.layerCount = 1;
 
-            if (vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) {
+            if (vkCreateImageView(device, &createInfo, nullptr, &swapChainImageViews[i]) != VK_SUCCESS) 
+            {
                 throw std::runtime_error("failed to create image views!");
             }
         }
     }
-    void Vulkan::createDescriptorSetLayout() {
+    void Vulkan::createDescriptorSetLayout() 
+    {
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
         uboLayoutBinding.binding = 0;
         uboLayoutBinding.descriptorCount = 1;
@@ -552,11 +559,13 @@ namespace RED::Vulkan
         layoutInfo.bindingCount = static_cast<uint32_t>(bindings.size());
         layoutInfo.pBindings = bindings.data();
 
-        if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) {
+        if (vkCreateDescriptorSetLayout(device, &layoutInfo, nullptr, &descriptorSetLayout) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to create descriptor set layout!");
         }
     }
-    std::vector<VkDescriptorSet> Vulkan::createDescriptorSets() {
+    std::vector<VkDescriptorSet> Vulkan::createDescriptorSets() 
+    {
         std::vector<VkDescriptorSetLayout> layouts(MAX_FRAMES_IN_FLIGHT, descriptorSetLayout);
         VkDescriptorSetAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_SET_ALLOCATE_INFO;
@@ -565,11 +574,13 @@ namespace RED::Vulkan
         allocInfo.pSetLayouts = layouts.data();
 
         descriptorSets.resize(MAX_FRAMES_IN_FLIGHT);
-        if (vkAllocateDescriptorSets(device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) {
+        if (vkAllocateDescriptorSets(device, &allocInfo, descriptorSets.data()) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to allocate descriptor sets!");
         }
 
-        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) {
+        for (size_t i = 0; i < MAX_FRAMES_IN_FLIGHT; i++) 
+        {
             VkDescriptorBufferInfo bufferInfo{};
             bufferInfo.buffer = uniformBuffers[i];
             bufferInfo.offset = 0;
@@ -604,41 +615,14 @@ namespace RED::Vulkan
         return descriptorSets;
     }
 
-    static std::vector<char> readFile(const std::string& filename) {
-        std::ifstream file(filename, std::ios::ate | std::ios::binary);
-
-        if (!file.is_open()) {
-            throw std::runtime_error("failed to open file!");
-        }
-
-        size_t fileSize = (size_t)file.tellg();
-        std::vector<char> buffer(fileSize);
-
-        file.seekg(0);
-        file.read(buffer.data(), fileSize);
-
-        file.close();
-
-        return buffer;
-    }
-    void Vulkan::createGraphicsPipeline() {
-        VulkanGraphicsPipeline sus(" ", " ", device, descriptorSetLayout, renderPass, pipelineLayout, graphicsPipeline);
-    }
-    VkShaderModule Vulkan::createShaderModule(const std::vector<char>& code) {
-        VkShaderModuleCreateInfo createInfo{};
-        createInfo.sType = VK_STRUCTURE_TYPE_SHADER_MODULE_CREATE_INFO;
-        createInfo.codeSize = code.size();
-        createInfo.pCode = reinterpret_cast<const uint32_t*>(code.data());
-
-        VkShaderModule shaderModule;
-        if (vkCreateShaderModule(device, &createInfo, nullptr, &shaderModule) != VK_SUCCESS) {
-            throw std::runtime_error("failed to create shader module!");
-        }
-
-        return shaderModule;
+    void Vulkan::createGraphicsPipeline(const char* vertexFile, const char* fragmentFile)
+    {
+        graphicsPipelines.insert({ {vertexFile, fragmentFile}, VkPipeline() });
+        VulkanGraphicsPipeline sus(vertexFile, fragmentFile, device, descriptorSetLayout, renderPass, pipelineLayout, graphicsPipelines[{vertexFile, fragmentFile}]);
     }
 
-    void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) {
+    void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) 
+    {
         VkCommandBufferBeginInfo beginInfo{};
         beginInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
 
@@ -662,7 +646,6 @@ namespace RED::Vulkan
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipeline);
 
         VkViewport viewport{};
         viewport.x = 0.0f;
@@ -679,8 +662,11 @@ namespace RED::Vulkan
         vkCmdSetScissor(commandBuffer, 0, 1, &scissor);
 
         VkDeviceSize offsets[] = { 0 };
+
         for (VulkanRenderer* object : objects)
         {
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipelines[{object->shader->first, object->shader->second}]);
+
             vkCmdBindVertexBuffers(commandBuffer, 0, 1, &object->vertexBuffer_vertexBufferMemory.first, offsets);
             vkCmdBindIndexBuffer(commandBuffer, object->indexBuffer_indexBufferMemory.first, 0, VK_INDEX_TYPE_UINT16);
 
@@ -712,14 +698,17 @@ namespace RED::Vulkan
         }
     }
 
-    void Vulkan::createDepthResources() {
+    void Vulkan::createDepthResources() 
+    {
         VkFormat depthFormat = findDepthFormat();
 
         createImage(swapChainExtent.width, swapChainExtent.height, depthFormat, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, depthImage, depthImageMemory);
         depthImageView = createImageView(depthImage, depthFormat, VK_IMAGE_ASPECT_DEPTH_BIT);
     }
-    VkFormat Vulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) {
-        for (VkFormat format : candidates) {
+    VkFormat Vulkan::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features) 
+    {
+        for (VkFormat format : candidates) 
+        {
             VkFormatProperties props;
             vkGetPhysicalDeviceFormatProperties(physicalDevice, format, &props);
 
@@ -733,18 +722,21 @@ namespace RED::Vulkan
 
         throw std::runtime_error("failed to find supported format!");
     }
-    VkFormat Vulkan::findDepthFormat() {
+    VkFormat Vulkan::findDepthFormat() 
+    {
         return findSupportedFormat(
             { VK_FORMAT_D32_SFLOAT, VK_FORMAT_D32_SFLOAT_S8_UINT, VK_FORMAT_D24_UNORM_S8_UINT },
             VK_IMAGE_TILING_OPTIMAL,
             VK_FORMAT_FEATURE_DEPTH_STENCIL_ATTACHMENT_BIT
         );
     }
-    bool Vulkan::hasStencilComponent(VkFormat format) {
+    bool Vulkan::hasStencilComponent(VkFormat format) 
+    {
         return format == VK_FORMAT_D32_SFLOAT_S8_UINT || format == VK_FORMAT_D24_UNORM_S8_UINT;
     }
 
-    void Vulkan::createCommandBuffers() {
+    void Vulkan::createCommandBuffers() 
+    {
         commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
 
         VkCommandBufferAllocateInfo allocInfo{};
@@ -757,7 +749,8 @@ namespace RED::Vulkan
             throw std::runtime_error("failed to allocate command buffers!");
         }
     }
-    void Vulkan::updateUniformBuffer(uint32_t currentImage, VulkanRenderer* object) {
+    void Vulkan::updateUniformBuffer(uint32_t currentImage, VulkanRenderer* object) 
+    {
         object->ubo.proj[1][1] *= -1;
         memcpy(object->uniformBuffers_uniformBuffersMapped.second[currentImage], &object->ubo, sizeof(object->ubo));
     }
@@ -947,38 +940,6 @@ namespace RED::Vulkan
         }
     }
 
-    /*void Vulkan::createTextureImage() {
-        int texWidth, texHeight, texChannels;
-
-        stbi_set_flip_vertically_on_load(true);
-
-        stbi_uc* pixels = stbi_load("Resources/Textures/PixelText.png", &texWidth, &texHeight, &texChannels, STBI_rgb_alpha);
-        VkDeviceSize imageSize = texWidth * texHeight * 4;
-
-        if (!pixels) {
-            throw std::runtime_error("failed to load texture image!");
-        }
-
-        VkBuffer stagingBuffer;
-        VkDeviceMemory stagingBufferMemory;
-        createBuffer(imageSize, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, VK_MEMORY_PROPERTY_HOST_VISIBLE_BIT | VK_MEMORY_PROPERTY_HOST_COHERENT_BIT, stagingBuffer, stagingBufferMemory);
-
-        void* data;
-        vkMapMemory(device, stagingBufferMemory, 0, imageSize, 0, &data);
-        memcpy(data, pixels, static_cast<size_t>(imageSize));
-        vkUnmapMemory(device, stagingBufferMemory);
-
-        stbi_image_free(pixels);
-
-        createImage(texWidth, texHeight, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_TILING_OPTIMAL, VK_IMAGE_USAGE_TRANSFER_DST_BIT | VK_IMAGE_USAGE_SAMPLED_BIT, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT, textureImage, textureImageMemory);
-
-        transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
-        copyBufferToImage(stagingBuffer, textureImage, static_cast<uint32_t>(texWidth), static_cast<uint32_t>(texHeight));
-        transitionImageLayout(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
-
-        vkDestroyBuffer(device, stagingBuffer, nullptr);
-        vkFreeMemory(device, stagingBufferMemory, nullptr);
-    }*/
     void Vulkan::createTextureImageView() {
         textureImageView = createImageView(textureImage, VK_FORMAT_R8G8B8A8_SRGB, VK_IMAGE_ASPECT_COLOR_BIT);
     }
@@ -1440,10 +1401,12 @@ namespace RED::Vulkan
     VulkanRenderer::~VulkanRenderer()
     {
     }
-
+    int sus = 0;
     void VulkanRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model)
     {
         Vulkan* vulkan = Vulkan::vulkan;
+
+        this->shader = &shader->shader;
 
         if (lastTexture != vulkan->textureImageView)
         {

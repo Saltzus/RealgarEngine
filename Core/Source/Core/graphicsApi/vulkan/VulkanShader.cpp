@@ -1,4 +1,5 @@
 #include "VulkanShader.h"
+#include "VulkanManager.h"
 
 namespace RED::Vulkan
 {
@@ -23,7 +24,7 @@ namespace RED::Vulkan
 	// Constructor that build the Shader Program from 2 different shaders
 	VulkanShader::VulkanShader(const char* vertexFile, const char* fragmentFile)
 	{
-
+		Vulkan::vulkan->createGraphicsPipeline(vertexFile, fragmentFile);
 	}
 
 	// Activates the Shader Program
