@@ -31,7 +31,9 @@ project "Editor"
       "../Libraries/miniaudio",
       -- freetype
       "../Libraries/freetype/freetype2/include",
-      "../Libraries/freetype/"
+      "../Libraries/freetype/",
+      -- json
+      "../Libraries/nlohmann_json"
    }
 
    links

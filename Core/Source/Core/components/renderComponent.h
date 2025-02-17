@@ -1,0 +1,42 @@
+#pragma once
+#include "component.h"
+
+namespace RED
+{
+    class Texture;
+    class GameObject;
+}
+
+namespace RED::Components
+{
+    class RenderComponent : public Component
+    {
+    public:
+        RenderComponent(GameObject* object);
+        ~RenderComponent();
+
+        Texture* texture;
+        Shader* shader = nullptr;
+
+        virtual void render(Shader* shader, Camera* camera) override;
+    private:
+        GameObject* gameObject;
+        
+        Renderer* renderer;
+
+
+        std::vector<GLfloat> vertices =
+        {
+            -0.5f, -0.5f, -0.5f,    1.0f, 0.0f, 0.0f,   1.0f, 0.0f,
+             0.5f, -0.5f, -0.5f,    0.0f, 1.0f, 0.0f,   0.0f, 0.0f,
+             0.5f,  0.5f, -0.5f,    0.0f, 0.0f, 1.0f,   0.0f, 1.0f,
+            -0.5f,  0.5f, -0.5f,    1.0f, 1.0f, 1.0f,   1.0f, 1.0f
+        };
+        //Indices for vertices order
+        std::vector<GLuint> indices =
+        {
+            0, 1, 3, // first triangle
+            1, 2, 3  // second triangle
+        };
+    };
+} 

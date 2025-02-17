@@ -22,7 +22,7 @@ namespace RED
         ShaderImpl* impl = nullptr;
     public:
 
-        std::pair<const char*, const char*> shader = { "Resources/Shaders/default.vert.spv", "Resources/Shaders/default.frag.spv" };
+        std::pair<std::string, std::string> shader = { "Resources/Shaders/default.vert.spv", "Resources/Shaders/default.frag.spv" };
 
         Shader(const char* vertexFile, const char* fragmentFile);
         ~Shader();

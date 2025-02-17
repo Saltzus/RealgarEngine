@@ -1,0 +1,56 @@
+{
+  "camera": {
+    "translation": [0, 0, -4],
+    "rotation": [0, 0, 0],
+    "fov": 45.0,
+    "nearClip": 0.01,
+    "farClip": 10000.0
+  },
+  "shaders": {
+    "default": {
+      "vertex": "Resources/Shaders/default.vert",
+      "fragment": "Resources/Shaders/default.frag"
+    },
+    "reversedColors": {
+      "vertex": "Resources/Shaders/reversedcolors.vert",
+      "fragment": "Resources/Shaders/reversedcolors.frag"
+    }
+  },
+
+  "textures": {
+    "default": "Resources/Textures/PixelText.png",
+    "modelface": "Resources/Textures/modelface.png"
+  },
+
+  "gameObjects": [
+    {
+      "name": "Player",
+      "components": {
+        "transform": {
+          "translation": [2, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0]
+        },
+        "render": {
+          "shader": "default",
+          "texture": "default"
+        }
+      }
+    },
+    {
+      "name": "Reyalp",
+      "components": {
+        "transform": {
+          "translation": [-2, 0, 0],
+          "scale": [1, 1, 1],
+          "rotation": [0, 0, 0]
+        },
+        "render": {
+          "shader": "reversedColors",
+          "texture": "modelface"
+        }
+      }
+    }
+  ]
+
+}

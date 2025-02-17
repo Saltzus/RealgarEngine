@@ -89,7 +89,7 @@ namespace RED::Vulkan
     }
 
 #ifdef DEBUG
-    const bool enableValidationLayers = true;
+    const bool enableValidationLayers = false;
 #else
     const bool enableValidationLayers = false;
 #endif
@@ -615,7 +615,7 @@ namespace RED::Vulkan
         return descriptorSets;
     }
 
-    void Vulkan::createGraphicsPipeline(const char* vertexFile, const char* fragmentFile)
+    void Vulkan::createGraphicsPipeline(std::string vertexFile, std::string fragmentFile)
     {
         graphicsPipelines.insert({ {vertexFile, fragmentFile}, VkPipeline() });
         VulkanGraphicsPipeline sus(vertexFile, fragmentFile, device, descriptorSetLayout, renderPass, pipelineLayout, graphicsPipelines[{vertexFile, fragmentFile}]);
@@ -665,7 +665,7 @@ namespace RED::Vulkan
 
         for (VulkanRenderer* object : objects)
         {
-            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipelines[{object->shader->first, object->shader->second}]);
+            vkCmdBindPipeline(commandBuffer, VK_PIPELINE_BIND_POINT_GRAPHICS, graphicsPipelines[{object->vertexShader, object->fragmentShader}]);
 
             vkCmdBindVertexBuffers(commandBuffer, 0, 1, &object->vertexBuffer_vertexBufferMemory.first, offsets);
             vkCmdBindIndexBuffer(commandBuffer, object->indexBuffer_indexBufferMemory.first, 0, VK_INDEX_TYPE_UINT16);
@@ -678,6 +678,7 @@ namespace RED::Vulkan
         }
 
         ubo.clear();
+        objects.clear();
 
         vkCmdEndRenderPass(commandBuffer);
 
@@ -1394,8 +1395,6 @@ namespace RED::Vulkan
 
         vulkan->createDescriptorPool();
         descriptorSets = vulkan->createDescriptorSets();
-
-        objects.push_back(this);
     }
 
     VulkanRenderer::~VulkanRenderer()
@@ -1407,6 +1406,8 @@ namespace RED::Vulkan
         Vulkan* vulkan = Vulkan::vulkan;
 
         this->shader = &shader->shader;
+        vertexShader = this->shader->first.c_str();
+        fragmentShader = this->shader->second.c_str();
 
         if (lastTexture != vulkan->textureImageView)
         {
@@ -1435,5 +1436,7 @@ namespace RED::Vulkan
         ubo.model = model;
         ubo.view = camera->view;
         ubo.proj = camera->projection;
+
+        objects.push_back(this);
     }
 }

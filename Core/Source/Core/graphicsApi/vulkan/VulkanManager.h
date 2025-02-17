@@ -66,7 +66,7 @@ namespace RED::Vulkan
         VkImageView textureImageView;
         VkSampler textureSampler;
 
-        std::map<std::pair<const char*, const char*>,VkPipeline> graphicsPipelines;
+        std::map<std::pair<std::string, std::string>,VkPipeline> graphicsPipelines;
 
         VkDescriptorPool descriptorPool;
         std::vector<VkDescriptorSet> descriptorSets;
@@ -74,7 +74,7 @@ namespace RED::Vulkan
         void createBuffer(VkDeviceSize size, VkBufferUsageFlags usage, VkMemoryPropertyFlags properties, VkBuffer& buffer, VkDeviceMemory& bufferMemory);
         void createImage(uint32_t width, uint32_t height, VkFormat format, VkImageTiling tiling, VkImageUsageFlags usage, VkMemoryPropertyFlags properties, VkImage& image, VkDeviceMemory& imageMemory);
         VkImageView createImageView(VkImage image, VkFormat format, VkImageAspectFlags aspectFlags);
-        void createGraphicsPipeline(const char* vertexFile, const char* fragmentFile);
+        void createGraphicsPipeline(std::string vertexFile, std::string fragmentFile);
 
 
         void transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout);
@@ -214,7 +214,9 @@ namespace RED::Vulkan
         VulkanRenderer(std::vector<GLuint>& indices, std::vector<GLfloat>& vertices);
         ~VulkanRenderer();
 
-        std::pair<const char*, const char*>* shader;
+        std::pair<std::string, std::string>* shader;
+        const char* vertexShader;
+        const char* fragmentShader;
         
         std::pair<VkBuffer, VkDeviceMemory> vertexBuffer_vertexBufferMemory;
         std::pair<VkBuffer, VkDeviceMemory> indexBuffer_indexBufferMemory;

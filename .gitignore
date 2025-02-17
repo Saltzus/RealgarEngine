@@ -1,7 +1,7 @@
 # Directories
 .vs/
 Binaries/
-Game/Resources/Shaders/
+Game/Resources/Shaders/*.spv
 
 # Files
 *.vcxproj
@@ -9,7 +9,7 @@ Game/Resources/Shaders/
 *.vcxproj.filters
 *.sln
 *.log
-*.spv
+
 Makefile
 
 # Exclude

@@ -15,7 +15,7 @@ namespace RED::Vulkan
     class VulkanGraphicsPipeline
     {
     public:
-        VulkanGraphicsPipeline(const char* vertexFile, const char* fragmentFile, VkDevice& device, VkDescriptorSetLayout& descriptorSetLayout, VkRenderPass& renderPass, VkPipelineLayout& pipelineLayout, VkPipeline& graphicsPipeline);
+        VulkanGraphicsPipeline(std::string vertexFile, std::string fragmentFile, VkDevice& device, VkDescriptorSetLayout& descriptorSetLayout, VkRenderPass& renderPass, VkPipelineLayout& pipelineLayout, VkPipeline& graphicsPipeline);
 
         void Bind();
         void Delete();
