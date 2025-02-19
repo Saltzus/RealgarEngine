@@ -10,6 +10,10 @@ workspace "RED"
 
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
+group "ThirdParty"
+	include "ThirdParty/Lua/Build-Lua.lua"
+group ""
+
 group "Core"
 	include "Core/Build-Core.lua"
 group ""

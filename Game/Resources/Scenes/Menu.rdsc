@@ -34,7 +34,8 @@
         "render": {
           "shader": "default",
           "texture": "default"
-        }
+        },
+        "script" : "Resources/Scripts/test.lua"
       }
     },
     {

@@ -18,6 +18,7 @@ namespace RED::Components
         Texture* texture;
         Shader* shader = nullptr;
 
+        static void registerRenderComponent(lua_State* L);
         virtual void render(Shader* shader, Camera* camera) override;
     private:
         GameObject* gameObject;

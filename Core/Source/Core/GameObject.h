@@ -15,6 +15,8 @@ namespace RED
 		GameObject();
 		~GameObject();
 
+		static void registerGameObject(lua_State* L);
+
 		template <typename T>
 		T* getComponent()
 		{

@@ -16,6 +16,8 @@ namespace RED::Components
         TransformComponent();
         ~TransformComponent();
 
+        static void registerTransformComponent(lua_State* L);
+
         glm::mat4 getMatrix() const;
 
         glm::vec3 translation = glm::vec3(0.f);

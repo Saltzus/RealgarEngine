@@ -14,6 +14,9 @@ project "Editor"
    {
       "Source",
 
+      -- Include Lua
+      "../ThirdParty/Lua/Source",
+
 	  -- Include Core
 	  "../Core/Source",
 

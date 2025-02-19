@@ -9,6 +9,9 @@
 #include "Audio.h"
 #include "Scene.h"
 #include "GameObject.h"
+#include "LuaSystem.h"
+
+#include <lua.hpp>
 
 namespace RED {
 	

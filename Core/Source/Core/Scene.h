@@ -12,12 +12,21 @@ namespace RED
         Scene(const char* filepath);
         ~Scene();
 
+        static std::map<std::string, Texture*> current_textures;
+        static std::map<std::string, Shader*> current_shaders;
+
+        static void registerScene(lua_State* L);
+        static Scene* currentScene;
+
+        std::string addObject(std::string);
+        GameObject* getObject(std::string);
+
         void RenderScene();
     private:
-        void addComponentsFromJson(json& componentData, GameObject* object);
+        void addComponentsFromJson(json& componentData, GameObject* object, Scene* scene);
         json sceneData;
 
-        std::vector<GameObject*> objects;
+        std::map<std::string, GameObject*> objects;
         std::map<std::string, Texture*> textures;
         std::map<std::string , Shader*> shaders;
 

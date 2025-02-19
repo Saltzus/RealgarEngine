@@ -15,6 +15,9 @@ project "Core"
       "Source",
       "Source/**",
 
+      -- Include Lua
+      "../ThirdParty/Lua/Source",
+
       -- glfw
       "../Libraries/glfw-3.4/include",
       -- Opengl / glad
@@ -36,6 +39,7 @@ project "Core"
 
    links
    {
+      "Lua",
       "glfw3",
       "freetype",
       "vulkan-1"

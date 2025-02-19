@@ -2,6 +2,8 @@
 #include "Shader.h"
 #include "Camera.h"
 
+#include <lua.hpp>
+
 namespace RED::Components
 {
 	class Component
@@ -10,7 +12,7 @@ namespace RED::Components
 		~Component() {}
 
 		virtual void update(float deltaTime) {}
-		virtual void execute() {}
+		virtual void init() {}
 		virtual void render(Shader* shader, Camera* camera) {}
 	private:
 

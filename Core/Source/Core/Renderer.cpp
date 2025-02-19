@@ -3,7 +3,7 @@
 namespace RED
 {
     ApiImpl* Renderer::Api = nullptr;
-    const GraphicsApis Renderer::graphicApi = GraphicsApis::Vulkan;
+    const GraphicsApis Renderer::graphicApi = GraphicsApis::OpenGL;
 
     Renderer::Renderer(std::vector<unsigned int>& indices, std::vector<float>& vertices)
     {

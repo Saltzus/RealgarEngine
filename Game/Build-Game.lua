@@ -14,6 +14,9 @@ project "Game"
    {
       "Source",
 
+      -- Include Lua
+      "../ThirdParty/Lua/Source",
+
 	  -- Include Core
 	  "../Core/Source",
 
@@ -50,6 +53,9 @@ project "Game"
    filter "system:windows"
        systemversion "latest"
        defines { "WINDOWS" }
+       postbuildcommands {
+        "{COPY} ../Game/Resources ../Binaries/windows-x86_64/%{cfg.buildcfg}/Game"
+        }
 
     filter "system:linux"
        links { "png", "z", "bz2" }

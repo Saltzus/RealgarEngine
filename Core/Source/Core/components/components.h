@@ -4,3 +4,4 @@
 
 #include "transformComponent.h"
 #include "renderComponent.h"
+#include "scriptComponent.h"
