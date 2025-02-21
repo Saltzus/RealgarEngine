@@ -1,5 +1,5 @@
 -- premake5.lua
-workspace "RED"
+workspace "RedEngine"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
    startproject "Game"

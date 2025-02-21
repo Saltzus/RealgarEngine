@@ -36,7 +36,9 @@ project "Editor"
       "../Libraries/freetype/freetype2/include",
       "../Libraries/freetype/",
       -- json
-      "../Libraries/nlohmann_json"
+      "../Libraries/nlohmann_json",
+      -- ImGui
+      "../Libs/ImGui"
    }
 
    links

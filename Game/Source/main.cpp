@@ -15,8 +15,10 @@ int main(int argc, char** argv)
     RED::LuaSystem::Init();
     RED::Scene scene("Resources/Scenes/Menu.rdsc");
 
-    RED::Audio audio;
-    audio.PlayAudio("Game/Resources/Audio/BIG-Trouble.ogg");
+
+    // TODO: change miniaudio to Openal-soft 
+    //RED::Audio audio;
+    //audio.PlayAudio("Resources/Audio/BIG-Trouble.ogg");
 
     while (!glfwWindowShouldClose(window))
     {
