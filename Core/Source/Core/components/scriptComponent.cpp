@@ -1,7 +1,7 @@
 #include "ScriptComponent.h"
-#include "GameObject.h"
-#include "LuaSystem.h"
-#include "Scene.h"
+#include "../GameObject.h"
+#include "../LuaSystem.h"
+#include "../Scene.h"
 
 namespace RED::Components
 {

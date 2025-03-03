@@ -1,7 +1,7 @@
 #include "renderComponent.h"
-#include "GameObject.h"
-#include "Texture.h"
-#include "Scene.h"
+#include "../GameObject.h"
+#include "../Texture.h"
+#include "../Scene.h"
 
 namespace RED::Components
 {
