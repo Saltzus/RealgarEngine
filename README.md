@@ -1,2 +1,11 @@
-# Libraries:
-https://www.reddit.com/r/vulkan/comments/e7n5b6/drawing_multiple_objects/?rdt=37731
+## Libraries
+- [Vulkan](https://www.vulkan.org/)
+- [Opengl](https://www.opengl.org/)
+- [glad](https://github.com/Dav1dde/glad?tab=readme-ov-file)
+- [glfw](https://www.glfw.org/)
+- [glm](https://github.com/g-truc/glm)
+- [stb_image](https://github.com/nothings/stb/blob/master/stb_image.h)
+- [miniaudio (is going to be replased)](https://miniaud.io/)
+- [FreeType](https://github.com/freetype/freetype?tab=readme-ov-file)
+- [nlohmann_json](https://github.com/nlohmann/json)
+- [ImGui](https://github.com/ocornut/imgui)
