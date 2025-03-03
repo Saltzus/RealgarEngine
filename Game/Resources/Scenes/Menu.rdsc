@@ -19,7 +19,7 @@
 
   "textures": {
     "default": "Resources/Textures/PixelText.png",
-    "modelface": "Resources/Textures/modelface.png"
+    "modelface": "Resources/Textures/PixelText.png"
   },
 
   "gameObjects": [
