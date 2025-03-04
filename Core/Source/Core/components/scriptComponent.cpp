@@ -1,4 +1,4 @@
-#include "ScriptComponent.h"
+#include "scriptComponent.h"
 #include "../GameObject.h"
 #include "../LuaSystem.h"
 #include "../Scene.h"
