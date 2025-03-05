@@ -3,20 +3,22 @@ workspace "RedEngine"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
    startproject "Game"
-
-   filter "system:windows"
-      makesettings [[
-         CC = gcc
-         CXX = g++
-      ]]
+ 
+   makesettings [[
+      CC = gcc
+      CXX = g++
+   ]]
 
    filter "system:windows"
       buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
+      os.execute("Libraries\\vulkan\\Lib\\7z e Libraries/vulkan/Lib/vulkan-1.7z -oLibraries/vulkan/Lib/ -aoa")
 
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
 group "ThirdParty"
 	include "ThirdParty/Lua/Build-Lua.lua"
+   include "ThirdParty/freetype2/Build-freetype2.lua"
+   include "ThirdParty/glfw3/Build-glfw3.lua"
 group ""
 
 group "Core"

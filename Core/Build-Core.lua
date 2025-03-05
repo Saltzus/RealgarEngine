@@ -6,9 +6,10 @@ project "Core"
    staticruntime "off"
 
    
-   libdirs { "../Libraries/glfw-3.4", "../Libraries/freetype/freetype2/include", "../Libraries/vulkan/Lib"}
+   libdirs { "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib"}
    files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/freetype/src/**.c"}
 
+   dependson { "Lua", "freetype2", "glfw3" }
 
    includedirs
    {
@@ -18,8 +19,14 @@ project "Core"
       -- Include Lua
       "../ThirdParty/Lua/Source",
 
-      -- glfw
-      "../Libraries/glfw-3.4/include",
+      -- Include freetype2
+      "../ThirdParty/freetype2/src",
+      "../ThirdParty/freetype2/include",
+
+      -- Include glfw
+      "../ThirdParty/glfw3/include",
+
+
       -- Opengl / glad
       "../Libraries/glad/include",
       -- Vulkan
@@ -30,9 +37,6 @@ project "Core"
       "../Libraries/stb_image",
       -- miniaudio
       "../Libraries/miniaudio",
-      -- freetype
-      "../Libraries/freetype/freetype2/include",
-      "../Libraries/freetype/",
       -- json
       "../Libraries/nlohmann_json"
    }
@@ -41,7 +45,7 @@ project "Core"
    {
       "Lua",
       "glfw3",
-      "freetype",
+      "freetype2",
       "vulkan-1"
    }
 

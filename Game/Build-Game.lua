@@ -6,9 +6,11 @@ project "Game"
    staticruntime "off"
 
 
-   libdirs { "../Libraries/glfw-3.4", "../Libraries/freetype/freetype2/include", "../Libraries/vulkan/Lib"}
+   libdirs {  "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib" }
    files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/freetype/src/**.c"}
 
+
+   dependson { "Core" }
 
    includedirs
    {
@@ -17,11 +19,17 @@ project "Game"
       -- Include Lua
       "../ThirdParty/Lua/Source",
 
+      -- Include freetype2
+      "../ThirdParty/freetype2/src",
+      "../ThirdParty/freetype2/include",
+
 	  -- Include Core
 	  "../Core/Source",
 
-      -- glfw
-      "../Libraries/glfw-3.4/include",
+      -- Include glfw
+      "../ThirdParty/glfw3/include",
+
+
       -- Opengl / glad
       "../Libraries/glad/include",
       -- Vulkan
@@ -32,19 +40,17 @@ project "Game"
       "../Libraries/stb_image",
       -- miniaudio
       "../Libraries/miniaudio",
-      -- freetype
-      "../Libraries/freetype/freetype2/include",
-      "../Libraries/freetype/",
       -- json
       "../Libraries/nlohmann_json"
    }
 
    links
    {
-      "Core",
-      "glfw3",
-      "freetype",
-      "vulkan-1"
+        "Core",
+        "Lua",
+        "glfw3",
+        "freetype2",
+        "vulkan-1"
    }
 
    targetdir ("../Binaries/" .. OutputDir .. "/%{prj.name}")
