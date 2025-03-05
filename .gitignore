@@ -2,6 +2,7 @@
 .vs/
 Binaries/
 Game/Resources/Shaders/*.spv
+Libraries/vulkan/Lib/*.lib
 
 # Files
 *.vcxproj
