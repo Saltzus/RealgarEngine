@@ -12,6 +12,8 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
+    - name: Add msbuild to PATH
+      uses: microsoft/setup-msbuild@v2
     - name: Build Premake Project Files
       run: .\Scripts\Setup-Windows.bat
     - name: Build the Solution
