@@ -1,0 +1,21 @@
+name: Windows Build
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+    - name: Build Premake Project Files
+      run: .\Scripts\Setup-Windows.bat
+    - name: Build the Solution
+      run: msbuild.exe RedEngine.sln /m /p:Configuration=Debug
+
+    - name: List Build Artifacts
+      run: dir /s /b
