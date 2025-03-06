@@ -1,6 +1,6 @@
 #include "Text.h"
 
-namespace RED
+namespace Realgar
 {
     Text::Text()
     {

@@ -1,7 +1,7 @@
 #include "VulkanShader.h"
 #include "VulkanManager.h"
 
-namespace RED::Vulkan
+namespace Realgar::Vulkan
 {
 
 	// Reads a text file and outputs a string with everything in the text file

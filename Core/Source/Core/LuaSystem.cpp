@@ -2,7 +2,7 @@
 #include "GameObject.h"
 #include "Scene.h"
 
-namespace RED 
+namespace Realgar 
 {
 	lua_State* LuaSystem::state = nullptr;
 

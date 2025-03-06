@@ -1,6 +1,6 @@
 #include "Camera.h"
 
-namespace RED
+namespace Realgar
 {
     Camera::Camera(int width, int height, glm::vec3 position)
     {

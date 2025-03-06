@@ -1,6 +1,6 @@
 #include "VulkanGraphicsPipeline.h"
 
-namespace RED::Vulkan
+namespace Realgar::Vulkan
 {
 
     static std::vector<char> readFile(const std::string& filename) {

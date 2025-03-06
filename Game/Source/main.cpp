@@ -9,11 +9,11 @@ const unsigned int SCR_HEIGHT = 600;
 
 int main(int argc, char** argv)
 {
-    RED::Window window("RED - Test", SCR_WIDTH, SCR_HEIGHT);
-    RED::Renderer::InitApi(window); // TODO : add automatically run compile.bat and add switch to change from opengl to vulkan
+    Realgar::Window window("RED - Test", SCR_WIDTH, SCR_HEIGHT);
+    Realgar::Renderer::InitApi(window); // TODO : add automatically run compile.bat and add switch to change from opengl to vulkan
 
-    RED::LuaSystem::Init();
-    RED::Scene scene("Resources/Scenes/Menu.rdsc");
+    Realgar::LuaSystem::Init();
+    Realgar::Scene scene("Resources/Scenes/Menu.rdsc");
 
 
     // TODO: change miniaudio to Openal-soft 
@@ -24,13 +24,13 @@ int main(int argc, char** argv)
     {
         scene.RenderScene();
 
-        RED::Input::processInput(window);
+        Realgar::Input::processInput(window);
 
-        RED::Renderer::RenderGraphics();
+        Realgar::Renderer::RenderGraphics();
         window.Display();
     }
 
-    RED::LuaSystem::Close();
+    Realgar::LuaSystem::Close();
     glfwTerminate();
     return 0;
 }

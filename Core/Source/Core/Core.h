@@ -13,6 +13,6 @@
 
 #include <lua.hpp>
 
-namespace RED {
+namespace Realgar {
 	
 }

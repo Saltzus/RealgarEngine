@@ -14,7 +14,7 @@
 
 #include "../../RenderImpl.h"
 
-namespace RED::Opengl
+namespace Realgar::Opengl
 {
     // Structure to standardize the vertices used in the sprites
     struct Vertex

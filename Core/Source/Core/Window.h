@@ -6,7 +6,7 @@
 
 #include <iostream>
 
-namespace RED 
+namespace Realgar 
 {
 	class Window
 	{

@@ -4,7 +4,7 @@
 #include <lua.hpp>
 #include "Scene.h"
 
-namespace RED 
+namespace Realgar 
 {
 	class LuaSystem
 	{

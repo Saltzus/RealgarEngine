@@ -3,7 +3,7 @@
 #include "../LuaSystem.h"
 #include "../Scene.h"
 
-namespace RED::Components
+namespace Realgar::Components
 {
     LuaSystem ScriptComponent::L;
 

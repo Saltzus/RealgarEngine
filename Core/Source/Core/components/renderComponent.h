@@ -1,13 +1,13 @@
 #pragma once
 #include "component.h"
 
-namespace RED
+namespace Realgar
 {
     class Texture;
     class GameObject;
 }
 
-namespace RED::Components
+namespace Realgar::Components
 {
     class RenderComponent : public Component
     {

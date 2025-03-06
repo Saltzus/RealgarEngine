@@ -25,7 +25,7 @@
 #include "../../Window.h"
 #include "VulkanGraphicsPipeline.h"
 
-namespace RED::Vulkan
+namespace Realgar::Vulkan
 {
 
     class VulkanRenderer;

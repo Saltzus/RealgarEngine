@@ -1,6 +1,6 @@
 #include "Sprite.h"
 
-namespace RED
+namespace Realgar
 {
     
 

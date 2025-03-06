@@ -1,6 +1,6 @@
 #include "GameObject.h"
 
-namespace RED
+namespace Realgar
 {
 	GameObject::GameObject() {}
 
@@ -45,7 +45,7 @@ namespace RED
     }
     int getComponent(lua_State* L)
     {
-        RED::GameObject* object = *(RED::GameObject**)luaL_checkudata(L, 1, "GameObject");
+        Realgar::GameObject* object = *(Realgar::GameObject**)luaL_checkudata(L, 1, "GameObject");
         const char* componentType = luaL_checkstring(L, 2);
 
         if (strcmp(componentType, "TransformComponent") == 0)
@@ -105,6 +105,6 @@ namespace RED
 
     void GameObject::registerGameObject(lua_State* L)
     {
-        RED::registerGameObject(L);
+        Realgar::registerGameObject(L);
     }
 }

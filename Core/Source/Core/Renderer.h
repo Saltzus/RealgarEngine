@@ -8,7 +8,7 @@
 
 #include "RenderImpl.h"
 
-namespace RED
+namespace Realgar
 {
     enum class GraphicsApis 
     {

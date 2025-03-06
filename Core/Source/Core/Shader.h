@@ -14,7 +14,7 @@ class ShaderImpl;
 
 std::string get_file_contents(const char* filename);
 
-namespace RED
+namespace Realgar
 {
     class Shader
     {

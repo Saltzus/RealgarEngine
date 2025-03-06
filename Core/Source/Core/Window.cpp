@@ -1,6 +1,6 @@
 #include "Window.h"
 
-namespace RED
+namespace Realgar
 {
 
 	Window::~Window()

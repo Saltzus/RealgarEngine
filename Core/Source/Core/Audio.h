@@ -4,7 +4,7 @@
 #include <glm/common.hpp>
 #include <iostream>
 
-namespace RED
+namespace Realgar
 {
     class Audio
     {

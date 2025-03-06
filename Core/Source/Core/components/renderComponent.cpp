@@ -3,7 +3,7 @@
 #include "../Texture.h"
 #include "../Scene.h"
 
-namespace RED::Components
+namespace Realgar::Components
 {
     RenderComponent::RenderComponent(GameObject* object)
     {

@@ -1,6 +1,6 @@
 #include "Input.h"
 
-namespace RED::Input
+namespace Realgar::Input
 {
     void processInput(GLFWwindow* window)
     {

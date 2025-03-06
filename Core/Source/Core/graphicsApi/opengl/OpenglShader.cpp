@@ -1,6 +1,6 @@
 #include "OpenglShader.h"
 
-namespace RED::Opengl
+namespace Realgar::Opengl
 {
 
 	// Reads a text file and outputs a string with everything in the text file

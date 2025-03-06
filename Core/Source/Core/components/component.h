@@ -4,7 +4,7 @@
 
 #include <lua.hpp>
 
-namespace RED::Components
+namespace Realgar::Components
 {
 	class Component
 	{

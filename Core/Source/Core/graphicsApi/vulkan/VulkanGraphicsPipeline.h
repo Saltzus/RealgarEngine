@@ -10,7 +10,7 @@
 #include <vulkan/vulkan.hpp>
 #include "VulkanVertex.h"
 
-namespace RED::Vulkan
+namespace Realgar::Vulkan
 {
     class VulkanGraphicsPipeline
     {

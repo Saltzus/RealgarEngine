@@ -8,7 +8,7 @@
 #include <glm/gtx/rotate_vector.hpp>
 #include <glm/gtx/vector_angle.hpp>
 
-namespace RED::Components
+namespace Realgar::Components
 {
     class TransformComponent : public Component
     {

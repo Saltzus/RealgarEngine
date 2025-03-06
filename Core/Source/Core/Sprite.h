@@ -3,7 +3,7 @@
 #include "Renderer.h"
 #include "Texture.h"
 
-namespace RED
+namespace Realgar
 {
     class Sprite
     {

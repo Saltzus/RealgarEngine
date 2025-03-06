@@ -12,7 +12,7 @@
 #include <glad/glad.h>
 
 
-namespace RED::Vulkan
+namespace Realgar::Vulkan
 {
     struct Vertex {
         glm::vec3 pos;

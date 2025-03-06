@@ -3,7 +3,7 @@
 #include "graphicsApi/opengl/OpenglShader.h"
 #include "graphicsApi/vulkan/VulkanShader.h"
 
-namespace RED
+namespace Realgar
 {
     Shader::Shader(const char* vertexFile, const char* fragmentFile) 
     {
@@ -12,13 +12,13 @@ namespace RED
         switch (Renderer::GetGraphicsApi())
         {
         case GraphicsApis::OpenGL:
-            this->impl = new RED::Opengl::OpenglShader(vertexFile, fragmentFile);
+            this->impl = new Realgar::Opengl::OpenglShader(vertexFile, fragmentFile);
             break;
         case GraphicsApis::Vulkan:
-            this->impl = new RED::Vulkan::VulkanShader(vertexFile, fragmentFile);
+            this->impl = new Realgar::Vulkan::VulkanShader(vertexFile, fragmentFile);
             break;
         default:
-            this->impl = new RED::Opengl::OpenglShader(vertexFile, fragmentFile);
+            this->impl = new Realgar::Opengl::OpenglShader(vertexFile, fragmentFile);
             break;
         }
     }

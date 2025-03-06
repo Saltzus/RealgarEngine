@@ -1,7 +1,7 @@
 #include "Scene.h"
 #include "Texture.h"
 
-namespace RED
+namespace Realgar
 {
     std::map<std::string, Texture*> Scene::current_textures;
     std::map<std::string, Shader*> Scene::current_shaders;
@@ -131,7 +131,7 @@ namespace RED
     {
         if (objects.find(name) == objects.end()) 
         {
-            objects[name] = new RED::GameObject();
+            objects[name] = new Realgar::GameObject();
         }
         else 
         {
@@ -212,6 +212,6 @@ namespace RED
 
     void Scene::registerScene(lua_State* L)
     {
-        RED::registerScene(L);
+        Realgar::registerScene(L);
     }
 }

@@ -1,6 +1,6 @@
 #include "Renderer.h"
 
-namespace RED
+namespace Realgar
 {
     ApiImpl* Renderer::Api = nullptr;
     const GraphicsApis Renderer::graphicApi = GraphicsApis::Vulkan;
@@ -10,13 +10,13 @@ namespace RED
         switch (this->graphicApi)
         {
         case GraphicsApis::OpenGL:
-            this->impl = new RED::Opengl::OpenglRenderer(indices, vertices);
+            this->impl = new Realgar::Opengl::OpenglRenderer(indices, vertices);
             break;
         case GraphicsApis::Vulkan:
-            this->impl = new RED::Vulkan::VulkanRenderer(indices, vertices);
+            this->impl = new Realgar::Vulkan::VulkanRenderer(indices, vertices);
             break;
         default:
-            this->impl = new RED::Opengl::OpenglRenderer(indices, vertices);
+            this->impl = new Realgar::Opengl::OpenglRenderer(indices, vertices);
             break;
         }
     }
@@ -36,13 +36,13 @@ namespace RED
         switch (graphicApi)
         {
         case GraphicsApis::OpenGL:
-            Api = new RED::Opengl::Opengl(window);
+            Api = new Realgar::Opengl::Opengl(window);
             break;
         case GraphicsApis::Vulkan:
-            Api = new RED::Vulkan::Vulkan(window);
+            Api = new Realgar::Vulkan::Vulkan(window);
             break;
         default:
-            Api = new RED::Opengl::Opengl(window);
+            Api = new Realgar::Opengl::Opengl(window);
             break;
         }
     }

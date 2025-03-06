@@ -1,7 +1,7 @@
 #include "OpenGlManager.h"
 #include "../../Camera.h"
 
-namespace RED::Opengl
+namespace Realgar::Opengl
 {
     OpenglTexture::OpenglTexture(const char* filePath)
     {

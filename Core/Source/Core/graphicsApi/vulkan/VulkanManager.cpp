@@ -1,7 +1,7 @@
 #include "VulkanManager.h"
 #include "../../Camera.h"
 
-namespace RED::Vulkan
+namespace Realgar::Vulkan
 {
     std::vector<VulkanRenderer*> objects;
 

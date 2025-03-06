@@ -1,5 +1,5 @@
 
-workspace "RedEngine"
+workspace "RealgarEngine"
    architecture "x64"
    configurations { "Debug", "Release", "Dist" }
    startproject "Game"

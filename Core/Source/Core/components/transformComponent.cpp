@@ -1,6 +1,6 @@
 #include "transformComponent.h"
 
-namespace RED::Components
+namespace Realgar::Components
 {
     TransformComponent::TransformComponent() {}
     TransformComponent::~TransformComponent() {}

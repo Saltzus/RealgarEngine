@@ -4,7 +4,7 @@ using json = nlohmann::json;
 
 #include "GameObject.h"
 
-namespace RED
+namespace Realgar
 {
     class Scene
     {

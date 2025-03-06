@@ -12,7 +12,7 @@
 
 #include "Shader.h"
 
-namespace RED
+namespace Realgar
 {
     class Camera
     {

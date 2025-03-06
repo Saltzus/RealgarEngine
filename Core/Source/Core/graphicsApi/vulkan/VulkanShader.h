@@ -11,7 +11,7 @@
 
 std::string get_file_contents(const char* filename);
 
-namespace RED::Vulkan
+namespace Realgar::Vulkan
 {
     class VulkanShader : public ShaderImpl
     {

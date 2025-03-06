@@ -1,19 +1,19 @@
 #include "Texture.h"
 
-namespace RED
+namespace Realgar
 {
     Texture::Texture(const char* filePath)
     {
         switch (Renderer::GetGraphicsApi())
         {
         case GraphicsApis::OpenGL:
-            this->impl = new RED::Opengl::OpenglTexture(filePath);
+            this->impl = new Realgar::Opengl::OpenglTexture(filePath);
             break;
         case GraphicsApis::Vulkan:
-            this->impl = new RED::Vulkan::VulkanTexture(filePath);
+            this->impl = new Realgar::Vulkan::VulkanTexture(filePath);
             break;
         default:
-            this->impl = new RED::Opengl::OpenglTexture(filePath);
+            this->impl = new Realgar::Opengl::OpenglTexture(filePath);
             break;
         }
     }
@@ -22,13 +22,13 @@ namespace RED
         switch (Renderer::GetGraphicsApi())
         {
         case GraphicsApis::OpenGL:
-            this->impl = new RED::Opengl::OpenglTexture(data, format, width, height);
+            this->impl = new Realgar::Opengl::OpenglTexture(data, format, width, height);
             break;
         case GraphicsApis::Vulkan:
-            this->impl = new RED::Vulkan::VulkanTexture(data, format, width, height);
+            this->impl = new Realgar::Vulkan::VulkanTexture(data, format, width, height);
             break;
         default:
-            this->impl = new RED::Opengl::OpenglTexture(data, format, width, height);
+            this->impl = new Realgar::Opengl::OpenglTexture(data, format, width, height);
             break;
         }
     }

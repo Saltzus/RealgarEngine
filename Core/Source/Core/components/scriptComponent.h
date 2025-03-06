@@ -3,7 +3,7 @@
 
 #include <lua.hpp>
 
-namespace RED
+namespace Realgar
 {
     class Texture;
     class GameObject;
@@ -11,7 +11,7 @@ namespace RED
     class Scene;
 }
 
-namespace RED::Components
+namespace Realgar::Components
 {
     class ScriptComponent : public Component
     {

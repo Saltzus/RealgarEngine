@@ -12,7 +12,7 @@
 
 std::string get_file_contents(const char* filename);
 
-namespace RED::Opengl
+namespace Realgar::Opengl
 {
     class OpenglShader : public ShaderImpl
     {

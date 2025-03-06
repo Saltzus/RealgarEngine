@@ -4,7 +4,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 
-namespace RED
+namespace Realgar
 {
     class Shader;
     class Camera;

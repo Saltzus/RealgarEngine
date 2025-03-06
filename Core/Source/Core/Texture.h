@@ -3,7 +3,7 @@
 #include "RenderImpl.h"
 #include "Renderer.h"
 
-namespace RED
+namespace Realgar
 {
     class Texture
     {

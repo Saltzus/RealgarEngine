@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <typeindex>
 
-namespace RED
+namespace Realgar
 {
 	class GameObject
 	{
