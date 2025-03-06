@@ -15,7 +15,8 @@ jobs:
     - name: Add msbuild to PATH
       uses: microsoft/setup-msbuild@v2
     - name: Build Premake Project Files
-      run: .\Scripts\Setup-Windows.bat
+      working-directory: ./Scripts
+      run: Setup-Windows.bat
     - name: show dir
       run: dir
     - name: Build the Solution
