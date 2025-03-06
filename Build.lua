@@ -11,7 +11,7 @@ workspace "RealgarEngine"
 
    filter "system:windows"
       buildoptions { "/EHsc", "/Zc:preprocessor", "/Zc:__cplusplus" }
-      os.execute("Libraries\\vulkan\\Lib\\7z e Libraries/vulkan/Lib/vulkan-1.7z -oLibraries/vulkan/Lib/ -aoa")
+      os.execute("Libraries\\vulkan\\Lib\\7-Zip\\7z.exe e Libraries/vulkan/Lib/vulkan-1.7z -oLibraries/vulkan/Lib/ -aoa")
 
 OutputDir = "%{cfg.system}-%{cfg.architecture}/%{cfg.buildcfg}"
 
