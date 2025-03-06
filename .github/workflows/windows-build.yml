@@ -20,4 +20,4 @@ jobs:
     - name: show dir
       run: dir
     - name: Build the Solution
-      run: msbuild.exe RedEngine.sln /m /p:Configuration=Debug
+      run: msbuild.exe RealgarEngine.sln /m /p:Configuration=Debug
