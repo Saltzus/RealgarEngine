@@ -16,6 +16,8 @@ jobs:
       uses: microsoft/setup-msbuild@v2
     - name: Build Premake Project Files
       run: .\Scripts\Setup-Windows.bat
+    - name: show dir
+      run: dir
     - name: Build the Solution
       run: msbuild.exe RedEngine.sln /m /p:Configuration=Debug
 
