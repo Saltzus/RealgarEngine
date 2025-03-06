@@ -21,6 +21,3 @@ jobs:
       run: dir
     - name: Build the Solution
       run: msbuild.exe RedEngine.sln /m /p:Configuration=Debug
-
-    - name: List Build Artifacts
-      run: dir /s /b
