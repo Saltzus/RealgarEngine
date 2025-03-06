@@ -16,7 +16,7 @@ jobs:
       uses: microsoft/setup-msbuild@v2
     - name: Build Premake Project Files
       working-directory: ./Scripts
-      run: Setup-Windows.bat
+      run: ./Setup-Windows.bat
     - name: show dir
       run: dir
     - name: Build the Solution
