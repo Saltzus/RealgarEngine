@@ -3,8 +3,8 @@
     "translation": [0, 0, -4],
     "rotation": [0, 0, 0],
     "fov": 45.0,
-    "nearClip": 0.01,
-    "farClip": 10000.0
+    "nearPlane": 0.01,
+    "farPlane": 10000.0
   },
   "shaders": {
     "default": {
@@ -22,6 +22,13 @@
     "modelface": "Resources/Textures/PixelText.png"
   },
 
+  "audio": {
+    "test": {
+      "file": "Resources/Audio/test.wav",
+      "spatialized": true
+    }
+  },
+
   "gameObjects": [
     {
       "name": "Player",
@@ -34,6 +41,10 @@
         "render": {
           "shader": "default",
           "texture": "default"
+        },
+        "audioListener": {
+          "translation": [2, 0, 0],
+          "rotation": [0, 0, 0]
         },
         "script" : "Resources/Scripts/test.lua"
       }
@@ -49,6 +60,10 @@
         "render": {
           "shader": "reversedColors",
           "texture": "modelface"
+        },        
+        "audioPlayer": {
+          "translation": [0, 0, 0],
+          "audio": ""
         }
       }
     }

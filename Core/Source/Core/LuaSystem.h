@@ -14,7 +14,7 @@ namespace Realgar
 
 		static void Init();
 		static void Close();
-		static void getGlobals(GameObject* object, Scene* scene);
+		static void getGlobals(GameObject* object, Scene* scn);
 
 		static lua_State* state;
 	private:

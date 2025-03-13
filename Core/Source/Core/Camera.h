@@ -11,6 +11,7 @@
 #include <glm/gtx/vector_angle.hpp>
 
 #include "Shader.h"
+#include <lua.hpp>
 
 namespace Realgar
 {
@@ -26,20 +27,27 @@ namespace Realgar
         glm::mat4 view = glm::mat4(1.0f);
         glm::mat4 projection = glm::mat4(1.0f);
 
+        glm::vec3 cameraRotation;
+
     	int width;
     	int height;
 
-    	float speed = 1.f;
-    	float sensitivity = 100.0f;
+        float fov;
+        float nearPlane;
+        float farPlane;
 
-    	Camera(int width, int height, glm::vec3 position);
+    	Camera(int width, int height, glm::vec3 position, glm::vec3 rotation, float fov,  float nearPlane, float farPlane, bool ortho);
 
-    	void updateMatrix(float FOVdeg, float nearPlane, float farPlane, bool ortho = false);
+    	void updateMatrix();
     	void Matrix(Shader& shader, const char* uniform);
+
+        static void registerCamera(lua_State* L);
 
     private:
     	bool perspective;
     	bool perspectiveCheck = false;
+
+        glm::vec3 worldUp = glm::vec3(0.0f, 1.0f, 0.0f);
     };
 
 }

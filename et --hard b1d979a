@@ -1,0 +1,593 @@
+[33mcommit f1652cef9b3cd1e83ed86551cf4a72a46960d39e[m[33m ([m[1;36mHEAD[m[33m -> [m[1;32mmaster[m[33m, [m[1;31morigin/master[m[33m, [m[1;31morigin/HEAD[m[33m, [m[1;32mrestore-camera[m[33m, [m[1;32mb1d979a59305ba74ea756a5be3626666a9daf6d7[m[33m, [m[1;32mb1d979a[m[33m)[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Thu Mar 6 14:25:06 2025 +0200
+
+    change 7-zip location
+
+[33mcommit 3df2d4c6a3613b360b173e6b830de7b2accb97a5[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Thu Mar 6 13:51:50 2025 +0200
+
+    Update windows-build.yml to match new name
+
+[33mcommit 3f736cd1df69b42513cbb58964ba99fda7756890[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Thu Mar 6 13:49:52 2025 +0200
+
+    Change name to Realgar Engine
+
+[33mcommit 564eeb6b8838290068a79aaa02ad0ed71b5fdc13[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Thu Mar 6 11:43:26 2025 +0200
+
+    Update windows-build.yml
+
+[33mcommit fba26fe0ec5c298eb656843cc670392a18e77171[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Thu Mar 6 11:38:49 2025 +0200
+
+    Update windows-build.yml
+
+[33mcommit 5fde19cb8b6249a84acffe7d5aeaaa9e8912158a[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Thu Mar 6 11:36:10 2025 +0200
+
+    Update windows-build.yml
+
+[33mcommit d49721faa5fd87de6cf3b1a90d9c24fe619f7548[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Thu Mar 6 11:32:07 2025 +0200
+
+    Update windows-build.yml
+
+[33mcommit e0b767c55847ed231ec9ffab68685cb2ae691a70[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Thu Mar 6 11:29:47 2025 +0200
+
+    Update windows-build.yml
+
+[33mcommit 55bd7b0e8f0599c3494df7b0118818d593b8cec1[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Thu Mar 6 11:19:50 2025 +0200
+
+    Create windows-build.yml
+
+[33mcommit 4ce45154b4c21f8574aa717cdcace0d9bbfcd148[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Thu Mar 6 10:49:06 2025 +0200
+
+    deleted tracking for vulkan-1.lib
+
+[33mcommit e18bcddb8293aa7c315ad518b078be1a953111e2[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Wed Mar 5 17:41:43 2025 +0200
+
+    Deleted big files
+
+[33mcommit 26343b798969362cea8cd2a935109714ea2f1a3d[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Wed Mar 5 17:35:30 2025 +0200
+
+    Fix glfw linux build
+
+[33mcommit 5239706a50bd8551397867068dfa137df969e9b5[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Tue Mar 4 14:02:22 2025 +0200
+
+    Fix linux build
+
+[33mcommit 77983dc8f14c68d7c49e9b38c428b7ca8c10dc6e[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Mon Mar 3 10:36:11 2025 +0200
+
+    Add Setup script for 2019 visual studio
+
+[33mcommit d1c96f0a6858200b3dd7a22d2e27e8b4625faf51[m
+Merge: f3c4ad6 76a10fd
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Mon Mar 3 10:29:13 2025 +0200
+
+    Merge branch 'master' of https://github.com/saltzus/RedEngine
+
+[33mcommit f3c4ad677169c0d865a1d6bd8875a4a055ca8be5[m
+Merge: 910a478 1436608
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Mon Mar 3 09:25:20 2025 +0200
+
+    Merge branch 'master' of https://github.com/saltzus/RedEngine
+
+[33mcommit 76a10fdd87f7f82fdb5254f9910f12616f347c4f[m
+Merge: 910a478 1436608
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Mon Mar 3 09:25:20 2025 +0200
+
+    Merge branch 'master' of https://github.com/saltzus/RedEngine
+
+[33mcommit 910a4784609c29da81a79038c39ba8920ef07c1e[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Mon Mar 3 09:25:09 2025 +0200
+
+    Fix include error on components
+
+[33mcommit 8282d6e7a13269bccf7a992cad3c3fabc5ec0f56[m
+Merge: c629b3c 8c43608
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Mon Mar 3 08:13:12 2025 +0200
+
+    Merge branch 'master' of https://github.com/saltzus/RedEngine
+
+[33mcommit 1436608ad4d954db3ed69ec537b8ec2106eb0c9c[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Mar 3 08:24:00 2025 +0200
+
+    Update README.md
+
+[33mcommit 5c8e8ad3bc10f3ded06640144ab9abef79dee92f[m
+Merge: c629b3c 8c43608
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Mon Mar 3 08:13:12 2025 +0200
+
+    Merge branch 'master' of https://github.com/saltzus/RedEngine
+
+[33mcommit c629b3c40ac7702a00a410789116a5f596fd487b[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Fri Feb 21 10:16:21 2025 +0200
+
+    Add ImGui to project (not linked)
+
+[33mcommit 8c43608a70ccb7f9230c854719b80e4c029fbc99[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Fri Feb 21 10:16:21 2025 +0200
+
+    Add ImGui to project (not linked)
+
+[33mcommit ccf8baef7dffe7518fd2cc283f5900fe74412399[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Wed Feb 19 17:09:59 2025 +0200
+
+    Lua system add - Add transformcomponent and shader component to lua and scene and GameObject
+
+[33mcommit 74ad80c97ed33f5220438698f7cc8762ab010564[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Mon Feb 17 15:17:47 2025 +0200
+
+    Add json scene system
+
+[33mcommit e3dfa1e5c3e08976798c845b5d8dbe39a4232d9f[m
+Merge: 3777421 b595dc7
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Tue Feb 11 14:22:46 2025 +0200
+
+    Merge branch 'master' of https://github.com/Saltzus/RED
+
+[33mcommit 377742196016fbf260355c6f0028cdb10a6b0cb4[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Tue Feb 11 14:20:07 2025 +0200
+
+    Can change shaders to render with
+
+[33mcommit b595dc77c1d3b09c666608f56aa22dfab1a42bc1[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Tue Feb 11 14:20:07 2025 +0200
+
+    Can change shaders to render with
+
+[33mcommit 884bcdadc8d275bfb44760e14650455fd9fbf9eb[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Feb 11 11:41:18 2025 +0200
+
+    Different textures for objects is working
+
+[33mcommit aaf9865c43242a17b7f36afc677091ac70e63c1f[m
+Author: Sasu Lahtinen <valtteri.lahtinen@student.vaasa.fi>
+Date:   Mon Jan 20 09:58:16 2025 +0200
+
+    static init function for render class
+
+[33mcommit 645cd4110e5fcc539f1978b2518c2e1088c6c50f[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Wed Jan 15 14:10:16 2025 +0200
+
+    Multiple object rendering working but needs cleaning (render if loop and other vulkan stuff)
+
+[33mcommit 8b4a3f79e1f96635dbb0270965351175c3f4fb0f[m
+Author: Sasu Lahtinen <valtteri.lahtinen@student.vaasa.fi>
+Date:   Tue Jan 14 14:17:00 2025 +0200
+
+    Multiple objects for opengl (todo change model matrix to use push constant)
+
+[33mcommit c216289464f26778c29f2b15385288f9f8efeaa0[m
+Author: Sasu Lahtinen <valtteri.lahtinen@student.vaasa.fi>
+Date:   Mon Jan 13 11:39:45 2025 +0200
+
+    Vulkan and OpenGl looks same
+
+[33mcommit 2807e372a97a71b270f90de377fbb43702f7f1c2[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Wed Jan 8 15:05:10 2025 +0200
+
+    Create Index and Vertex buffers per object
+
+[33mcommit e2c8497d54f3002df79b6485ad52ab4db500541d[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Tue Jan 7 19:49:28 2025 +0200
+
+    Vulkan almost ready
+
+[33mcommit e5801273b551d3a553e3149ef52d3b74889ceb2b[m
+Author: saltzus <sasu.lahtinen@outlook.com>
+Date:   Thu Dec 19 13:55:13 2024 +0200
+
+    Depth testing and textures
+
+[33mcommit 71796008066be243c86d0a02741a5301f340d44a[m
+Author: Lahtinen Sasu <valtteri.lahtinen@student.vaasa.fi>
+Date:   Tue Dec 17 11:40:51 2024 +0200
+
+    dded first part for textures
+
+[33mcommit 71a17fc9817163a31a4d084429a5904d3117e450[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Sat Dec 14 14:16:55 2024 +0200
+
+    Vulkan validation layers on only if in debug
+
+[33mcommit 8240ffee20f94061410c4002b5bf96c4181ced6b[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Sat Dec 14 13:59:38 2024 +0200
+
+    MVP Matrix and rotation stuff
+
+[33mcommit 9c66c6ea315ab24cc6b1c73474b11687ddea6f95[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Wed Dec 11 13:01:09 2024 +0200
+
+    Can resize vulkan window
+
+[33mcommit c1161b743179b30a9dac52fbb43372b5a7e6ced1[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Wed Dec 11 10:10:07 2024 +0200
+
+    Vulkan prints triangle
+
+[33mcommit df60b72a4f8d359114f2537dc28dc6b585b19be5[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 10 08:34:32 2024 +0200
+
+    Vulkan changes
+
+[33mcommit 5bbd33ffd9b0d99a067d99ab1f03d1454674864e[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Wed Dec 4 15:08:10 2024 +0200
+
+    Setup for vulkan made
+
+[33mcommit 954eac68fa999dc3704951fc9efd12b1d1d17c20[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 10:03:14 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit aa8e82f4b62e84b626fb1894080980689670d033[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 10:02:03 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 70dbb8b06209a8ad9f437fff7875e31a59368241[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:29:30 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 78d5eb02021fafcb102263cfae55180f17daf3bf[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:25:02 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 9b21bf9d07dce5e05b65f39d2629f543c5aac165[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:22:52 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit e90fa31e64ff8f5d91981a2af06b5dacc7c4f5c4[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:20:44 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 54e2ae58a2011a454275dfe599a62018e24451e6[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:19:08 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit b7a729054c85dbae3b771b0a8c83d587834f525a[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:16:27 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit b8b01d5c58ca04d65679fffd6b1709040e7fdc80[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:03:51 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit fed58242d48a8f60948f2e5d52ddba4d5143ec9a[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:02:04 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 659b772223ec749d9dc8a44d6c97e0946310e826[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 09:00:15 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 36d40cd5cff10597fbc55a91e508e6aaccd6ee57[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 08:58:59 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit ec5fc3822070e0961b3058b08e8617da3459cd34[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 08:56:01 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 9e402fda9c5a926ffa167fdf10d8c32f631633da[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 08:53:00 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 8f13f82239954f0c842d164b6a2030661f5157df[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 08:51:09 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit f73a85de24c7cc8254723f32133e5618daec9063[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 08:47:23 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 20329d777bb04216c6bc6e64f652058e657a2c85[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 08:42:32 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 889f2d530bd75cb5754edbc3ea974f741c49868a[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 08:39:44 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit f1eb836b8c91460b142833faacedc7cc8221293d[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Tue Dec 3 08:37:19 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 4df6d2aa2a1b285365c5d531b91e19ac56223fd3[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Tue Dec 3 08:35:33 2024 +0200
+
+    Vulkan on LInux
+
+[33mcommit f0048a35ddc64386aa6bedd776f54d3aadba8177[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 19:34:00 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 682f3e9027a51e88ecef8d0ed83926e0b2d0ad1a[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 10:54:57 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit c8bf648f4ee1847111681ebe36f634ff4eb1896e[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 10:53:17 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 62278b7e998f4455a2ad85317b2f120778cddfeb[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 10:44:15 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 168c8918c213f5ee9085f2dae4432f055c7a560a[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 10:22:15 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 88e0699ed4ae7879eb11da17a94b2ba69465f7ce[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 10:20:28 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit b20e10e458b39a50e545b8727d872d4160f48226[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 10:16:54 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 3192e3e2722afc6ef9a034d7d60def2032ba7d5f[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 10:06:16 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 291bf698eeb39bfc2ef48f34e4a6a15b7e4bd836[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 10:03:01 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 21a2652380a63e1e794abc793bdda5a39a1998e9[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 09:57:08 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 464bbb8e5f00518e5cf2badb38858e4bd68bcdd1[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 09:55:20 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit f8b1bd2c2234beb37a0cf460af2de432fb555bfd[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 09:25:54 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 92d6e2914ceed44965f473a4843ef08584b8588e[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 09:19:38 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit f058b9349b30c1b2035f2b5b993c206203fd38d4[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 09:14:23 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 999e24be50bfb038af47a686f4f7cb296addf317[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 09:11:55 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 479b3598d93a25c0fb3a955ca8748789bbb068b1[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 08:57:01 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit a11434ee83833ca806fda817802d971d8f36c198[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 08:48:49 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 75914a3dae68d177b6f33e7e732c75e64c55a884[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 08:45:22 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit cf14963b8f7177101e2ab4319cfdfa107a2c7337[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 08:39:31 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit becf065bc3e38b71a0baf9ae82a5a3cdc5fc00ae[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 08:35:09 2024 +0200
+
+    Update c-cpp.yml
+
+[33mcommit 0a2a4ede5d79a75e8e86386b7adcdbc9787a7e00[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Mon Dec 2 08:32:34 2024 +0200
+
+    Create c-cpp.yml
+
+[33mcommit 4ca392dd5b06b7c4504f7d31aa2c40bc604acd3f[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Sun Dec 1 17:27:51 2024 +0200
+
+    Base for Vulkan done (need to add linux binary files)
+
+[33mcommit 77886585e445c7c88cf0344ce3b66190cdfa454a[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Sun Dec 1 13:49:40 2024 +0200
+
+    Base for Vulkan done (need to add linux binary files)
+
+[33mcommit a2404bfa10bfad3a513c5f56b26c4a2b8c76ec70[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Fri Nov 29 13:22:01 2024 +0200
+
+    Making base for cross api and added base for other stuff too. Cleaned main.cpp
+
+[33mcommit cc239f0e0f2adaff872d90f8532e949a616a5018[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Wed Nov 27 09:18:32 2024 +0200
+
+    Rendering quad with textures
+
+[33mcommit d7ad8a59a46da40c130fe815fce8990b8bdca288[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Thu Nov 21 09:56:17 2024 +0200
+
+    delete zip file
+
+[33mcommit 8643a48a7adf4d39ae6ce13366e0e320ebe52444[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Thu Nov 21 08:46:42 2024 +0200
+
+    Windows include fix
+
+[33mcommit 478e266cc1fd8a3bb48386655f8a798861babcc5[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Thu Nov 21 08:39:56 2024 +0200
+
+    Linux build fix
+
+[33mcommit 1780cf789bc935ece597aaec8ab98a4c7414bc74[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Fri Nov 15 13:15:16 2024 +0200
+
+    Build libraries for Windows
+
+[33mcommit 9e9de556cee527e6d0c3f284459f33d3f8ec27e0[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Fri Nov 15 11:28:32 2024 +0200
+
+    Libraries : <glm, stb_image, miniaudio, freetype> added for linux
+
+[33mcommit 987bf4ea7299aa45a2250cf6f03b5c582c821c4d[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Fri Nov 15 09:18:27 2024 +0200
+
+    glfw and glad working
+
+[33mcommit 35b031b9fadffe671f76ca4229c2ad161bcd05bb[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Fri Nov 15 08:22:32 2024 +0200
+
+    Change file names
+
+[33mcommit 6b1b8b277f8630b63dba1bc7532c715d6aa84c3d[m
+Author: Saltzus <99826354+Saltzus@users.noreply.github.com>
+Date:   Fri Nov 15 08:18:49 2024 +0200
+
+    Update README.md
+
+[33mcommit 3368b6dfb1fb758051c3f80d3f5f64b009d6ed4d[m
+Author: Saltzus <sasu.lahtinen@outlook.com>
+Date:   Thu Nov 14 12:52:31 2024 +0200
+
+    base
+
+[33mcommit d4edaf76031bdafc3e61e375d2064ca5791ef1ee[m
+Author: TheCherno <y@nchernikov.com>
+Date:   Mon Nov 13 15:21:17 2023 +1100
+
+    Initial commit

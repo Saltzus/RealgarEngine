@@ -15,6 +15,8 @@ renderComponent3:setTexture("default")
 
 local renderComponent = object:getComponent("RenderComponent")
 local transformComponent = object:getComponent("TransformComponent")
+local audioListenerComponent = object:getComponent("AudioListenerComponent")
+local audioPlayerComponent = object2:getComponent("AudioPlayerComponent")
 
 local transformComponent2 = object2:getComponent("TransformComponent")
 
@@ -38,7 +40,16 @@ else
     print("ERROR: transformComponent is nil")
 end
 
+audioPlayerComponent:setTexture("test")
+
 function update(deltatime)
     transformComponent.rotation:setZ(250 * deltatime)
     transformComponent2.rotation:setX(250 * deltatime)
+
+    audioPlayerComponent.position:setX(math.sin(deltatime * 10))
+    audioPlayerComponent.position:setZ(math.cos(deltatime * 10))
+
+    currentCamera.rotation:setZ(deltatime * 70)
+    currentCamera.position:setZ(deltatime + 4)
+    --currentCamera:setFov(deltatime * 30)
 end

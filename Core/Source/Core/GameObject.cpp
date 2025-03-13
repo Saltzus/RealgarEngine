@@ -78,6 +78,36 @@ namespace Realgar
                 lua_pushnil(L);
             }
         }
+        else if (strcmp(componentType, "AudioListenerComponent") == 0)
+        {
+            auto component = object->getComponent<Components::AudioListenerComponent>();
+            if (component)
+            {
+                Components::AudioListenerComponent** compPtr = (Components::AudioListenerComponent**)lua_newuserdata(L, sizeof(Components::AudioListenerComponent*));
+                *compPtr = component;
+                luaL_getmetatable(L, "AudioListenerComponent");
+                lua_setmetatable(L, -2);
+            }
+            else
+            {
+                lua_pushnil(L);
+            }
+        }
+        else if (strcmp(componentType, "AudioPlayerComponent") == 0)
+        {
+            auto component = object->getComponent<Components::AudioPlayerComponent>();
+            if (component)
+            {
+                Components::AudioPlayerComponent** compPtr = (Components::AudioPlayerComponent**)lua_newuserdata(L, sizeof(Components::AudioPlayerComponent*));
+                *compPtr = component;
+                luaL_getmetatable(L, "AudioPlayerComponent");
+                lua_setmetatable(L, -2);
+            }
+            else
+            {
+                lua_pushnil(L);
+            }
+        }
         else
         {
             lua_pushstring(L, "Unknown component type");

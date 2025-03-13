@@ -1,47 +1,28 @@
-#include "Camera.h"
+#include "audioListenerComponent.h"
 
-namespace Realgar
+namespace Realgar::Components
 {
-    Camera::Camera(int width, int height, glm::vec3 position, glm::vec3 rotation, float fov, float nearPlane, float farPlane, bool ortho)
+    AudioListenerComponent::AudioListenerComponent() 
     {
-    	Camera::width = width;
-    	Camera::height = height;
-    	cameraPosition = -position;
-        cameraRotation = rotation;
+        ma_engine_listener_set_position(engine, 0, translation.x, translation.y, translation.z);
+    }
+    AudioListenerComponent::~AudioListenerComponent() {}
 
-        this->fov = fov;
-        this->nearPlane = nearPlane;
-        this->farPlane = farPlane;
+    void AudioListenerComponent::update(float deltaTime)
+    {
+        if (parentTranslation == nullptr) return;
+        ma_engine_listener_set_position(engine, 0, parentTranslation->x + translation.x, parentTranslation->x + translation.y, parentTranslation->x + translation.z);
     }
 
-    void Camera::updateMatrix()
-    {
-    	view = glm::mat4(1.0f);
-    	projection = glm::mat4(1.0f);
 
-    	projection = glm::perspective(glm::radians(fov), (float)width / height, nearPlane, farPlane);
-
-        glm::vec3 front;
-        front.x = cos(glm::radians(cameraRotation.x)) * cos(glm::radians(cameraRotation.y - 90));
-        front.y = sin(glm::radians(cameraRotation.x));
-        front.z = cos(glm::radians(cameraRotation.x)) * sin(glm::radians(cameraRotation.y - 90));
-        cameraFront = glm::normalize(front);
-
-        glm::vec3 right = glm::normalize(glm::cross(cameraFront, worldUp));
-        glm::vec3 up = glm::normalize(glm::cross(right, cameraFront));
-        cameraUp = glm::rotate(up, glm::radians(cameraRotation.z), cameraFront);
-
-        view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
-    }
-
-    int setCameraTranslation(lua_State* L) 
+    int setListenerTranslation(lua_State* L) 
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "position");
         float x = (float)luaL_checknumber(L, 2);
         float y = (float)luaL_checknumber(L, 3);
         float z = (float)luaL_checknumber(L, 4);
 
-        if (pos && *pos)
+        if (pos && *pos) 
         {
             (*pos)->x = x;
             (*pos)->y = y;
@@ -49,7 +30,7 @@ namespace Realgar
         }
         return 0;
     }
-    int getCameraTranslation(lua_State* L)
+    int getListenerTranslation(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "position");
         lua_newtable(L);
@@ -67,17 +48,17 @@ namespace Realgar
         lua_settable(L, -3);
         return 1;
     }
-    int setCameraTranslationX(lua_State* L)
+    int setListenerTranslationX(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "position");
         float x = (float)luaL_checknumber(L, 2);
-        if (pos && *pos)
+        if (pos && *pos) 
         {
             (*pos)->x = x;
         }
         return 0;
     }
-    int getCameraTranslationX(lua_State* L)
+    int getListenerTranslationX(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "position");
         lua_newtable(L);
@@ -86,7 +67,7 @@ namespace Realgar
 
         return 1;
     }
-    int setCameraTranslationY(lua_State* L)
+    int setListenerTranslationY(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "position");
         float y = (float)luaL_checknumber(L, 2);
@@ -96,7 +77,7 @@ namespace Realgar
         }
         return 0;
     }
-    int getCameraTranslationY(lua_State* L)
+    int getListenerTranslationY(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "position");
         lua_newtable(L);
@@ -105,7 +86,7 @@ namespace Realgar
 
         return 1;
     }
-    int setCameraTranslationZ(lua_State* L)
+    int setListenerTranslationZ(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "position");
         float z = (float)luaL_checknumber(L, 2);
@@ -115,7 +96,7 @@ namespace Realgar
         }
         return 0;
     }
-    int getCameraTranslationZ(lua_State* L)
+    int getListenerTranslationZ(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "position");
         lua_newtable(L);
@@ -124,12 +105,12 @@ namespace Realgar
 
         return 1;
     }
-    int cameraPosition(lua_State* L) {
-        auto* camera = *(Camera**)luaL_checkudata(L, 1, "Camera");
+    int listenerTransformPosition(lua_State* L) {
+        auto* audioListenerComponent = *(Components::AudioListenerComponent**)luaL_checkudata(L, 1, "AudioListenerComponent");
 
         // Allocate userdata to hold a pointer to glm::vec3
         glm::vec3** pos = (glm::vec3**)lua_newuserdata(L, sizeof(glm::vec3*));
-        *pos = &camera->cameraPosition;  // store the address of translation
+        *pos = &audioListenerComponent->translation;  // store the address of translation
 
         luaL_getmetatable(L, "position");
         lua_setmetatable(L, -2);
@@ -137,17 +118,17 @@ namespace Realgar
         return 1;
     }
     const luaL_Reg position_methods[] = {
-        {"set",  setCameraTranslation},
-        {"get",  getCameraTranslation},
-        {"setX", setCameraTranslationX},
-        {"getX", getCameraTranslationX},
-        {"setY", setCameraTranslationY},
-        {"getY", getCameraTranslationY},
-        {"setZ", setCameraTranslationZ},
-        {"getZ", getCameraTranslationZ},
+        {"set",  setListenerTranslation},
+        {"get",  getListenerTranslation},
+        {"setX", setListenerTranslationX},
+        {"getX", getListenerTranslationX},
+        {"setY", setListenerTranslationY},
+        {"getY", getListenerTranslationY},
+        {"setZ", setListenerTranslationZ},
+        {"getZ", getListenerTranslationZ},
         {NULL, NULL}
     };
-    void registerCameraPosition(lua_State* L)
+    void registerAudioListenerComponentPosition(lua_State* L)
     {
         luaL_newmetatable(L, "position");
 
@@ -159,7 +140,7 @@ namespace Realgar
         lua_pop(L, 1);
     }
 
-    int setCameraRotation(lua_State* L)
+    int setListenerRotation(lua_State* L)
     {
         glm::vec3** rot = (glm::vec3**)luaL_checkudata(L, 1, "rotation");
         float x = (float)luaL_checknumber(L, 2);
@@ -174,7 +155,7 @@ namespace Realgar
         }
         return 0;
     }
-    int getCameraRotation(lua_State* L)
+    int getListenerRotation(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "rotation");
         lua_newtable(L);
@@ -192,7 +173,7 @@ namespace Realgar
         lua_settable(L, -3);
         return 1;
     }
-    int setCameraRotationX(lua_State* L)
+    int setListenerRotationX(lua_State* L)
     {
         glm::vec3** rot = (glm::vec3**)luaL_checkudata(L, 1, "rotation");
         float x = (float)luaL_checknumber(L, 2);
@@ -202,7 +183,7 @@ namespace Realgar
         }
         return 0;
     }
-    int getCameraRotationX(lua_State* L)
+    int getListenerRotationX(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "rotation");
         lua_newtable(L);
@@ -211,7 +192,7 @@ namespace Realgar
 
         return 1;
     }
-    int setCameraRotationY(lua_State* L)
+    int setListenerRotationY(lua_State* L)
     {
         glm::vec3** rot = (glm::vec3**)luaL_checkudata(L, 1, "rotation");
         float y = (float)luaL_checknumber(L, 2);
@@ -221,7 +202,7 @@ namespace Realgar
         }
         return 0;
     }
-    int getCameraRotationY(lua_State* L)
+    int getListenerRotationY(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "rotation");
         lua_newtable(L);
@@ -230,7 +211,7 @@ namespace Realgar
 
         return 1;
     }
-    int setCameraRotationZ(lua_State* L)
+    int setListenerRotationZ(lua_State* L)
     {
         glm::vec3** rot = (glm::vec3**)luaL_checkudata(L, 1, "rotation");
         float z = (float)luaL_checknumber(L, 2);
@@ -240,7 +221,7 @@ namespace Realgar
         }
         return 0;
     }
-    int getCameraRotationZ(lua_State* L)
+    int getListenerRotationZ(lua_State* L)
     {
         glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "rotation");
         lua_newtable(L);
@@ -249,30 +230,30 @@ namespace Realgar
 
         return 1;
     }
-    int cameraRotation(lua_State* L) {
-        auto* camera = *(Camera**)luaL_checkudata(L, 1, "Camera");
+    int listenerTransformRotation(lua_State* L) {
+        auto* transformComponent = *(Components::AudioListenerComponent**)luaL_checkudata(L, 1, "AudioListenerComponent");
 
         // Allocate userdata to hold a pointer to glm::vec3
         glm::vec3** rot = (glm::vec3**)lua_newuserdata(L, sizeof(glm::vec3*));
-        *rot = &camera->cameraRotation;  // store the address of translation
+        *rot = &transformComponent->rotation;  // store the address of translation
 
         luaL_getmetatable(L, "rotation");
         lua_setmetatable(L, -2);
 
         return 1;
     }
-    const luaL_Reg rotation_methods[] = {
-        {"set",  setCameraRotation},
-        {"get",  getCameraRotation},
-        {"setX", setCameraRotationX},
-        {"getX", getCameraRotationX},
-        {"setY", setCameraRotationY},
-        {"getY", getCameraRotationY},
-        {"setZ", setCameraRotationZ},
-        {"getZ", getCameraRotationZ},
+    const luaL_Reg rotation_methods[] ={
+        {"set",  setListenerRotation},
+        {"get",  getListenerRotation},
+        {"setX", setListenerRotationX},
+        {"getX", getListenerRotationX},
+        {"setY", setListenerRotationY},
+        {"getY", getListenerRotationY},
+        {"setZ", setListenerRotationZ},
+        {"getZ", getListenerRotationZ},
         {NULL, NULL}
     };
-    void registerCameraRotation(lua_State* L)
+    void registerAudioListenerComponentRotation(lua_State* L)
     {
         luaL_newmetatable(L, "rotation");
 
@@ -284,52 +265,36 @@ namespace Realgar
         lua_pop(L, 1);
     }
 
-    int cameraSetFov(lua_State* L)
-    {
-        auto* camera = *(Camera**)luaL_checkudata(L, 1, "Camera");
-        float fov = (float)luaL_checknumber(L, 2);
-
-        if (camera && fov)
-            camera->fov = fov;
-
-        return 0;
-    }
-
-    int Camera_index(lua_State* L)
+    int AudioListenerComponent_index(lua_State* L)
     {
         // [1] is the TransformComponent userdata, [2] is the key
         const char* key = luaL_checkstring(L, 2);
         if (strcmp(key, "position") == 0) {
-            return cameraPosition(L); // push the position userdata
+            return listenerTransformPosition(L); // push the position userdata
         }
         if (strcmp(key, "rotation") == 0) {
-            return cameraRotation(L); // push the position userdata
+            return listenerTransformRotation(L); // push the position userdata
         }
-
         // Fallback: look up the key in the metatable
         lua_getmetatable(L, 1);
         lua_pushvalue(L, 2);
         lua_rawget(L, -2);
         return 1;
     }
-    void registerCamera(lua_State* L)
+    void registerAudioListenerComponent(lua_State* L)
     {
-        luaL_newmetatable(L, "Camera");
+        luaL_newmetatable(L, "AudioListenerComponent");
 
-        lua_pushcfunction(L, Camera_index);
+        lua_pushcfunction(L, AudioListenerComponent_index);
         lua_setfield(L, -2, "__index");
-
-        lua_pushstring(L, "setFov");
-        lua_pushcfunction(L, cameraSetFov);
-        lua_settable(L, -3);
 
         lua_pop(L, 1);
     }
 
-    void Camera::registerCamera(lua_State* L)
+    void AudioListenerComponent::registerAudioListenerComponent(lua_State* L)
     {
-        registerCameraPosition(L);
-        registerCameraRotation(L);
-        Realgar::registerCamera(L);
+        registerAudioListenerComponentPosition(L);
+        registerAudioListenerComponentRotation(L);
+        Components::registerAudioListenerComponent(L);
     }
 }

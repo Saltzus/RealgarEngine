@@ -13,12 +13,10 @@ int main(int argc, char** argv)
     Realgar::Renderer::InitApi(window); // TODO : add automatically run compile.bat and add switch to change from opengl to vulkan
 
     Realgar::LuaSystem::Init();
+    Realgar::AudioSystem::Init();
+
     Realgar::Scene scene("Resources/Scenes/Menu.rdsc");
 
-
-    // TODO: change miniaudio to Openal-soft 
-    //RED::Audio audio;
-    //audio.PlayAudio("Resources/Audio/BIG-Trouble.ogg");
 
     while (!glfwWindowShouldClose(window))
     {
@@ -31,6 +29,8 @@ int main(int argc, char** argv)
     }
 
     Realgar::LuaSystem::Close();
+    Realgar::AudioSystem::Close();
+
     glfwTerminate();
     return 0;
 }

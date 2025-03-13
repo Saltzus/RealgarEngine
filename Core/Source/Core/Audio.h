@@ -1,23 +1,23 @@
 #pragma once
 
-#include <miniaudio/miniaudio.h>
-#include <glm/common.hpp>
-#include <iostream>
+#include "AudioSystem.h"
+#include <string>
 
 namespace Realgar
 {
     class Audio
     {
     public:
-        Audio();
+        Audio(std::string path, bool spatialized);
         ~Audio();
 
-        void PlayAudio(const char* audioFile);
-    private:
-        ma_result result;
-        ma_engine engine;
-    };
-    
+        std::string path;
+        bool spatialized;
 
-    
+        ma_sound sound;
+
+    private:
+        ma_engine* engine = Realgar::AudioSystem::getEngine();
+        ma_result result;
+    };
 }

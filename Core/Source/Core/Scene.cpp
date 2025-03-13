@@ -5,6 +5,7 @@ namespace Realgar
 {
     std::map<std::string, Texture*> Scene::current_textures;
     std::map<std::string, Shader*> Scene::current_shaders;
+    std::map<std::string, Audio*> Scene::current_audio;
 
     Scene::Scene(const char* filepath)
     {
@@ -16,19 +17,20 @@ namespace Realgar
 
         json cameraData = sceneData["camera"];
         glm::vec3 cameraTranslation(cameraData["translation"][0], cameraData["translation"][1], cameraData["translation"][2]);
+        glm::vec3 cameraRotation(cameraData["rotation"][0], cameraData["rotation"][1], cameraData["rotation"][2]);
+        float fov = cameraData["fov"];
+        float nearPlane = cameraData["nearPlane"];
+        float farPlane = cameraData["farPlane"];
         camera = new Camera
         (
             SCR_WIDTH, SCR_HEIGHT,
-            cameraTranslation
+            cameraTranslation,
+            cameraRotation,
+            fov,
+            nearPlane,
+            farPlane,
+            false
         );
-
-        // TODO: ADD TO CAMERA
-        //glm::vec3 cameraRotation(cameraData["rotation"][0], cameraData["rotation"][1], cameraData["rotation"][2]);
-        //float fov = cameraData["fov"];
-        //float nearClip = cameraData["nearClip"];
-        //float farClip = cameraData["farClip"];
-
-        // TODO: ADD TEXTURES
 
         for (auto& [name, shdr] : sceneData["shaders"].items())
         {
@@ -50,6 +52,17 @@ namespace Realgar
         }
 
         current_textures = textures;
+
+        for (auto& [name, aud] : sceneData["audio"].items())
+        {
+            std::string file = aud["file"].get<std::string>();
+            bool spatialized = aud["spatialized"].get<bool>();
+            Audio* audio = new Audio(file, spatialized);
+
+            audio_map[name] = audio;
+        }
+
+        current_audio = audio_map;
 
         for (json obj : sceneData["gameObjects"])
         {
@@ -79,6 +92,9 @@ namespace Realgar
 
         for (auto shader : shaders)
             delete shader.second;
+
+        for (auto audio : audio_map)
+            delete audio.second;
     }
 
     void Scene::addComponentsFromJson(json& components, GameObject* object, Scene* scene)
@@ -107,6 +123,41 @@ namespace Realgar
         {
             object->addComponent<Components::ScriptComponent>(object, scene, components["script"].get<std::string>());
         }
+        if (components.contains("audioListener"))
+        {
+            object->addComponent<Components::AudioListenerComponent>();
+            json transformData = components["audioListener"];
+           
+            Components::TransformComponent* transformComponent = object->getComponent<Components::TransformComponent>();
+            Components::AudioListenerComponent* audioListenerComponent = object->getComponent<Components::AudioListenerComponent>();
+
+            if (transformComponent)
+            {
+                audioListenerComponent->parentTranslation = &transformComponent->translation;
+                audioListenerComponent->parentRotation = &transformComponent->rotation;
+            }
+
+            audioListenerComponent->translation = glm::vec3(transformData["translation"][0], transformData["translation"][1], transformData["translation"][2]);
+            audioListenerComponent->rotation = glm::vec3(transformData["rotation"][0], transformData["rotation"][1], transformData["rotation"][2]);
+        }
+        if (components.contains("audioPlayer"))
+        {
+            object->addComponent<Components::AudioPlayerComponent>();
+            json transformData = components["audioPlayer"];
+
+            Components::TransformComponent* transformComponent = object->getComponent<Components::TransformComponent>();
+            Components::AudioPlayerComponent* audioPlayerComponent = object->getComponent<Components::AudioPlayerComponent>();
+            
+            if (transformComponent)
+                audioPlayerComponent->parentTranslation = &transformComponent->translation;
+            
+            audioPlayerComponent->translation = glm::vec3(transformData["translation"][0], transformData["translation"][1], transformData["translation"][2]);
+            
+            if (audio_map.find(transformData["audio"].get<std::string>()) != audio_map.end())
+                audioPlayerComponent->sound = &audio_map[transformData["audio"].get<std::string>()]->sound;
+            else
+                audioPlayerComponent->sound = nullptr;
+        }
     }
 
     void Scene::RenderScene()
@@ -116,7 +167,7 @@ namespace Realgar
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         // TODO: change different place or put here from json
-        camera->updateMatrix(45.0f, 0.01f, 10000.0f, true);
+        camera->updateMatrix();
 
         for (auto object : objects)
         {

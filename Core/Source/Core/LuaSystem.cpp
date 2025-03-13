@@ -13,26 +13,34 @@ namespace Realgar
     {
 		Scene::registerScene(state);
         GameObject::registerGameObject(state);
-
+		Camera::registerCamera(state);
+		
         Components::RenderComponent::registerRenderComponent(state);
 		Components::TransformComponent::registerTransformComponent(state);
+
+		Components::AudioListenerComponent::registerAudioListenerComponent(state);
+		Components::AudioPlayerComponent::registerAudioPlayerComponent(state);
     }
 
 	void LuaSystem::getGlobals(GameObject* object, Scene* scn)
 	{
 		GameObject** obj = (GameObject**)lua_newuserdata(state, sizeof(GameObject*));
 		*obj = object;
-
 		luaL_getmetatable(state, "GameObject");
 		lua_setmetatable(state, -2);
 		lua_setglobal(state, "currentObject");
 
 		Scene** scene = (Scene**)lua_newuserdata(state, sizeof(Scene*));
 		*scene = scn;
-
 		luaL_getmetatable(state, "Scene");
 		lua_setmetatable(state, -2);
 		lua_setglobal(state, "Scene");
+
+		Camera** camera = (Camera**)lua_newuserdata(state, sizeof(Camera*));
+		*camera = scn->camera;
+		luaL_getmetatable(state, "Camera");
+		lua_setmetatable(state, -2);
+		lua_setglobal(state, "currentCamera");
 	}
 
 	void LuaSystem::Init()
