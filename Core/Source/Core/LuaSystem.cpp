@@ -1,6 +1,7 @@
 #include "LuaSystem.h"
 #include "GameObject.h"
 #include "Scene.h"
+#include "Input.h"
 
 namespace Realgar 
 {
@@ -14,6 +15,7 @@ namespace Realgar
 		Scene::registerScene(state);
         GameObject::registerGameObject(state);
 		Camera::registerCamera(state);
+		Input::registerInput(state);
 		
         Components::RenderComponent::registerRenderComponent(state);
 		Components::TransformComponent::registerTransformComponent(state);
@@ -41,6 +43,11 @@ namespace Realgar
 		luaL_getmetatable(state, "Camera");
 		lua_setmetatable(state, -2);
 		lua_setglobal(state, "currentCamera");
+
+		Input** input = (Input**)lua_newuserdata(state, sizeof(Input*));
+		luaL_getmetatable(state, "Input");
+		lua_setmetatable(state, -2);
+		lua_setglobal(state, "Input");
 	}
 
 	void LuaSystem::Init()

@@ -12,6 +12,7 @@ int main(int argc, char** argv)
     Realgar::Window window("RED - Test", SCR_WIDTH, SCR_HEIGHT);
     Realgar::Renderer::InitApi(window); // TODO : add automatically run compile.bat and add switch to change from opengl to vulkan
 
+    Realgar::Input::SetWindow(window);
     Realgar::LuaSystem::Init();
     Realgar::AudioSystem::Init();
 
@@ -21,8 +22,6 @@ int main(int argc, char** argv)
     while (!glfwWindowShouldClose(window))
     {
         scene.RenderScene();
-
-        Realgar::Input::processInput(window);
 
         Realgar::Renderer::RenderGraphics();
         window.Display();

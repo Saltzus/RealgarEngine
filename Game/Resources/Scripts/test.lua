@@ -49,6 +49,20 @@ function update(deltatime)
     audioPlayerComponent.position:setX(math.sin(deltatime * 10))
     audioPlayerComponent.position:setZ(math.cos(deltatime * 10))
 
+	if Input:keyPressed("W") then
+		print("W pressed")
+	end
+	if Input:keyReleased("W") then
+		print("W released")
+	end
+	
+	if Input:mouseButtonPressed("LEFT") then
+		print("LEFT mouse button pressed")
+	end
+	if Input:mouseButtonReleased("LEFT") then
+		print("LEFT mouse button released")
+	end
+	
     currentCamera.rotation:setZ(deltatime * 70)
     currentCamera.position:setZ(deltatime + 4)
     --currentCamera:setFov(deltatime * 30)
