@@ -21,7 +21,7 @@ int main(int argc, char** argv)
 
     while (!glfwWindowShouldClose(window))
     {
-        scene.RenderScene();
+        scene.RenderScene(window);
 
         Realgar::Renderer::RenderGraphics();
         window.Display();

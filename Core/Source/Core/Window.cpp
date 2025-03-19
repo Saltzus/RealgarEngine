@@ -2,6 +2,9 @@
 
 namespace Realgar
 {
+	int Window::viewportWidth = 100, Window::viewportHeight = 100;
+	bool Window::editor = false;
+
 
 	Window::~Window()
 	{
@@ -14,8 +17,11 @@ namespace Realgar
 	/// @param Monitor = The monitor to use for full screen mode, or 'NULL' for windowed mode.
 	/// @param window = Share The window whose context to share resources with, or 'NULL' to not share resources.
 	/// \returns GLFWwindow*
-	Window::Window(const char* WinName, int WinWidth, int WinHeight, GLFWmonitor* monitor, GLFWwindow* window)
+	Window::Window(const char* WinName, int WinWidth, int WinHeight, bool editorMode, GLFWmonitor* monitor, GLFWwindow* window)
 	{
+		this->editor = editorMode;
+		Vulkan::Vulkan::editor = editorMode;
+
 		width = WinWidth;
 		height = WinHeight;
 

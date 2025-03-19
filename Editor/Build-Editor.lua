@@ -6,8 +6,8 @@ project "Editor"
    staticruntime "off"
 
 
-   libdirs { "../Libraries/glfw-3.4", "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib"}
-   files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/freetype/src/**.c"}
+   libdirs { "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib" }
+   files { "Source/**.h", "Source/**.cpp", "../Libraries/ImGui/**.h", "../Libraries/ImGui/**.cpp" }
 
    dependson { "Core" }
 
@@ -42,7 +42,8 @@ project "Editor"
       -- json
       "../Libraries/nlohmann_json",
       -- ImGui
-      "../Libs/ImGui"
+      "../Libraries/ImGui",
+      "../Libraries/ImGui/backends"
    }
 
    links

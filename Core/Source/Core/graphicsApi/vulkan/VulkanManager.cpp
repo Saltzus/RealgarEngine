@@ -3,6 +3,7 @@
 
 namespace Realgar::Vulkan
 {
+    bool Vulkan::editor = false;
     std::vector<VulkanRenderer*> objects;
 
     VulkanTexture::VulkanTexture(const char* filePath)
@@ -89,7 +90,7 @@ namespace Realgar::Vulkan
     }
 
 #ifdef DEBUG
-    const bool enableValidationLayers = false;
+    const bool enableValidationLayers = true;
 #else
     const bool enableValidationLayers = false;
 #endif
@@ -114,23 +115,32 @@ namespace Realgar::Vulkan
         pickPhysicalDevice();
         createLogicalDevice();
         createSwapChain();
+
+        createCommandPool(&commandPool);
+
+        if (editor)
+        {
+            createImGuiImage();
+            createImGuiRenderPass();
+            createImGuiImageViews();
+        }
+
         createImageViews();
         createRenderPass();
+
         createDescriptorSetLayout();
-        //createGraphicsPipeline("Resources/Shaders/default.vert.spv", "Resources/Shaders/default.frag.spv");
-        createCommandPool();
         createDepthResources();
         createFramebuffers();
-        //createTextureImage();
-        //createTextureImageView();
+
+        if (editor)
+            createImGuiFramebuffers();
+
         createTextureSampler();
-        //createVertexBuffer();
-        //createIndexBuffer();
-        //createUniformBuffers();
-        //createDescriptorPool();
-        //createDescriptorSets();
+
         createCommandBuffers();
         createSyncObjects();
+
+        init_info.RenderPass = renderPass;
     }
     Vulkan::~Vulkan()
     {
@@ -146,7 +156,8 @@ namespace Realgar::Vulkan
             vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
         }
 
-
+        
+        vkDestroyDescriptorPool(device, guiDescriptorPool, nullptr);
         vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 
         vkDestroySampler(device, textureSampler, nullptr);
@@ -198,6 +209,17 @@ namespace Realgar::Vulkan
             vkDestroyImageView(device, imageView, nullptr);
         }
 
+        if (editor)
+        {
+            for (auto framebuffer : imGuiFramebuffers) {
+                vkDestroyFramebuffer(device, framebuffer, nullptr);
+            }
+
+            for (auto imageView : imGuiImageViews) {
+                vkDestroyImageView(device, imageView, nullptr);
+            }
+        }
+
         vkDestroySwapchainKHR(device, swapChain, nullptr);
     }
     void Vulkan::recreateSwapChain() {
@@ -211,10 +233,19 @@ namespace Realgar::Vulkan
         vkDeviceWaitIdle(device);
 
         cleanupSwapChain();
-
         createSwapChain();
+
         createImageViews();
         createDepthResources();
+
+        if (editor)
+        {
+            createImGuiImage();
+            createImGuiImageViews();
+            addSceneImages();
+            createImGuiFramebuffers();
+        }
+
         createFramebuffers();
     }
 
@@ -380,15 +411,18 @@ namespace Realgar::Vulkan
         createInfo.enabledExtensionCount = static_cast<uint32_t>(deviceExtensions.size());
         createInfo.ppEnabledExtensionNames = deviceExtensions.data();
 
-        if (enableValidationLayers) {
+        if (enableValidationLayers) 
+        {
             createInfo.enabledLayerCount = static_cast<uint32_t>(validationLayers.size());
             createInfo.ppEnabledLayerNames = validationLayers.data();
         }
-        else {
+        else 
+        {
             createInfo.enabledLayerCount = 0;
         }
 
-        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) {
+        if (vkCreateDevice(physicalDevice, &createInfo, nullptr, &device) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to create logical device!");
         }
 
@@ -396,7 +430,8 @@ namespace Realgar::Vulkan
         vkGetDeviceQueue(device, indices.presentFamily.value(), 0, &presentQueue);
     }
 
-    void Vulkan::createSwapChain() {
+    void Vulkan::createSwapChain() 
+    {
         Vulkan::SwapChainSupportDetails swapChainSupport = querySwapChainSupport(physicalDevice);
 
         VkSurfaceFormatKHR surfaceFormat = chooseSwapSurfaceFormat(swapChainSupport.formats);
@@ -404,7 +439,8 @@ namespace Realgar::Vulkan
         VkExtent2D extent = chooseSwapExtent(swapChainSupport.capabilities);
 
         uint32_t imageCount = swapChainSupport.capabilities.minImageCount + 1;
-        if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) {
+        if (swapChainSupport.capabilities.maxImageCount > 0 && imageCount > swapChainSupport.capabilities.maxImageCount) 
+        {
             imageCount = swapChainSupport.capabilities.maxImageCount;
         }
 
@@ -422,12 +458,14 @@ namespace Realgar::Vulkan
         QueueFamilyIndices indices = findQueueFamilies(physicalDevice);
         uint32_t queueFamilyIndices[] = { indices.graphicsFamily.value(), indices.presentFamily.value() };
 
-        if (indices.graphicsFamily != indices.presentFamily) {
+        if (indices.graphicsFamily != indices.presentFamily) 
+        {
             createInfo.imageSharingMode = VK_SHARING_MODE_CONCURRENT;
             createInfo.queueFamilyIndexCount = 2;
             createInfo.pQueueFamilyIndices = queueFamilyIndices;
         }
-        else {
+        else 
+        {
             createInfo.imageSharingMode = VK_SHARING_MODE_EXCLUSIVE;
         }
 
@@ -436,9 +474,13 @@ namespace Realgar::Vulkan
         createInfo.presentMode = presentMode;
         createInfo.clipped = VK_TRUE;
 
-        if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) {
+        if (vkCreateSwapchainKHR(device, &createInfo, nullptr, &swapChain) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to create swap chain!");
         }
+
+        if (editor)
+            initImgui(imageCount);
 
         vkGetSwapchainImagesKHR(device, swapChain, &imageCount, nullptr);
         swapChainImages.resize(imageCount);
@@ -537,6 +579,34 @@ namespace Realgar::Vulkan
             }
         }
     }
+    void Vulkan::createImGuiImageViews()
+    {
+        imGuiImageViews.resize(swapChainImages.size());
+
+        for (size_t i = 0; i < swapChainImages.size(); i++)
+        {
+            VkImageViewCreateInfo createInfo{};
+            createInfo.sType = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
+            createInfo.image = imGuiImages[i];
+            createInfo.viewType = VK_IMAGE_VIEW_TYPE_2D;
+            createInfo.format = swapChainImageFormat;
+            createInfo.components.r = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.g = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.b = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.components.a = VK_COMPONENT_SWIZZLE_IDENTITY;
+            createInfo.subresourceRange.aspectMask = VK_IMAGE_ASPECT_COLOR_BIT;
+            createInfo.subresourceRange.baseMipLevel = 0;
+            createInfo.subresourceRange.levelCount = 1;
+            createInfo.subresourceRange.baseArrayLayer = 0;
+            createInfo.subresourceRange.layerCount = 1;
+
+            if (vkCreateImageView(device, &createInfo, nullptr, &imGuiImageViews[i]) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to create image views!");
+            }
+        }
+    }
+
     void Vulkan::createDescriptorSetLayout() 
     {
         VkDescriptorSetLayoutBinding uboLayoutBinding{};
@@ -618,7 +688,7 @@ namespace Realgar::Vulkan
     void Vulkan::createGraphicsPipeline(std::string vertexFile, std::string fragmentFile)
     {
         graphicsPipelines.insert({ {vertexFile, fragmentFile}, VkPipeline() });
-        VulkanGraphicsPipeline sus(vertexFile, fragmentFile, device, descriptorSetLayout, renderPass, pipelineLayout, graphicsPipelines[{vertexFile, fragmentFile}]);
+        VulkanGraphicsPipeline pipeline(vertexFile, fragmentFile, device, descriptorSetLayout, renderPass, pipelineLayout, graphicsPipelines[{vertexFile, fragmentFile}]);
     }
 
     void Vulkan::recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex) 
@@ -632,8 +702,8 @@ namespace Realgar::Vulkan
 
         VkRenderPassBeginInfo renderPassInfo{};
         renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
-        renderPassInfo.renderPass = renderPass;
-        renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
+        renderPassInfo.renderPass = editor ? imGuiRenderPass : renderPass;
+        renderPassInfo.framebuffer = editor ? imGuiFramebuffers[imageIndex] : swapChainFramebuffers[imageIndex];
         renderPassInfo.renderArea.offset = { 0, 0 };
         renderPassInfo.renderArea.extent = swapChainExtent;
 
@@ -645,7 +715,6 @@ namespace Realgar::Vulkan
         renderPassInfo.pClearValues = clearValues.data();
 
         vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
-
 
         VkViewport viewport{};
         viewport.x = 0.0f;
@@ -678,15 +747,47 @@ namespace Realgar::Vulkan
         }
 
         ubo.clear();
-        objects.clear();
+        objects.clear(); 
 
         vkCmdEndRenderPass(commandBuffer);
 
         if (vkEndCommandBuffer(commandBuffer) != VK_SUCCESS) {
             throw std::runtime_error("failed to record command buffer!");
         }
+
     }
-    void Vulkan::createCommandPool() {
+
+    void Vulkan::recordImGuiCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex)
+    {
+        // vkResetCommandPool(m_Device, m_ImGuiCommandPool, 0);
+        VkCommandBufferBeginInfo info = {};
+        info.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
+        info.flags |= VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
+        vkBeginCommandBuffer(commandBuffer, &info);
+
+        VkRenderPassBeginInfo renderPassInfo = {};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
+        renderPassInfo.renderPass = renderPass;
+        renderPassInfo.framebuffer = swapChainFramebuffers[imageIndex];
+        renderPassInfo.renderArea.offset = { 0, 0 };
+        renderPassInfo.renderArea.extent = swapChainExtent;
+       
+        std::array<VkClearValue, 2> clearValues{};
+        clearValues[0].color = { {0.0f, 0.0f, 0.0f, 1.0f} };
+        clearValues[1].depthStencil = { 1.0f, 0 };
+
+        renderPassInfo.clearValueCount = static_cast<uint32_t>(clearValues.size());
+        renderPassInfo.pClearValues = clearValues.data();
+        vkCmdBeginRenderPass(commandBuffer, &renderPassInfo, VK_SUBPASS_CONTENTS_INLINE);
+
+        // Record dear imgui primitives into command buffer
+        ImGui_ImplVulkan_RenderDrawData(ImGui::GetDrawData(), commandBuffer);
+
+        vkCmdEndRenderPass(commandBuffer);
+        vkEndCommandBuffer(commandBuffer);
+    }
+
+    void Vulkan::createCommandPool(VkCommandPool* commandpool) {
         QueueFamilyIndices queueFamilyIndices = findQueueFamilies(physicalDevice);
 
         VkCommandPoolCreateInfo poolInfo{};
@@ -694,7 +795,7 @@ namespace Realgar::Vulkan
         poolInfo.flags = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT;
         poolInfo.queueFamilyIndex = queueFamilyIndices.graphicsFamily.value();
 
-        if (vkCreateCommandPool(device, &poolInfo, nullptr, &commandPool) != VK_SUCCESS) {
+        if (vkCreateCommandPool(device, &poolInfo, nullptr, commandpool) != VK_SUCCESS) {
             throw std::runtime_error("failed to create command pool!");
         }
     }
@@ -739,15 +840,27 @@ namespace Realgar::Vulkan
     void Vulkan::createCommandBuffers() 
     {
         commandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
-
+        
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool = commandPool;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
         allocInfo.commandBufferCount = (uint32_t)commandBuffers.size();
 
-        if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) {
+        if (vkAllocateCommandBuffers(device, &allocInfo, commandBuffers.data()) != VK_SUCCESS) 
+        {
             throw std::runtime_error("failed to allocate command buffers!");
+        }
+
+        if (editor)
+        {
+            imGuiCommandBuffers.resize(MAX_FRAMES_IN_FLIGHT);
+            allocInfo.commandBufferCount = (uint32_t)imGuiCommandBuffers.size();
+
+            if (vkAllocateCommandBuffers(device, &allocInfo, imGuiCommandBuffers.data()) != VK_SUCCESS)
+            {
+                throw std::runtime_error("failed to allocate command buffers!");
+            }
         }
     }
     void Vulkan::updateUniformBuffer(uint32_t currentImage, VulkanRenderer* object) 
@@ -808,14 +921,29 @@ namespace Realgar::Vulkan
             throw std::runtime_error("failed to acquire swap chain image!");
         }
 
-        //updateUniformBuffer(currentFrame); /////////////////
-
         vkResetFences(device, 1, &inFlightFences[currentFrame]);
 
-        vkResetCommandBuffer(commandBuffers[currentFrame], /*VkCommandBufferResetFlagBits*/ 0);
+        vkResetCommandBuffer(commandBuffers[currentFrame], 0);
         recordCommandBuffer(commandBuffers[currentFrame], imageIndex);
 
+
         VkSubmitInfo submitInfo{};
+        std::array<VkCommandBuffer, 2> submitCommandBuffers;
+
+        if (editor)
+        {
+            vkResetCommandBuffer(imGuiCommandBuffers[currentFrame], 0);
+            recordImGuiCommandBuffer(imGuiCommandBuffers[currentFrame], imageIndex);
+            submitInfo.commandBufferCount = 2;
+            submitCommandBuffers = { commandBuffers[currentFrame], imGuiCommandBuffers[currentFrame] };
+        }
+        else
+        {
+            submitInfo.commandBufferCount = 1;
+            submitCommandBuffers = { commandBuffers[currentFrame] };
+        }
+
+        
         submitInfo.sType = VK_STRUCTURE_TYPE_SUBMIT_INFO;
 
         VkSemaphore waitSemaphores[] = { imageAvailableSemaphores[currentFrame] };
@@ -824,8 +952,7 @@ namespace Realgar::Vulkan
         submitInfo.pWaitSemaphores = waitSemaphores;
         submitInfo.pWaitDstStageMask = waitStages;
 
-        submitInfo.commandBufferCount = 1;
-        submitInfo.pCommandBuffers = &commandBuffers[currentFrame];
+        submitInfo.pCommandBuffers = submitCommandBuffers.data() ;
 
         VkSemaphore signalSemaphores[] = { renderFinishedSemaphores[currentFrame] };
         submitInfo.signalSemaphoreCount = 1;
@@ -857,10 +984,12 @@ namespace Realgar::Vulkan
             throw std::runtime_error("failed to present swap chain image!");
         }
 
+        currentSceneImage = imageIndex;
         currentFrame = (currentFrame + 1) % MAX_FRAMES_IN_FLIGHT;
     }
 
     void Vulkan::createFramebuffers() {
+
         swapChainFramebuffers.resize(swapChainImageViews.size());
 
         for (size_t i = 0; i < swapChainImageViews.size(); i++) {
@@ -883,6 +1012,32 @@ namespace Realgar::Vulkan
             }
         }
     }
+    void Vulkan::createImGuiFramebuffers()
+    {
+        imGuiFramebuffers.resize(imGuiImageViews.size());
+
+        for (size_t i = 0; i < imGuiImageViews.size(); i++)
+        {
+            std::array<VkImageView, 2> attachments = {
+                imGuiImageViews[i],
+                depthImageView
+            };
+
+            VkFramebufferCreateInfo framebufferInfo{};
+            framebufferInfo.sType = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
+            framebufferInfo.renderPass = imGuiRenderPass;
+            framebufferInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+            framebufferInfo.pAttachments = attachments.data();
+            framebufferInfo.width = swapChainExtent.width;
+            framebufferInfo.height = swapChainExtent.height;
+            framebufferInfo.layers = 1;
+
+            if (vkCreateFramebuffer(device, &framebufferInfo, nullptr, &imGuiFramebuffers[i]) != VK_SUCCESS) {
+                throw std::runtime_error("failed to create framebuffer!");
+            }
+        }
+    }
+
     void Vulkan::createRenderPass() {
         VkAttachmentDescription colorAttachment{};
         colorAttachment.format = swapChainImageFormat;
@@ -939,6 +1094,64 @@ namespace Realgar::Vulkan
         if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &renderPass) != VK_SUCCESS) {
             throw std::runtime_error("failed to create render pass!");
         }
+    }
+
+    void Vulkan::createImGuiRenderPass()
+    {
+        VkAttachmentDescription colorAttachment{};
+        colorAttachment.format = swapChainImageFormat;
+        colorAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+        colorAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        colorAttachment.storeOp = VK_ATTACHMENT_STORE_OP_STORE;
+        colorAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        colorAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        colorAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        colorAttachment.finalLayout = VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL;
+
+        VkAttachmentDescription depthAttachment{};
+        depthAttachment.format = findDepthFormat();
+        depthAttachment.samples = VK_SAMPLE_COUNT_1_BIT;
+        depthAttachment.loadOp = VK_ATTACHMENT_LOAD_OP_CLEAR;
+        depthAttachment.storeOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        depthAttachment.stencilLoadOp = VK_ATTACHMENT_LOAD_OP_DONT_CARE;
+        depthAttachment.stencilStoreOp = VK_ATTACHMENT_STORE_OP_DONT_CARE;
+        depthAttachment.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+        depthAttachment.finalLayout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+        VkAttachmentReference colorAttachmentRef{};
+        colorAttachmentRef.attachment = 0;
+        colorAttachmentRef.layout = VK_IMAGE_LAYOUT_COLOR_ATTACHMENT_OPTIMAL;
+
+        VkAttachmentReference depthAttachmentRef{};
+        depthAttachmentRef.attachment = 1;
+        depthAttachmentRef.layout = VK_IMAGE_LAYOUT_DEPTH_STENCIL_ATTACHMENT_OPTIMAL;
+
+        VkSubpassDescription subpass{};
+        subpass.pipelineBindPoint = VK_PIPELINE_BIND_POINT_GRAPHICS;
+        subpass.colorAttachmentCount = 1;
+        subpass.pColorAttachments = &colorAttachmentRef;
+        subpass.pDepthStencilAttachment = &depthAttachmentRef;
+
+        VkSubpassDependency dependency = {};
+        dependency.srcSubpass = VK_SUBPASS_EXTERNAL;
+        dependency.dstSubpass = 0;
+        dependency.srcStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+        dependency.srcAccessMask = 0;
+        dependency.dstStageMask = VK_PIPELINE_STAGE_COLOR_ATTACHMENT_OUTPUT_BIT | VK_PIPELINE_STAGE_EARLY_FRAGMENT_TESTS_BIT;
+        dependency.dstAccessMask = VK_ACCESS_COLOR_ATTACHMENT_WRITE_BIT | VK_ACCESS_DEPTH_STENCIL_ATTACHMENT_WRITE_BIT;
+
+        std::array<VkAttachmentDescription, 2> attachments = { colorAttachment, depthAttachment };
+        VkRenderPassCreateInfo renderPassInfo{};
+        renderPassInfo.sType = VK_STRUCTURE_TYPE_RENDER_PASS_CREATE_INFO;
+        renderPassInfo.attachmentCount = static_cast<uint32_t>(attachments.size());
+        renderPassInfo.pAttachments = attachments.data();
+        renderPassInfo.subpassCount = 1;
+        renderPassInfo.pSubpasses = &subpass;
+        renderPassInfo.dependencyCount = 1;
+        renderPassInfo.pDependencies = &dependency;
+
+        if (vkCreateRenderPass(device, &renderPassInfo, nullptr, &imGuiRenderPass) != VK_SUCCESS)
+            throw std::runtime_error("failed to create render pass!");
     }
 
     void Vulkan::createTextureImageView() {
@@ -1021,8 +1234,92 @@ namespace Realgar::Vulkan
 
         vkBindImageMemory(device, image, imageMemory, 0);
     }
+    void insertImageMemoryBarrier(VkCommandBuffer cmdbuffer,
+        VkImage image,
+        VkAccessFlags srcAccessMask,
+        VkAccessFlags dstAccessMask,
+        VkImageLayout oldImageLayout,
+        VkImageLayout newImageLayout,
+        VkPipelineStageFlags srcStageMask,
+        VkPipelineStageFlags dstStageMask,
+        VkImageSubresourceRange subresourceRange)
+    {
+        VkImageMemoryBarrier imageMemoryBarrier{};
+        imageMemoryBarrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        imageMemoryBarrier.srcQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        imageMemoryBarrier.dstQueueFamilyIndex = VK_QUEUE_FAMILY_IGNORED;
+        imageMemoryBarrier.srcAccessMask = srcAccessMask;
+        imageMemoryBarrier.dstAccessMask = dstAccessMask;
+        imageMemoryBarrier.oldLayout = oldImageLayout;
+        imageMemoryBarrier.newLayout = newImageLayout;
+        imageMemoryBarrier.image = image;
+        imageMemoryBarrier.subresourceRange = subresourceRange;
+
+        vkCmdPipelineBarrier(
+            cmdbuffer,
+            srcStageMask,
+            dstStageMask,
+            0,
+            0, nullptr,
+            0, nullptr,
+            1, &imageMemoryBarrier);
+    }
+    void Vulkan::createImGuiImage() 
+    {
+        imGuiImages.resize(swapChainImages.size());
+        sceneImageMemory.resize(swapChainImages.size());
+
+        for (uint32_t i = 0; i < swapChainImages.size(); i++) 
+        {
+            VkImageCreateInfo imageCreateCI{};
+            imageCreateCI.sType = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
+            imageCreateCI.imageType = VK_IMAGE_TYPE_2D;
+            imageCreateCI.format = swapChainImageFormat;
+            imageCreateCI.extent.width = swapChainExtent.width;
+            imageCreateCI.extent.height = swapChainExtent.height;
+            imageCreateCI.extent.depth = 1;
+            imageCreateCI.mipLevels = 1;
+            imageCreateCI.arrayLayers = 1;
+            imageCreateCI.samples = VK_SAMPLE_COUNT_1_BIT;
+            imageCreateCI.tiling = VK_IMAGE_TILING_OPTIMAL;
+            imageCreateCI.usage = VK_IMAGE_USAGE_COLOR_ATTACHMENT_BIT | VK_IMAGE_USAGE_SAMPLED_BIT | VK_IMAGE_USAGE_TRANSFER_DST_BIT;
+            imageCreateCI.sharingMode = VK_SHARING_MODE_EXCLUSIVE;
+            imageCreateCI.initialLayout = VK_IMAGE_LAYOUT_UNDEFINED;
+
+            if (vkCreateImage(device, &imageCreateCI, nullptr, &imGuiImages[i]) != VK_SUCCESS) {
+                throw std::runtime_error("failed to create ImGui image!");
+            }
+
+            VkMemoryRequirements memRequirements;
+            vkGetImageMemoryRequirements(device, imGuiImages[i], &memRequirements);
+
+            VkMemoryAllocateInfo allocInfo{};
+            allocInfo.sType = VK_STRUCTURE_TYPE_MEMORY_ALLOCATE_INFO;
+            allocInfo.allocationSize = memRequirements.size;
+            allocInfo.memoryTypeIndex = findMemoryType(memRequirements.memoryTypeBits, VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT);
+
+            if (vkAllocateMemory(device, &allocInfo, nullptr, &sceneImageMemory[i]) != VK_SUCCESS) {
+                throw std::runtime_error("failed to allocate memory for ImGui image!");
+            }
+            vkBindImageMemory(device, imGuiImages[i], sceneImageMemory[i], 0);
+
+            VkCommandBuffer copyCmd = beginSingleTimeCommands(commandPool);
+            insertImageMemoryBarrier(
+                copyCmd,
+                imGuiImages[i],
+                0,
+                VK_ACCESS_SHADER_READ_BIT,
+                VK_IMAGE_LAYOUT_UNDEFINED,
+                VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL,
+                VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT,
+                VK_PIPELINE_STAGE_FRAGMENT_SHADER_BIT,
+                VkImageSubresourceRange{ VK_IMAGE_ASPECT_COLOR_BIT, 0, 1, 0, 1 }
+            );
+            endSingleTimeCommands(copyCmd, commandPool);
+        }
+    }
     void Vulkan::transitionImageLayout(VkImage image, VkFormat format, VkImageLayout oldLayout, VkImageLayout newLayout) {
-        VkCommandBuffer commandBuffer = beginSingleTimeCommands();
+        VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool);
 
         VkImageMemoryBarrier barrier{};
         barrier.sType = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
@@ -1067,10 +1364,10 @@ namespace Realgar::Vulkan
             1, &barrier
         );
 
-        endSingleTimeCommands(commandBuffer);
+        endSingleTimeCommands(commandBuffer, commandPool);
     }
     void Vulkan::copyBufferToImage(VkBuffer buffer, VkImage image, uint32_t width, uint32_t height) {
-        VkCommandBuffer commandBuffer = beginSingleTimeCommands();
+        VkCommandBuffer commandBuffer = beginSingleTimeCommands(commandPool);
 
         VkBufferImageCopy region{};
         region.bufferOffset = 0;
@@ -1089,7 +1386,7 @@ namespace Realgar::Vulkan
 
         vkCmdCopyBufferToImage(commandBuffer, buffer, image, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 1, &region);
 
-        endSingleTimeCommands(commandBuffer);
+        endSingleTimeCommands(commandBuffer, commandPool);
     }
 
     std::pair<VkBuffer, VkDeviceMemory> Vulkan::createVertexBuffer(std::vector<GLfloat>& verticess)
@@ -1159,11 +1456,11 @@ namespace Realgar::Vulkan
         return { uniformBuffers , uniformBuffersMapped };
     }
 
-    VkCommandBuffer Vulkan::beginSingleTimeCommands() {
+    VkCommandBuffer Vulkan::beginSingleTimeCommands(const VkCommandPool& cmdPool) {
         VkCommandBufferAllocateInfo allocInfo{};
         allocInfo.sType = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.level = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-        allocInfo.commandPool = commandPool;
+        allocInfo.commandPool = cmdPool;
         allocInfo.commandBufferCount = 1;
 
         VkCommandBuffer commandBuffer;
@@ -1177,7 +1474,7 @@ namespace Realgar::Vulkan
 
         return commandBuffer;
     }
-    void Vulkan::endSingleTimeCommands(VkCommandBuffer commandBuffer) {
+    void Vulkan::endSingleTimeCommands(VkCommandBuffer commandBuffer, const VkCommandPool& cmdPool) {
         vkEndCommandBuffer(commandBuffer);
 
         VkSubmitInfo submitInfo{};
@@ -1365,6 +1662,50 @@ namespace Realgar::Vulkan
         std::cerr << "validation layer: " << pCallbackData->pMessage << std::endl;
 
         return VK_FALSE;
+    }
+
+    void Vulkan::initImgui(uint32_t imageCount)
+    {
+        VkDescriptorPoolSize pool_sizes[] =
+        {
+            { VK_DESCRIPTOR_TYPE_SAMPLER, 1000 },
+            { VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER, 1000 },
+            { VK_DESCRIPTOR_TYPE_SAMPLED_IMAGE, 1000 },
+            { VK_DESCRIPTOR_TYPE_STORAGE_IMAGE, 1000 },
+            { VK_DESCRIPTOR_TYPE_UNIFORM_TEXEL_BUFFER, 1000 },
+            { VK_DESCRIPTOR_TYPE_STORAGE_TEXEL_BUFFER, 1000 },
+            { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER, 1000 },
+            { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER, 1000 },
+            { VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER_DYNAMIC, 1000 },
+            { VK_DESCRIPTOR_TYPE_STORAGE_BUFFER_DYNAMIC, 1000 },
+            { VK_DESCRIPTOR_TYPE_INPUT_ATTACHMENT, 1000 }
+        };
+
+        VkDescriptorPoolCreateInfo pool_info = {};
+        pool_info.sType = VK_STRUCTURE_TYPE_DESCRIPTOR_POOL_CREATE_INFO;
+        pool_info.flags = VK_DESCRIPTOR_POOL_CREATE_FREE_DESCRIPTOR_SET_BIT;
+        pool_info.maxSets = 1000 * IM_ARRAYSIZE(pool_sizes);
+        pool_info.poolSizeCount = (uint32_t)IM_ARRAYSIZE(pool_sizes);
+        pool_info.pPoolSizes = pool_sizes;
+        vkCreateDescriptorPool(device, &pool_info, nullptr, &guiDescriptorPool);
+
+        init_info.Instance = instance;
+        init_info.PhysicalDevice = physicalDevice;
+        init_info.Device = device;
+        init_info.QueueFamily = findQueueFamilies(physicalDevice).graphicsFamily.value();
+        init_info.Queue = presentQueue;
+        init_info.PipelineCache = VK_NULL_HANDLE;
+        init_info.DescriptorPool = guiDescriptorPool;
+        init_info.MinImageCount = imageCount;
+        init_info.ImageCount = imageCount;
+        init_info.MSAASamples = VK_SAMPLE_COUNT_1_BIT;
+    }
+
+    void Vulkan::addSceneImages()
+    {
+        sceneImages.resize(imGuiImageViews.size());
+        for (uint32_t i = 0; i < imGuiImageViews.size(); i++)
+            sceneImages[i] = ImGui_ImplVulkan_AddTexture(textureSampler, imGuiImageViews[i], VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
     }
 
     std::vector<uint16_t> convertIndices(const std::vector<GLuint>& indices) {

@@ -100,10 +100,9 @@ project "freetype2"
   symbols "On"
 
   filter "configurations:Dist"
-  defines { "DIST" }
+  defines { "RELEASE" }
   runtime "Release"
-  optimize "On"
-  symbols "Off"
+  optimize "off"
 
 
   -- External dependency settings.

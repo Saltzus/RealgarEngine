@@ -36,9 +36,9 @@ namespace Realgar
         float nearPlane;
         float farPlane;
 
-    	Camera(int width, int height, glm::vec3 position, glm::vec3 rotation, float fov,  float nearPlane, float farPlane, bool ortho);
+    	Camera(glm::vec3 position, glm::vec3 rotation, float fov,  float nearPlane, float farPlane, bool ortho);
 
-    	void updateMatrix();
+    	void updateMatrix(GLFWwindow* window);
     	void Matrix(Shader& shader, const char* uniform);
 
         static void registerCamera(lua_State* L);

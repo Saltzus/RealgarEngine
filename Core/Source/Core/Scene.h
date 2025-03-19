@@ -23,13 +23,15 @@ namespace Realgar
         std::string addObject(std::string);
         GameObject* getObject(std::string);
 
+        std::map<std::string, GameObject*> objects;
+
         Camera* camera = nullptr;
-        void RenderScene();
+        void RenderScene(GLFWwindow* window);
     private:
         void addComponentsFromJson(json& componentData, GameObject* object, Scene* scene);
         json sceneData;
 
-        std::map<std::string, GameObject*> objects;
+        
         std::map<std::string, Texture*> textures;
         std::map<std::string, Shader*> shaders;
         std::map<std::string , Audio*> audio_map;

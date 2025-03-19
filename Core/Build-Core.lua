@@ -7,7 +7,7 @@ project "Core"
 
    
    libdirs { "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib"}
-   files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/freetype/src/**.c"}
+   files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/ImGui/**.h", "../Libraries/ImGui/**.cpp"}
 
    dependson { "Lua", "freetype2", "glfw3" }
 
@@ -38,7 +38,10 @@ project "Core"
       -- miniaudio
       "../Libraries/miniaudio",
       -- json
-      "../Libraries/nlohmann_json"
+      "../Libraries/nlohmann_json",
+      -- ImGui
+      "../Libraries/ImGui",
+      "../Libraries/ImGui/backends"
    }
 
    links

@@ -19,6 +19,7 @@ namespace Realgar
 			const char* WinName,
 			int WinWidth,
 			int WinHeight,
+			bool editorMode = false,
 			GLFWmonitor* monitor = NULL, 
 			GLFWwindow* window = NULL
 		);
@@ -31,6 +32,9 @@ namespace Realgar
 		int width = 0;
 		int height = 0;
 		bool resised = false;
+
+		static bool editor;
+		static int viewportWidth, viewportHeight;
 
 		operator GLFWwindow* () const 
 		{

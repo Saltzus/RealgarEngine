@@ -40,10 +40,19 @@ namespace Realgar::Opengl
         Opengl(GLFWwindow* window);
         ~Opengl();
 
+        static void RescaleFramebuffer();
+
+        static GLFWwindow* window;
+
         static GLuint UBO;
+
+        static GLuint FBO;
+        static GLuint RBO;
+        static GLuint framebufferTexture;
 
         static std::vector<std::pair<GLuint, GLuint>> vbos_ebos;
     private:
+
     };
 
     class OpenglRenderer : public RendererImpl

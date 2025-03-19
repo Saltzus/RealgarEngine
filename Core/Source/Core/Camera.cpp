@@ -2,10 +2,8 @@
 
 namespace Realgar
 {
-    Camera::Camera(int width, int height, glm::vec3 position, glm::vec3 rotation, float fov, float nearPlane, float farPlane, bool ortho)
+    Camera::Camera(glm::vec3 position, glm::vec3 rotation, float fov, float nearPlane, float farPlane, bool ortho)
     {
-    	Camera::width = width;
-    	Camera::height = height;
     	cameraPosition = -position;
         cameraRotation = rotation;
 
@@ -14,13 +12,21 @@ namespace Realgar
         this->farPlane = farPlane;
     }
 
-    void Camera::updateMatrix()
+    void Camera::updateMatrix(GLFWwindow* window)
     {
     	view = glm::mat4(1.0f);
     	projection = glm::mat4(1.0f);
 
-    	projection = glm::perspective(glm::radians(fov), (float)width / height, nearPlane, farPlane);
+        if (Window::editor)
+        {
+            width = Window::viewportWidth;
+            height = Window::viewportHeight;
+        }
+        else
+            glfwGetFramebufferSize(window, &width, &height);
 
+    	projection = glm::perspective(glm::radians(fov), (float)width / height, nearPlane, farPlane);
+        
         glm::vec3 front;
         front.x = cos(glm::radians(cameraRotation.x)) * cos(glm::radians(cameraRotation.y - 90));
         front.y = sin(glm::radians(cameraRotation.x));

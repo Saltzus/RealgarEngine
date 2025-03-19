@@ -23,7 +23,6 @@ namespace Realgar
         float farPlane = cameraData["farPlane"];
         camera = new Camera
         (
-            SCR_WIDTH, SCR_HEIGHT,
             cameraTranslation,
             cameraRotation,
             fov,
@@ -160,14 +159,23 @@ namespace Realgar
         }
     }
 
-    void Scene::RenderScene()
+    void Scene::RenderScene(GLFWwindow* window)
     {
         static auto startTime = std::chrono::high_resolution_clock::now();
         auto currentTime = std::chrono::high_resolution_clock::now();
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         // TODO: change different place or put here from json
-        camera->updateMatrix();
+        camera->updateMatrix(window);
+
+        if (Realgar::Renderer::GetGraphicsApi() == Realgar::GraphicsApis::OpenGL && Window::editor)
+        {
+            Realgar::Opengl::Opengl::RescaleFramebuffer();
+
+            glBindFramebuffer(GL_FRAMEBUFFER, Realgar::Opengl::Opengl::FBO);
+            glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+        }
+
 
         for (auto object : objects)
         {
@@ -176,6 +184,9 @@ namespace Realgar
             object.second->update(time);
             object.second->render(shaders["default"], camera);
         }
+
+        if (Realgar::Renderer::GetGraphicsApi() == Realgar::GraphicsApis::OpenGL && Window::editor)
+            glBindFramebuffer(GL_FRAMEBUFFER, 0);
     }
 
     std::string Scene::addObject(std::string name)

@@ -16,6 +16,10 @@
 
 #define GLM_FORCE_DEPTH_ZERO_TO_ONE
 
+#include <imgui.h>
+#include <imgui_impl_vulkan.h>
+#include <imgui_impl_glfw.h>
+
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
@@ -62,12 +66,21 @@ namespace Realgar::Vulkan
 
         std::vector<UniformBufferObject> ubo;
 
+        ImGui_ImplVulkan_InitInfo init_info = {};
+        std::vector <VkDescriptorSet> sceneImages;
+
+        int currentSceneImage = 0;
+        static bool editor;
+
+        void addSceneImages();
+
         VkDevice device;
         VkImageView textureImageView;
         VkSampler textureSampler;
 
         std::map<std::pair<std::string, std::string>,VkPipeline> graphicsPipelines;
 
+        VkDescriptorPool guiDescriptorPool;
         VkDescriptorPool descriptorPool;
         std::vector<VkDescriptorSet> descriptorSets;
 
@@ -91,6 +104,8 @@ namespace Realgar::Vulkan
         uint32_t getCurrentFrame() { return currentFrame; }
 
     private:
+        void initImgui(uint32_t imageCount);
+
         GLFWwindow* window;
 
         VkInstance instance;
@@ -135,6 +150,22 @@ namespace Realgar::Vulkan
 
 
 
+
+        std::vector <VkImage> imGuiImages;
+        std::vector <VkDeviceMemory> sceneImageMemory;
+        std::vector<VkImageView> imGuiImageViews;
+        std::vector<VkFramebuffer> imGuiFramebuffers;
+        VkRenderPass imGuiRenderPass;
+        std::vector<VkCommandBuffer> imGuiCommandBuffers;
+
+        void createImGuiFramebuffers();
+        void recordImGuiCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
+        void createImGuiRenderPass();
+        void createImGuiImage();
+        void createImGuiImageViews();
+
+
+
         std::vector<VkCommandBuffer> commandBuffers;
 
         std::vector<VkSemaphore> imageAvailableSemaphores;
@@ -173,8 +204,8 @@ namespace Realgar::Vulkan
         void createTextureSampler();
 
 
-        VkCommandBuffer beginSingleTimeCommands();
-        void endSingleTimeCommands(VkCommandBuffer commandBuffer);
+        VkCommandBuffer beginSingleTimeCommands(const VkCommandPool& cmdPool);
+        void endSingleTimeCommands(VkCommandBuffer commandBuffer, const VkCommandPool& cmdPool);
 
         void copyBuffer(VkBuffer srcBuffer, VkBuffer dstBuffer, VkDeviceSize size);
         uint32_t findMemoryType(uint32_t typeFilter, VkMemoryPropertyFlags properties);
@@ -183,7 +214,7 @@ namespace Realgar::Vulkan
         VkShaderModule createShaderModule(const std::vector<char>& code);
 
         void recordCommandBuffer(VkCommandBuffer commandBuffer, uint32_t imageIndex);
-        void createCommandPool();
+        void createCommandPool(VkCommandPool* commandpool);
         void createCommandBuffers();
 
         void createDepthResources();
@@ -195,6 +226,7 @@ namespace Realgar::Vulkan
         void createSyncObjects();
 
         void createRenderPass();
+
         void createLogicalDevice();
 
         void populateDebugMessengerCreateInfo(VkDebugUtilsMessengerCreateInfoEXT& createInfo);

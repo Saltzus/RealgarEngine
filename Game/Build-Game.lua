@@ -6,9 +6,8 @@ project "Game"
    staticruntime "off"
 
 
-   libdirs {  "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib" }
-   files { "Source/**.h", "Source/**.cpp", "../Libraries/glad/src/**.c", "../Libraries/freetype/src/**.c"}
-
+   libdirs { "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib" }
+   files { "Source/**.h", "Source/**.cpp", "../Libraries/ImGui/**.h", "../Libraries/ImGui/**.cpp"}
 
    dependson { "Core" }
 
@@ -41,7 +40,10 @@ project "Game"
       -- miniaudio
       "../Libraries/miniaudio",
       -- json
-      "../Libraries/nlohmann_json"
+      "../Libraries/nlohmann_json",
+      -- ImGui
+      "../Libraries/ImGui",
+      "../Libraries/ImGui/backends"
    }
 
    links
