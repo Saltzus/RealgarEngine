@@ -49,6 +49,7 @@ project "Editor"
    links
    {
       "Core",
+      "Lua",
       "glfw3",
       "freetype2",
       "vulkan-1"
