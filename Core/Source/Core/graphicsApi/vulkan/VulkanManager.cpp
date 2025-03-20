@@ -90,7 +90,7 @@ namespace Realgar::Vulkan
     }
 
 #ifdef DEBUG
-    const bool enableValidationLayers = true;
+    const bool enableValidationLayers = false;
 #else
     const bool enableValidationLayers = false;
 #endif

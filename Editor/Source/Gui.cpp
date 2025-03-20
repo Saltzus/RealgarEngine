@@ -182,7 +182,7 @@ void Gui::SceneWindow()
 void Gui::ProperitiesWindow()
 {
     ImGui::Begin("Properities", &open, windowflags);
-    ImGui::Text(selected.c_str());
+    ImGui::Text("%s", selected.c_str());
     ImGui::NewLine();
 
     switch (selectedType)
