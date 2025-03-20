@@ -1,5 +1,6 @@
 #include "Gui.h"
 #include "Core/graphicsApi/opengl/OpenGlManager.h"
+#include "Core/GameObject.h"
 
 ImGuiWindowFlags windowflags;
 
@@ -182,14 +183,16 @@ void Gui::SceneWindow()
 void Gui::ProperitiesWindow()
 {
     ImGui::Begin("Properities", &open, windowflags);
-    ImGui::Text("%s", selected.c_str());
-    ImGui::NewLine();
+    ImGui::Text("%s", selected.c_str());                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                           
+    ImGui::Separator();
 
     switch (selectedType)
     {
     case 1:
         CameraProperities();
         break;
+    case 2:
+        ObjectProperities();
     default:
         break;
     }
@@ -208,18 +211,169 @@ void Gui::CameraProperities()
     float* rot[3] = { &scene->camera->cameraRotation.y, &scene->camera->cameraRotation.y, &scene->camera->cameraRotation.y };
     int* size[2] = { &scene->camera->width, &scene->camera->height};
 
-    ImGui::Text("Position xyz");
-    ImGui::InputFloat3("##Position", *pos);
+    if (ImGui::CollapsingHeader("Transform", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+    {
+        ImGui::SetCursorPosX(4);
+        if (ImGui::BeginTable("table1", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+        {
+            ImGui::TableNextRow();
 
-    ImGui::Text("Rotation xyz");
-    ImGui::InputFloat3("##Rotation", *rot);
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Position");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            ImGui::InputFloat3("##Position", *pos);
 
-    ImGui::Text("Size xyz");
-    ImGui::InputInt2("##Size", *size);
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Rotation");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::InputFloat3("##Rotation", *rot);
+
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Size");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::InputInt2("##Size", *size);
+
+            ImGui::EndTable();
+        }
+    }
 }
 void Gui::ObjectProperities() 
 {
+    Realgar::GameObject* object = scene->getObject(selected);
 
+    Realgar::Components::TransformComponent* transform = object->getComponent<Realgar::Components::TransformComponent>();
+    if (transform != nullptr)
+    {
+        if (ImGui::CollapsingHeader("TransformComponent", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+        {
+            float* pos[3] = { &transform->translation.x, &transform->translation.y, &transform->translation.z };
+            float* rot[3] = { &transform->rotation.x, &transform->rotation.y, &transform->rotation.z };
+            float* size[3] = { &transform->scale.x, &transform->scale.y, &transform->scale.z };
+
+            ImGui::SetCursorPosX(4);
+            if (ImGui::BeginTable("table2", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+            {
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Position");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                ImGui::InputFloat3("##Position", *pos);
+
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Rotation");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::InputFloat3("##Rotation", *rot);
+
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Size");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::InputFloat3("##Size", *size);
+
+                ImGui::EndTable();
+            }
+        }
+    }
+
+    Realgar::Components::RenderComponent* render = object->getComponent<Realgar::Components::RenderComponent>();
+    if (render != nullptr)
+    {
+        if (ImGui::CollapsingHeader("RenderComponent", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+        {
+            static int item_selected_idx1 = 0; // Here we store our selection data as an index.
+            static int item_selected_idx2 = 0; // Here we store our selection data as an index.
+
+            // Pass in the preview value visible before opening the combo (it could technically be different contents or not pulled from items[])
+            const char* combo_preview_value1;
+            const char* combo_preview_value2;
+
+            std::vector<const char*> shaderItems;
+            for (auto& shader : scene->current_shaders)
+            {
+                shaderItems.push_back(shader.first.c_str());
+                if (shader.second == render->shader)
+                {
+                    item_selected_idx1 = shaderItems.size() - 1;
+                    combo_preview_value1 = shader.first.c_str();
+                }
+            }
+
+            std::vector<const char*> textureItems;
+            for (auto& texture : scene->current_textures)
+            {
+                textureItems.push_back(texture.first.c_str());
+                if (texture.second == render->texture)
+                {
+                    item_selected_idx2 = textureItems.size() - 1;
+                    combo_preview_value2 = texture.first.c_str();
+                }
+            }
+
+            ImGui::SetCursorPosX(4);
+            if (ImGui::BeginTable("table3", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+            {
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Shader");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                if (ImGui::BeginCombo("Select shader", combo_preview_value1))
+                {
+                    for (int n = 0; n < shaderItems.size(); n++)
+                    {
+                        const bool is_selected = (item_selected_idx1 == n);
+                        if (ImGui::Selectable(shaderItems[n], is_selected))
+                        {
+                            render->shader = scene->current_shaders[shaderItems[n]];
+                            item_selected_idx1 = n;
+                        }
+
+                        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Texture");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                if (ImGui::BeginCombo("Select texture", combo_preview_value2))
+                {
+                    for (int n = 0; n < textureItems.size(); n++)
+                    {
+                        const bool is_selected = (item_selected_idx2 == n);
+                        if (ImGui::Selectable(textureItems[n], is_selected))
+                        {
+                            render->texture = scene->current_textures[textureItems[n]];
+                            item_selected_idx2 = n;
+                        }
+
+                        // Set the initial focus when opening the combo (scrolling + keyboard navigation focus)
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                ImGui::EndTable();
+            }
+        }
+    }
 }
 void Gui::ShaderProperities() 
 {
