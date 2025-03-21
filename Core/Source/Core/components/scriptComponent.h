@@ -19,6 +19,8 @@ namespace Realgar::Components
         ScriptComponent(GameObject* object, Scene* scene,  std::string luaFile);
         ~ScriptComponent();
 
+        std::string luaFile;
+
         virtual void update(float deltaTime) override;
         virtual void init() override;
     private:
@@ -27,7 +29,6 @@ namespace Realgar::Components
 
         GameObject* object = nullptr;
         Scene* scene = nullptr;
-        std::string luaFile;
     };
     
 } 

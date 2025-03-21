@@ -46,8 +46,8 @@ function update(deltatime)
     transformComponent.rotation:setZ(250 * deltatime)
     transformComponent2.rotation:setX(250 * deltatime)
 
-    audioPlayerComponent.position:setX(math.sin(deltatime * 10))
-    audioPlayerComponent.position:setZ(math.cos(deltatime * 10))
+    --audioPlayerComponent.position:setX(math.sin(deltatime * 10))
+    --audioPlayerComponent.position:setZ(math.cos(deltatime * 10))
 
 	if Input:keyPressed("W") then
 		print("W pressed")

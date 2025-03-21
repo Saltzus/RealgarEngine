@@ -374,6 +374,124 @@ void Gui::ObjectProperities()
             }
         }
     }
+
+    Realgar::Components::AudioListenerComponent* listener = object->getComponent<Realgar::Components::AudioListenerComponent>();
+    if (listener != nullptr)
+    {
+        if (ImGui::CollapsingHeader("AudioListenerComponent", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+        {
+            float* pos[3] = { &listener->translation.x, &listener->translation.y, &listener->translation.z };
+            float* rot[3] = { &listener->rotation.x, &listener->rotation.y, &listener->rotation.z };
+
+            ImGui::SetCursorPosX(4);
+            if (ImGui::BeginTable("table4", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+            {
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Position");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                ImGui::InputFloat3("##Position", *pos);
+
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Rotation");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::InputFloat3("##Rotation", *rot);
+
+                ImGui::EndTable();
+            }
+        }
+    }
+
+    Realgar::Components::AudioPlayerComponent* speaker = object->getComponent<Realgar::Components::AudioPlayerComponent>();
+    if (speaker != nullptr)
+    {
+        if (ImGui::CollapsingHeader("AudioPlayerComponent", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+        {
+            float* pos[3] = { &speaker->translation.x, &speaker->translation.y, &speaker->translation.z };
+
+            static int item_selected_idx = 0;
+            const char* combo_preview_value;
+
+            std::vector<const char*> audioItems;
+            for (auto& audio : scene->current_audio)
+            {
+                audioItems.push_back(audio.first.c_str());
+                if (&audio.second->sound == speaker->sound)
+                {
+                    item_selected_idx = audioItems.size() - 1;
+                    combo_preview_value = audio.first.c_str();
+                }
+            }
+
+            ImGui::SetCursorPosX(4);
+            if (ImGui::BeginTable("table4", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+            {
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Position");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                ImGui::InputFloat3("##Position", *pos);
+
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Audio");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                if (ImGui::BeginCombo("Select audio", combo_preview_value))
+                {
+                    for (int n = 0; n < audioItems.size(); n++)
+                    {
+                        const bool is_selected = (item_selected_idx == n);
+                        if (ImGui::Selectable(audioItems[n], is_selected))
+                        {
+                            speaker->sound = &scene->current_audio[audioItems[n]]->sound;
+                            item_selected_idx = n;
+                        }
+
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndCombo();
+                }
+
+                ImGui::EndTable();
+            }
+        }
+    }
+
+    Realgar::Components::ScriptComponent* script = object->getComponent<Realgar::Components::ScriptComponent>();
+    if (script != nullptr)
+    {
+        char buffer[256];
+        strncpy(buffer, script->luaFile.c_str(), sizeof(buffer));
+        buffer[sizeof(buffer) - 1] = '\0';
+
+        if (ImGui::CollapsingHeader("ScriptComponent", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+        {
+            ImGui::SetCursorPosX(4);
+            if (ImGui::BeginTable("table4", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+            {
+                ImGui::TableNextRow();
+
+                ImGui::TableSetColumnIndex(0);
+                ImGui::Text("Path");
+                ImGui::TableSetColumnIndex(1);
+                ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+                if (ImGui::InputText("##Path", buffer, sizeof(buffer)))
+                    script->luaFile = buffer;
+
+
+                ImGui::EndTable();
+            }
+        }
+    }
 }
 void Gui::ShaderProperities() 
 {
