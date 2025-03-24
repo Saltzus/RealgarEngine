@@ -5,7 +5,7 @@
 
 namespace Realgar
 {
-    Shader::Shader(const char* vertexFile, const char* fragmentFile) 
+    Shader::Shader(const char* vertexFile, const char* fragmentFile)
     {
         shader = { vertexFile, fragmentFile };
 

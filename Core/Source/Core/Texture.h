@@ -15,6 +15,8 @@ namespace Realgar
         ~Texture();
         void virtual Bind();
 
+        std::string path = "null";
+
         static Texture* GetDefaultTexture();
     };
 

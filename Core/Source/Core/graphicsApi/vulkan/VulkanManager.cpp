@@ -156,7 +156,21 @@ namespace Realgar::Vulkan
             vkFreeMemory(device, uniformBuffersMemory[i], nullptr);
         }
 
-        
+
+
+        for (auto image : imGuiImages)
+            vkDestroyImage(device, image, nullptr);
+        for (auto imageMemory : sceneImageMemory)
+            vkFreeMemory(device, imageMemory, nullptr);
+        for (auto imageView : imGuiImageViews)
+            vkDestroyImageView(device, imageView, nullptr);
+        for (auto framebuffer : imGuiFramebuffers)
+            vkDestroyFramebuffer(device, framebuffer, nullptr);
+
+        vkDestroyRenderPass(device, imGuiRenderPass, nullptr);
+
+
+
         vkDestroyDescriptorPool(device, guiDescriptorPool, nullptr);
         vkDestroyDescriptorPool(device, descriptorPool, nullptr);
 

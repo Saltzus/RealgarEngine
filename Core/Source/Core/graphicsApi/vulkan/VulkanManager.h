@@ -149,8 +149,6 @@ namespace Realgar::Vulkan
         std::vector<void*> uniformBuffersMapped;
 
 
-
-
         std::vector <VkImage> imGuiImages;
         std::vector <VkDeviceMemory> sceneImageMemory;
         std::vector<VkImageView> imGuiImageViews;
@@ -163,7 +161,6 @@ namespace Realgar::Vulkan
         void createImGuiRenderPass();
         void createImGuiImage();
         void createImGuiImageViews();
-
 
 
         std::vector<VkCommandBuffer> commandBuffers;

@@ -4,6 +4,8 @@ namespace Realgar
 {
     Texture::Texture(const char* filePath)
     {
+        path = filePath;
+
         switch (Renderer::GetGraphicsApi())
         {
         case GraphicsApis::OpenGL:

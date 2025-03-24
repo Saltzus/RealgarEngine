@@ -64,6 +64,6 @@ function update(deltatime)
 	end
 	
     currentCamera.rotation:setZ(deltatime * 70)
-    currentCamera.position:setZ(deltatime + 4)
+    --currentCamera.position:setZ(deltatime + 4)
     --currentCamera:setFov(deltatime * 30)
 end

@@ -1,8 +1,65 @@
 #include "Gui.h"
 #include "Core/graphicsApi/opengl/OpenGlManager.h"
 #include "Core/GameObject.h"
+#include "Core/Texture.h"
+
+#include <filesystem>
 
 ImGuiWindowFlags windowflags;
+
+
+
+struct File
+{
+    std::string name;
+    std::string path;
+    std::string extention;
+
+    std::vector<File> children;
+    bool isDirectory;
+};
+
+std::vector<File> files;
+
+std::vector<File> generateFileChildren(std::string path)
+{
+    std::vector<File> children;
+
+    for (const auto& entry : std::filesystem::directory_iterator(path))
+    {
+        File file;
+        file.name = entry.path().filename().string();
+        file.path = entry.path().string();
+        file.extention = entry.path().filename().extension().string();
+        file.isDirectory = entry.is_directory();
+        
+        if (file.isDirectory)
+            file.children = generateFileChildren(file.path);
+
+        children.emplace_back(file);
+    }
+
+    return children;
+}
+
+void generateFiles(std::string rootPath)
+{
+    for (const auto& entry : std::filesystem::directory_iterator(rootPath))
+    {
+        File file;
+        file.name = entry.path().filename().string();
+        file.path = entry.path().string();
+        file.extention = entry.path().filename().extension().string();
+        file.isDirectory = entry.is_directory();
+
+        if (file.isDirectory)
+            file.children = generateFileChildren(file.path);
+
+        files.emplace_back(file);
+    }
+}
+
+
 
 Gui::Gui(Realgar::Window* window, Realgar::Scene* scene) : scene(scene)
 {
@@ -27,6 +84,8 @@ Gui::Gui(Realgar::Window* window, Realgar::Scene* scene) : scene(scene)
 
 
     viewport = ImGui::GetMainViewport();
+
+    generateFiles("Resources");
 }
 
 Gui::~Gui()
@@ -127,7 +186,7 @@ void Gui::SceneWindow()
     for (auto object : scene->objects)
     {
         ImGui::Bullet();
-        if (ImGui::Button(object.first.c_str())) 
+        if (ImGui::Button((object.first + "##object").c_str()))
         {
             selected = object.first.c_str();
             selectedType = 2;
@@ -141,7 +200,7 @@ void Gui::SceneWindow()
     for (auto object : scene->current_shaders)
     {
         ImGui::Bullet();
-        if (ImGui::Button(object.first.c_str()))
+        if (ImGui::Button((object.first + "##shader").c_str()))
         {
             selected = object.first.c_str();
             selectedType = 3;
@@ -155,7 +214,7 @@ void Gui::SceneWindow()
     for (auto object : scene->current_textures)
     {
         ImGui::Bullet();
-        if (ImGui::Button(object.first.c_str()))
+        if (ImGui::Button((object.first + "##texture").c_str()))
         {
             selected = object.first.c_str();
             selectedType = 4;
@@ -169,7 +228,7 @@ void Gui::SceneWindow()
     for (auto object : scene->current_audio)
     {
         ImGui::Bullet();
-        if (ImGui::Button(object.first.c_str()))
+        if (ImGui::Button((object.first + "##audio").c_str()))
         {
             selected = object.first.c_str();
             selectedType = 5;
@@ -193,15 +252,47 @@ void Gui::ProperitiesWindow()
         break;
     case 2:
         ObjectProperities();
+        break;
+    case 3:
+        ShaderProperities();
+        break;
+    case 4:
+        TextureProperities();
+        break;
+    case 5:
+        AudioProperities();
+        break;
     default:
         break;
     }
 
     ImGui::End();
 }
+
+void showFiles(std::vector<File> files)
+{
+    for (File file : files)
+    {  
+        if (file.isDirectory)
+        {
+            if (ImGui::TreeNodeEx(file.name.c_str(), ImGuiTreeNodeFlags_SpanFullWidth))
+            {
+                showFiles(file.children);
+                ImGui::TreePop();
+            }
+        }
+        else
+        {
+            ImGui::Text(file.name.c_str());
+        }
+    }
+}
 void Gui::FilesWindow()
 {
     ImGui::Begin("Files", &open, windowflags);
+
+    showFiles(files);
+
     ImGui::End();
 }
 
@@ -244,6 +335,35 @@ void Gui::CameraProperities()
 }
 void Gui::ObjectProperities() 
 {
+    if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+    {
+        char buffer[256];
+
+        strncpy(buffer, selected.c_str(), sizeof(buffer));
+        buffer[sizeof(buffer) - 1] = '\0';
+
+        ImGui::SetCursorPosX(4);
+        if (ImGui::BeginTable("table8", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+        {
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Name");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::InputText("##Name", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                auto object = scene->objects.extract(selected);
+                object.key() = buffer;
+                scene->objects.insert(std::move(object));
+
+                selected = buffer;
+            }
+
+            ImGui::EndTable();
+        }
+    }
+
     Realgar::GameObject* object = scene->getObject(selected);
 
     Realgar::Components::TransformComponent* transform = object->getComponent<Realgar::Components::TransformComponent>();
@@ -495,13 +615,182 @@ void Gui::ObjectProperities()
 }
 void Gui::ShaderProperities() 
 {
+    if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+    {
+        char buffer[256];
+        char buffer1[256];
+        char buffer2[256];
 
+        strncpy(buffer, selected.c_str(), sizeof(buffer));
+        buffer[sizeof(buffer) - 1] = '\0';
+
+        strncpy(buffer1, scene->current_shaders[selected]->shader.first.c_str(), sizeof(buffer1));
+        buffer1[sizeof(buffer1) - 1] = '\0';
+
+        strncpy(buffer2, scene->current_shaders[selected]->shader.second.c_str(), sizeof(buffer2));
+        buffer2[sizeof(buffer2) - 1] = '\0';
+
+        ImGui::SetCursorPosX(4);
+        if (ImGui::BeginTable("table8", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+        {
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Name");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::InputText("##Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                auto shader = scene->current_shaders.extract(selected);
+                shader.key() = buffer;
+                scene->current_shaders.insert(std::move(shader));
+
+                selected = buffer;
+            }
+
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Vertex shader");
+            ImGui::TableSetColumnIndex(1);
+            if (ImGui::InputText("##Vertex", buffer1, sizeof(buffer1), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                Realgar::Shader* shader = scene->current_shaders[selected];
+                const char* vertexshader = buffer1;
+                Realgar::Shader* newShader = new Realgar::Shader(vertexshader, shader->shader.second.c_str());
+
+                scene->current_shaders[selected] = newShader;
+                delete shader;
+            }
+
+
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Fragment shader");
+            ImGui::TableSetColumnIndex(1);
+            if (ImGui::InputText("##Fragment", buffer2, sizeof(buffer2), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                Realgar::Shader* shader = scene->current_shaders[selected];
+                const char* fragmentshader = buffer2;
+                Realgar::Shader* newShader = new Realgar::Shader(shader->shader.first.c_str(), fragmentshader);
+
+                scene->current_shaders[selected] = newShader;
+                delete shader;
+            }
+
+            ImGui::EndTable();
+        }
+    }
 }
 void Gui::TextureProperities()
 {
+    if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+    {
+        char buffer[256];
+        char buffer1[256];
 
+        strncpy(buffer, selected.c_str(), sizeof(buffer));
+        buffer[sizeof(buffer) - 1] = '\0';
+
+        strncpy(buffer1, scene->current_textures[selected]->path.c_str(), sizeof(buffer1));
+        buffer1[sizeof(buffer1) - 1] = '\0';
+
+        ImGui::SetCursorPosX(4);
+        if (ImGui::BeginTable("table8", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+        {
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Name");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::InputText("##Name", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                auto texture = scene->current_textures.extract(selected);
+                texture.key() = buffer;
+                scene->current_textures.insert(std::move(texture));
+
+                selected = buffer;
+            }
+
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Path");
+            ImGui::TableSetColumnIndex(1);
+            if (ImGui::InputText("##Path", buffer1, sizeof(buffer1), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                Realgar::Texture* texture = scene->current_textures[selected];
+                const char* path = buffer1;
+                Realgar::Texture* newTexture = new Realgar::Texture(path);
+
+                scene->current_textures[selected] = newTexture;
+                delete texture;
+            }
+
+            ImGui::EndTable();
+        }
+    }
 }
 void Gui::AudioProperities()  
 {
+    if (ImGui::CollapsingHeader("General", ImGuiTreeNodeFlags_DefaultOpen | ImGuiTreeNodeFlags_SpanFullWidth))
+    {
+        char buffer[256];
+        char buffer1[256];
 
+        strncpy(buffer, selected.c_str(), sizeof(buffer));
+        buffer[sizeof(buffer) - 1] = '\0';
+
+        strncpy(buffer1, scene->current_audio[selected]->path.c_str(), sizeof(buffer1));
+        buffer1[sizeof(buffer1) - 1] = '\0';
+
+        ImGui::SetCursorPosX(4);
+        if (ImGui::BeginTable("table11", 2, ImGuiTableFlags_Borders | ImGuiTableFlags_Resizable, ImVec2(ImGui::GetContentRegionAvail().x + 4, 0)))
+        {
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Name");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::PushItemWidth(ImGui::GetContentRegionAvail().x);
+            if (ImGui::InputText("##Name", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                auto audio = scene->current_audio.extract(selected);
+                audio.key() = buffer;
+                scene->current_audio.insert(std::move(audio));
+
+                selected = buffer;
+            }
+
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Path");
+            ImGui::TableSetColumnIndex(1);
+            if (ImGui::InputText("##Path", buffer1, sizeof(buffer1), ImGuiInputTextFlags_EnterReturnsTrue))
+            {
+                Realgar::Audio* audio = scene->current_audio[selected];
+                const char* path = buffer1;
+                Realgar::Audio* newAudio = new Realgar::Audio(path, scene->current_audio[selected]->spatialized);
+
+                scene->current_audio[selected] = newAudio;
+                delete audio;
+            }
+
+            ImGui::TableNextRow();
+
+            ImGui::TableSetColumnIndex(0);
+            ImGui::Text("Spatialized");
+            ImGui::TableSetColumnIndex(1);
+            ImGui::Checkbox("##spatial", &scene->current_audio[selected]->spatialized);
+
+            ImGui::TableNextRow();
+
+            ImGui::EndTable();
+        }
+    }
 }
+
+

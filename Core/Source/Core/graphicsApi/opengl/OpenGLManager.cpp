@@ -67,6 +67,7 @@ namespace Realgar::Opengl
     }
     OpenglTexture::~OpenglTexture()
     {
+        glDeleteTextures(1, &this->texture);
     }
     void OpenglTexture::Bind()
     {

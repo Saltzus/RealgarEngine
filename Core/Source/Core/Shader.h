@@ -18,10 +18,7 @@ namespace Realgar
 {
     class Shader
     {
-    private:
-        ShaderImpl* impl = nullptr;
     public:
-
         std::pair<std::string, std::string> shader = { "Resources/Shaders/default.vert.spv", "Resources/Shaders/default.frag.spv" };
 
         Shader(const char* vertexFile, const char* fragmentFile);
@@ -29,5 +26,7 @@ namespace Realgar
         void Activate();
         void Delete();
         unsigned int& ID();
+    private:
+        ShaderImpl* impl = nullptr;
     };
 }
