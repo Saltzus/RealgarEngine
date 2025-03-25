@@ -1,9 +1,10 @@
 #pragma once
 
+#include "FileEditor.h"
+
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
-#include <TextEditor.h> // https://github.com/BalazsJako/ColorTextEditorDemo/blob/master/main.cpp
 
 #include "Core/Scene.h"
 
@@ -21,13 +22,9 @@ private:
 	Realgar::Scene* scene;
 
 	void MainWindow();
-
 	void SceneWindow();
 
-	void EditorWindow();
-	const char* fileToEdit = "Resources/Scripts/test.lua";
-	TextEditor editor;
-	TextEditor::LanguageDefinition lang = TextEditor::LanguageDefinition::CPlusPlus();
+	FileEditor fileEditor;
 
 	void ProperitiesWindow();
 	std::string selected = " ";
