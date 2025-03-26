@@ -3,7 +3,6 @@ print("Hello from Lua")
 local object = currentObject
 local object2 = Scene:getObject("Reyalp")
 
-
 Scene:addObject("addedObject")
 local object3 = Scene:getObject("addedObject")
 

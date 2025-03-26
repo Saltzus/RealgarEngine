@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <fstream>
 
+LanguageServer FileEditor::server;
+
 FileEditor::FileEditor()
 {
     std::ifstream t(fileToEdit);
@@ -11,14 +13,18 @@ FileEditor::FileEditor()
         std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
         editor.SetText(str);
     }
+
+    server.startServer("LanguageServer\\bin\\server");
 }
 FileEditor::~FileEditor()
 {
-
+    server.stopServer();
 }
 
 void FileEditor::Render()
 {
+    editor.SetHandleKeyboardInputs(true);
+
     auto cpos = editor.GetCursorPosition();
     ImGui::Begin("Text Editor Demo", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
     ImGui::SetWindowSize(ImVec2(800, 600), ImGuiCond_FirstUseEver);
@@ -82,6 +88,20 @@ void FileEditor::Render()
         editor.IsOverwrite() ? "Ovr" : "Ins",
         editor.CanUndo() ? "*" : " ",
         editor.GetLanguageDefinition().mName.c_str(), fileToEdit);
+
+
+    if (ImGui::IsKeyPressed(ImGuiKey_Space) && ImGui::GetIO().KeyCtrl)
+    {
+        editor.SetHandleKeyboardInputs(false);
+        server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn);
+        ImGui::OpenPopup("CompletionPopup");
+    }
+
+    std::string test = editor.GetCurrentLineText();
+    if (!test.empty() && cpos.mColumn > 0 && test[cpos.mColumn - 1] == '.')
+    {
+       server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn - 1);
+    }
 
     editor.Render("TextEditor");
     ImGui::End();

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "LanguageServer.h"
+
 #include <imgui.h>
 #include <imgui_impl_opengl3.h>
 #include <imgui_impl_glfw.h>
@@ -13,6 +15,8 @@ public:
 
 	void Render();
 private:
+	static LanguageServer server;
+
 	const char* fileToEdit = "Resources/Scripts/test.lua";
 	TextEditor editor;
 	TextEditor::LanguageDefinition lang = TextEditor::LanguageDefinition::CPlusPlus();

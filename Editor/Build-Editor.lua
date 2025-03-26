@@ -5,51 +5,50 @@ project "Editor"
    targetdir "Binaries/%{cfg.buildcfg}"
    staticruntime "off"
 
-
    libdirs { "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib" }
-   files { "Source/**.h", "Source/**.cpp", "../Libraries/ImGui/**.h", "../Libraries/ImGui/**.cpp" }
+   files { "Source/**.h", "Source/**.cpp", "../Libraries/ImGui/**.h", "../Libraries/ImGui/**.cpp", "../Libraries/tiny-process-library/**" }
 
-   dependson { "Core" }
+   dependson { "Core", "Tiny-process-library" }
 
    includedirs
    {
-      "Source",
+        "Source",   
+        -- Include Lua
+        "../ThirdParty/Lua/Source", 
+        -- Include freetype2
+        "../ThirdParty/freetype2/src",
+        "../ThirdParty/freetype2/include",  
 
-      -- Include Lua
-      "../ThirdParty/Lua/Source",
-
-      -- Include freetype2
-      "../ThirdParty/freetype2/src",
-      "../ThirdParty/freetype2/include",
-
-	  -- Include Core
-	  "../Core/Source",
-
-      -- Include glfw
-      "../ThirdParty/glfw3/include",
+	    -- Include Core
+	    "../Core/Source",   
+        -- Include glfw
+        "../ThirdParty/glfw3/include",  
 
 
-      -- Opengl / glad
-      "../Libraries/glad/include",
-      -- Vulkan
-      "../Libraries/vulkan/Include",
-      -- glm
-      "../Libraries/glm",
-      -- stb_image
-      "../Libraries/stb_image",
-      -- miniaudio
-      "../Libraries/miniaudio",
-      -- json
-      "../Libraries/nlohmann_json",
-      -- ImGui
-      "../Libraries/ImGui",
-      "../Libraries/ImGui/backends"
+        -- Opengl / glad
+        "../Libraries/glad/include",
+        -- Vulkan
+        "../Libraries/vulkan/Include",
+        -- glm
+        "../Libraries/glm",
+        -- stb_image
+        "../Libraries/stb_image",
+        -- miniaudio
+        "../Libraries/miniaudio",
+        -- json
+        "../Libraries/nlohmann_json",
+        -- ImGui
+        "../Libraries/ImGui",
+        "../Libraries/ImGui/backends",
+        -- subprocess
+        "../Libraries/subprocess/"
    }
 
    links
    {
       "Core",
       "Lua",
+      "tiny-process-library",
       "glfw3",
       "freetype2",
       "vulkan-1"
