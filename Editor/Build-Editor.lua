@@ -8,7 +8,7 @@ project "Editor"
    libdirs { "../Binaries/" .. OutputDir .. "/**", "../Libraries/vulkan/Lib" }
    files { "Source/**.h", "Source/**.cpp", "../Libraries/ImGui/**.h", "../Libraries/ImGui/**.cpp", "../Libraries/tiny-process-library/**" }
 
-   dependson { "Core", "Tiny-process-library" }
+   dependson { "Core" }
 
    includedirs
    {
@@ -48,7 +48,6 @@ project "Editor"
    {
       "Core",
       "Lua",
-      "tiny-process-library",
       "glfw3",
       "freetype2",
       "vulkan-1"
