@@ -1,6 +1,5 @@
 #include "LanguageServer.h"
-
-#define BUFFER_SIZE 4096
+#include <imgui.h>
 
 std::string get_file_uri(const std::string& path) 
 {
@@ -17,19 +16,23 @@ void send_lsp_message(FILE* input, const char* json)
     fflush(input);
 }
 
-void read_lsp_response(FILE* output)
+std::string text;
+std::string buffer;
+json LanguageServer::read_lsp_response(FILE* output)
 {
-    std::string text;
-    char buffer[BUFFER_SIZE];
-    while (fgets(buffer, sizeof(buffer), output)) {
+    text.clear();
+    buffer.clear();
+    buffer.reserve(40960);
 
-        text += buffer;
+    while (fgets(buffer.data(), buffer.capacity(), output)) {
+
+        text += buffer.data();
 
         std::cout << buffer;
         if (text.compare(0, 16, "Content-Length: ") == 0) 
         {
-            fgets(buffer, sizeof(buffer), output);
-            text += buffer;
+            fgets(buffer.data(), buffer.capacity(), output);
+            text += buffer.data();
 
             std::string::size_type start = 16; // Start after the prefix
             std::string::size_type end = text.find("\r\n\r\n", start);
@@ -41,13 +44,17 @@ void read_lsp_response(FILE* output)
                 std::string numberPart = text.substr(start, end - start);
                 int number = std::stoi(numberPart);
 
-                fgets(buffer, number + 1, output);
+                fgets(buffer.data(), number + 1, output);
                 std::cout << buffer << "\n\n";
+
+                result = json::parse(buffer.c_str());
+                return result;
             }
 
             break;
         }
     }
+    return nullptr;
 }
 
 void LanguageServer::startServer(const std::string& serverPath)
@@ -208,6 +215,8 @@ void LanguageServer::hover(const char* filePath, int line, int character)
 
 void LanguageServer::complete(const char* filePath, int line, int character)
 {
+    suggestions.clear();
+
     static int lastLine2;
     static int lastCharacter2;
 
@@ -238,5 +247,19 @@ void LanguageServer::complete(const char* filePath, int line, int character)
     send_lsp_message(input, completion_request.c_str());
 
     printf("Waiting for response...\n");
-    read_lsp_response(output);
+    json res = read_lsp_response(output);
+
+    if (res.find("method") != res.end()) return;
+
+    ImGui::OpenPopup("CompletionPopup");
+
+    for (auto item : res["result"]["items"])
+    {
+        CompletionSuggestion suggest;
+        if (item.find("insertText") != item.end())
+            suggest.insertText = item["insertText"];
+        suggest.label = item["label"];
+
+        suggestions.push_back(suggest);
+    }
 }

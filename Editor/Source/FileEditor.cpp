@@ -21,6 +21,20 @@ FileEditor::~FileEditor()
     server.stopServer();
 }
 
+std::string ReplaceTabsWithSpaces(const std::string& input) 
+{
+    std::string result = input;
+    size_t pos = 0;
+
+    while ((pos = result.find("\t", pos)) != std::string::npos) 
+    {
+        result.replace(pos, 1, "    ");
+        pos += 4;
+    }
+
+    return result;
+}
+
 void FileEditor::Render()
 {
     editor.SetHandleKeyboardInputs(true);
@@ -89,18 +103,32 @@ void FileEditor::Render()
         editor.CanUndo() ? "*" : " ",
         editor.GetLanguageDefinition().mName.c_str(), fileToEdit);
 
-
+    
     if (ImGui::IsKeyPressed(ImGuiKey_Space) && ImGui::GetIO().KeyCtrl)
     {
         editor.SetHandleKeyboardInputs(false);
         server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn);
-        ImGui::OpenPopup("CompletionPopup");
     }
 
-    std::string test = editor.GetCurrentLineText();
-    if (!test.empty() && cpos.mColumn > 0 && test[cpos.mColumn - 1] == '.')
+    std::string test = ReplaceTabsWithSpaces(editor.GetCurrentLineText());
+    if (test.size() > 0 && cpos.mColumn > 0 && test[cpos.mColumn - 1] == '.')
     {
        server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn - 1);
+    }
+
+    if (ImGui::BeginPopup("CompletionPopup" , ImGuiPopupFlags_MouseButtonMask_))
+    {
+        ImGui::BeginChild("SuggestionsChild", ImVec2(300, 200), true);
+        for (auto& suggestion : server.suggestions) 
+        {
+            if (ImGui::Selectable(suggestion.label.c_str()))
+            {
+ 
+            }
+        }
+        ImGui::EndChild();
+
+        ImGui::EndPopup();
     }
 
     editor.Render("TextEditor");
