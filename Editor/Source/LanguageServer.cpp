@@ -215,12 +215,11 @@ void LanguageServer::hover(const char* filePath, int line, int character)
 
 void LanguageServer::complete(const char* filePath, int line, int character)
 {
-    suggestions.clear();
-
     static int lastLine2;
     static int lastCharacter2;
 
     if (lastLine2 == line && lastCharacter2 == character) return;
+    suggestions.clear();
 
     lastLine2 = line;
     lastCharacter2 = character;
@@ -250,9 +249,6 @@ void LanguageServer::complete(const char* filePath, int line, int character)
     json res = read_lsp_response(output);
 
     if (res.find("method") != res.end()) return;
-
-    ImGui::OpenPopup("CompletionPopup");
-
     for (auto item : res["result"]["items"])
     {
         CompletionSuggestion suggest;
@@ -262,4 +258,6 @@ void LanguageServer::complete(const char* filePath, int line, int character)
 
         suggestions.push_back(suggest);
     }
+
+    ImGui::OpenPopup("CompletionPopup");
 }
