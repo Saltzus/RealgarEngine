@@ -7,8 +7,12 @@ namespace Realgar
     std::map<std::string, Shader*> Scene::current_shaders;
     std::map<std::string, Audio*> Scene::current_audio;
 
+    Scene* Scene::currentScene;
+
     Scene::Scene(const char* filepath)
     {
+        currentScene = this;
+
         unsigned int SCR_WIDTH = 800;
         unsigned int SCR_HEIGHT = 600;
 

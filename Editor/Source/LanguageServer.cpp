@@ -258,6 +258,4 @@ void LanguageServer::complete(const char* filePath, int line, int character)
 
         suggestions.push_back(suggest);
     }
-
-    ImGui::OpenPopup("CompletionPopup");
 }

@@ -109,16 +109,21 @@ void FileEditor::Render()
     {
         editor.SetHandleKeyboardInputs(false);
         server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn);
+        tooltip = true; 
     }
 
     std::string test = ReplaceTabsWithSpaces(editor.GetCurrentLineText());
     if (test.size() > 0 && cpos.mColumn > 0 && test[cpos.mColumn - 1] == '.')
     {
        server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn);
+       tooltip = true;
     }
 
-    if (ImGui::BeginPopup("CompletionPopup" , ImGuiPopupFlags_MouseButtonMask_))
+    if (tooltip && ImGui::BeginTooltip())
     {
+        if (ImGui::IsKeyPressed(ImGuiKey_Space) || ImGui::IsKeyPressed(ImGuiKey_Escape) || ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+            tooltip = false;
+
         ImGui::BeginChild("SuggestionsChild", ImVec2(300, 200), true);
         for (auto& suggestion : server.suggestions) 
         {
@@ -129,7 +134,7 @@ void FileEditor::Render()
         }
         ImGui::EndChild();
 
-        ImGui::EndPopup();
+        ImGui::EndTooltip();
     }
 
     editor.Render("TextEditor");

@@ -1,4 +1,5 @@
 #include "GameObject.h"
+#include "Scene.h"
 
 namespace Realgar
 {
@@ -27,14 +28,22 @@ namespace Realgar
 
     int addComponent(lua_State* L)
     {
+        
+
         GameObject* object = *(GameObject**)luaL_checkudata(L, 1, "GameObject");
 
         const char* componentType = luaL_checkstring(L, 2);
 
         if (strcmp(componentType, "RenderComponent") == 0)
-        {
             object->addComponent<Components::RenderComponent>(object);
-        }
+        else if (strcmp(componentType, "TransformComponent") == 0)
+            object->addComponent<Components::TransformComponent>();
+        else if (strcmp(componentType, "ScriptComponent") == 0)
+            object->addComponent<Components::ScriptComponent>(object, Scene::currentScene, "");
+        else if (strcmp(componentType, "AudioListenerComponent") == 0)
+            object->addComponent<Components::AudioListenerComponent>();
+        else if (strcmp(componentType, "AudioPlayerComponent") == 0)
+            object->addComponent<Components::AudioPlayerComponent>();
         else
         {
             lua_pushstring(L, "Unknown component type");

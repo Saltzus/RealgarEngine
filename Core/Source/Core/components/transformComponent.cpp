@@ -270,10 +270,132 @@ namespace Realgar::Components
         lua_pop(L, 1);
     }
 
-    const luaL_Reg transform_methods[] = {
-        {"position", transformPosition},
+    int setScale(lua_State* L)
+    {
+        glm::vec3** scale = (glm::vec3**)luaL_checkudata(L, 1, "scale");
+        float x = (float)luaL_checknumber(L, 2);
+        float y = (float)luaL_checknumber(L, 3);
+        float z = (float)luaL_checknumber(L, 4);
+
+        if (scale && *scale)
+        {
+            (*scale)->x = x;
+            (*scale)->y = y;
+            (*scale)->z = z;
+        }
+        return 0;
+    }
+    int getScale(lua_State* L)
+    {
+        glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "scale");
+        lua_newtable(L);
+
+        lua_pushstring(L, "x");
+        lua_pushnumber(L, (*pos)->x);
+        lua_settable(L, -3);
+
+        lua_pushstring(L, "y");
+        lua_pushnumber(L, (*pos)->y);
+        lua_settable(L, -3);
+
+        lua_pushstring(L, "z");
+        lua_pushnumber(L, (*pos)->z);
+        lua_settable(L, -3);
+        return 1;
+    }
+    int setScaleX(lua_State* L)
+    {
+        glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "scale");
+        float x = (float)luaL_checknumber(L, 2);
+        if (pos && *pos)
+        {
+            (*pos)->x = x;
+        }
+        return 0;
+    }
+    int getScaleX(lua_State* L)
+    {
+        glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "scale");
+        lua_newtable(L);
+
+        lua_pushnumber(L, (*pos)->x);
+
+        return 1;
+    }
+    int setScaleY(lua_State* L)
+    {
+        glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "scale");
+        float y = (float)luaL_checknumber(L, 2);
+        if (pos && *pos)
+        {
+            (*pos)->y = y;
+        }
+        return 0;
+    }
+    int getScaleY(lua_State* L)
+    {
+        glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "scale");
+        lua_newtable(L);
+
+        lua_pushnumber(L, (*pos)->y);
+
+        return 1;
+    }
+    int setScaleZ(lua_State* L)
+    {
+        glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "scale");
+        float z = (float)luaL_checknumber(L, 2);
+        if (pos && *pos)
+        {
+            (*pos)->z = z;
+        }
+        return 0;
+    }
+    int getScaleZ(lua_State* L)
+    {
+        glm::vec3** pos = (glm::vec3**)luaL_checkudata(L, 1, "scale");
+        lua_newtable(L);
+
+        lua_pushnumber(L, (*pos)->z);
+
+        return 1;
+    }
+    int transformScale(lua_State* L) {
+        auto* transformComponent = *(Components::TransformComponent**)luaL_checkudata(L, 1, "TransformComponent");
+
+        // Allocate userdata to hold a pointer to glm::vec3
+        glm::vec3** pos = (glm::vec3**)lua_newuserdata(L, sizeof(glm::vec3*));
+        *pos = &transformComponent->scale;  // store the address of translation
+
+        luaL_getmetatable(L, "scale");
+        lua_setmetatable(L, -2);
+
+        return 1;
+    }
+    const luaL_Reg scale_methods[] = {
+        {"set",  setScale},
+        {"get",  getScale},
+        {"setX", setScaleX},
+        {"getX", getScaleX},
+        {"setY", setScaleY},
+        {"getY", getScaleY},
+        {"setZ", setScaleZ},
+        {"getZ", getScaleZ},
         {NULL, NULL}
     };
+    void registerTransformComponentScale(lua_State* L)
+    {
+        luaL_newmetatable(L, "scale");
+
+        lua_pushvalue(L, -1);
+        lua_setfield(L, -2, "__index");
+
+        luaL_setfuncs(L, scale_methods, 0);
+
+        lua_pop(L, 1);
+    }
+
+
     int transformComponent_index(lua_State* L) 
     {
         // [1] is the TransformComponent userdata, [2] is the key
@@ -283,6 +405,9 @@ namespace Realgar::Components
         }
         if (strcmp(key, "rotation") == 0) {
             return transformRotation(L); // push the position userdata
+        }
+        if (strcmp(key, "scale") == 0) {
+            return transformScale(L); // push the position userdata
         }
         // Fallback: look up the key in the metatable
         lua_getmetatable(L, 1);
@@ -305,6 +430,7 @@ namespace Realgar::Components
     {
         registerTransformComponentPosition(L);
         registerTransformComponentRotation(L);
+        registerTransformComponentScale(L);
         Components::registerTransformComponent(L);
     }
 }

@@ -20,4 +20,6 @@ private:
 	const char* fileToEdit = "Resources/Scripts/test.lua";
 	TextEditor editor;
 	TextEditor::LanguageDefinition lang = TextEditor::LanguageDefinition::Lua();
+
+	bool tooltip = false;
 };
