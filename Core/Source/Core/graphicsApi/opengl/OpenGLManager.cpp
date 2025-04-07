@@ -3,6 +3,14 @@
 
 namespace Realgar::Opengl
 {
+    struct UniformBufferObject {
+        alignas(16) glm::mat4 model;
+        alignas(16) glm::mat4 view;
+        alignas(16) glm::mat4 proj;
+        alignas(16) float time;
+    };
+
+
     OpenglTexture::OpenglTexture(const char* filePath)
     {
         // generate textures
@@ -17,12 +25,15 @@ namespace Realgar::Opengl
 
         // load image, create texture and generate mipmaps
         int width, height, nrChannels;
+        
         stbi_set_flip_vertically_on_load(true); // tell stb_image.h to flip loaded texture's on the y-axis.
     
         unsigned char* data = stbi_load(filePath, &width, &height, &nrChannels, 0);
+        int format = nrChannels == 4 ? GL_RGBA : GL_RGB;
+
         if (data)
         {
-            glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data);
+            glTexImage2D(GL_TEXTURE_2D, 0, format, width, height, 0, format, GL_UNSIGNED_BYTE, data);
             glGenerateMipmap(GL_TEXTURE_2D);
         }
         else std::cout << "Failed to load texture" << std::endl;
@@ -116,8 +127,8 @@ namespace Realgar::Opengl
 
         glGenBuffers(1, &UBO);
         glBindBuffer(GL_UNIFORM_BUFFER, UBO);
-        glBufferData(GL_UNIFORM_BUFFER, sizeof(glm::mat4) * 3, NULL, GL_STATIC_DRAW);
-        glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, 3 * sizeof(glm::mat4));
+        glBufferData(GL_UNIFORM_BUFFER, sizeof(UniformBufferObject), NULL, GL_STATIC_DRAW);
+        glBindBufferRange(GL_UNIFORM_BUFFER, 0, UBO, 0, sizeof(UniformBufferObject));
     }
     Opengl::~Opengl()
     {
@@ -183,21 +194,19 @@ namespace Realgar::Opengl
         glDeleteBuffers(1, &EBO);
     }
 
-    int i = 0;
-
     void OpenglRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model) 
     {
-
-        glm::mat4 matrices[3];
-        matrices[0] = model;
-        matrices[1] = camera->view;
-        matrices[2] = camera->projection;
+        UniformBufferObject ubo;
+        ubo.model = model;
+        ubo.view = camera->view;
+        ubo.proj = camera->projection;
+        ubo.time = glfwGetTime();
 
         GLuint blockIndex = glGetUniformBlockIndex(shader->ID(), "UniformBufferObject");
         glUniformBlockBinding(shader->ID(), blockIndex, 0);
 
         glBindBuffer(GL_UNIFORM_BUFFER, Opengl::UBO);
-        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(glm::mat4) * 3, &matrices[0]);
+        glBufferSubData(GL_UNIFORM_BUFFER, 0, sizeof(UniformBufferObject), &ubo);
 
         glUniform1i(glGetUniformLocation(shader->ID(), "texSampler"), 0);
 

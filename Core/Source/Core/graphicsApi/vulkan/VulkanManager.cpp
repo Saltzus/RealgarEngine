@@ -1755,7 +1755,7 @@ namespace Realgar::Vulkan
     VulkanRenderer::~VulkanRenderer()
     {
     }
-    int sus = 0;
+
     void VulkanRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model)
     {
         Vulkan* vulkan = Vulkan::vulkan;
@@ -1791,6 +1791,7 @@ namespace Realgar::Vulkan
         ubo.model = model;
         ubo.view = camera->view;
         ubo.proj = camera->projection;
+        ubo.time = glfwGetTime();
 
         objects.push_back(this);
     }
