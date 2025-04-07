@@ -1,6 +1,6 @@
 {
   "camera": {
-    "translation": [0, 0, -4],
+    "translation": [0, 0, -10],
     "rotation": [0, 0, 0],
     "fov": 45.0,
     "nearPlane": 0.01,

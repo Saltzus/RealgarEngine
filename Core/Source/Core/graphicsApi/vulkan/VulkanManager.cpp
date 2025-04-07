@@ -1783,11 +1783,35 @@ namespace Realgar::Vulkan
     {
         Vulkan* vulkan = Vulkan::vulkan;
 
+        //float aspect = ((float)camera->width / camera->height);
         if (camera->ortho)
         {
-            float aspect = camera->width / (float)camera->height;
-            camera->projection = glm::ortho(2.0f * -aspect, 2.0f * aspect, -2.0f, 2.0f, -1.0f, 10000 / 1.0f);
+            float scale = 0.024f; // or any desired scale factor
+            float target_width = 640.0f * scale;
+            float target_height = 360.0f * scale;
+            float target_aspect = target_width / target_height;
+            float aspect = (float)camera->width / camera->height;
+
+            if (aspect > target_aspect) {
+                float view_width = target_height * aspect;
+                camera->projection = glm::ortho(
+                    -view_width / 2.0f, view_width / 2.0f,
+                    -target_height / 2.0f, target_height / 2.0f,
+                    camera->nearPlane, camera->farPlane
+                );
+            }
+            else {
+                float view_height = target_width / aspect;
+                camera->projection = glm::ortho(
+                    -target_width / 2.0f, target_width / 2.0f,
+                    -view_height / 2.0f, view_height / 2.0f,
+                    camera->nearPlane, camera->farPlane
+                );
+            }
         }
+
+
+
 
         ubo.model = model;
         ubo.view = camera->view;

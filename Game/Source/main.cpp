@@ -4,8 +4,8 @@
 #include <lua.hpp>
 
 // settings
-const unsigned int SCR_WIDTH = 800;
-const unsigned int SCR_HEIGHT = 600;
+const unsigned int SCR_WIDTH = 640;
+const unsigned int SCR_HEIGHT = 360;
 
 int main(int argc, char** argv)
 {
@@ -21,6 +21,8 @@ int main(int argc, char** argv)
 
     while (!glfwWindowShouldClose(window))
     {
+        glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, 0, 0, 120);
+
         scene.RenderScene(window);
 
         Realgar::Renderer::RenderGraphics();

@@ -28,8 +28,28 @@ namespace Realgar
 
         if (Renderer::GetGraphicsApi() == GraphicsApis::OpenGL && ortho)
         {
-            float aspect = width / (float)height;
-            projection = glm::ortho(2.0f * -aspect, 2.0f * aspect, -2.0f, 2.0f, -1.0f, 10000 / 1.0f);
+            float scale = 0.024f; // or any desired scale factor
+            float target_width = 640.0f * scale;
+            float target_height = 360.0f * scale;
+            float target_aspect = target_width / target_height;
+            float aspect = (float)width / height;
+
+            if (aspect > target_aspect) {
+                float view_width = target_height * aspect;
+                projection = glm::ortho(
+                    -view_width / 2.0f, view_width / 2.0f,
+                    -target_height / 2.0f, target_height / 2.0f,
+                    nearPlane, farPlane
+                );
+            }
+            else {
+                float view_height = target_width / aspect;
+                projection = glm::ortho(
+                    -target_width / 2.0f, target_width / 2.0f,
+                    -view_height / 2.0f, view_height / 2.0f,
+                    nearPlane, farPlane
+                );
+            }
         }
 
         if (!ortho) projection = glm::perspective(glm::radians(fov), (float)width / height, nearPlane, farPlane);
@@ -37,9 +57,9 @@ namespace Realgar
 
 
         glm::vec3 front;
-        front.x = cos(glm::radians(cameraRotation.x)) * cos(glm::radians(cameraRotation.y - 90));
+        front.x = cos(glm::radians(cameraRotation.x)) * cos(glm::radians(cameraRotation.y + 90));
         front.y = sin(glm::radians(cameraRotation.x));
-        front.z = cos(glm::radians(cameraRotation.x)) * sin(glm::radians(cameraRotation.y - 90));
+        front.z = cos(glm::radians(cameraRotation.x)) * sin(glm::radians(cameraRotation.y + 90));
         cameraFront = glm::normalize(front);
 
         glm::vec3 right = glm::normalize(glm::cross(cameraFront, worldUp));

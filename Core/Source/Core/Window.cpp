@@ -11,6 +11,28 @@ namespace Realgar
 
 	}
 
+
+	void Window::toggleFullscreen(GLFWwindow* window) 
+	{
+		isFullscreen = !isFullscreen;
+
+		GLFWmonitor* monitor = glfwGetPrimaryMonitor();
+		const GLFWvidmode* mode = glfwGetVideoMode(monitor);
+
+		if (isFullscreen) {
+			// Save current windowed position/size
+			glfwGetWindowPos(window, &windowedX, &windowedY);
+			glfwGetWindowSize(window, &windowedWidth, &windowedHeight);
+
+			// Switch to fullscreen
+			glfwSetWindowMonitor(window, monitor, 0, 0, mode->width, mode->height, mode->refreshRate);
+		}
+		else {
+			// Restore to windowed mode
+			glfwSetWindowMonitor(window, nullptr, windowedX, windowedY, windowedWidth, windowedHeight, 0);
+		}
+	}
+
 	/// @param WinName = Title of the window
 	/// @param WinWidth = Width of the window
 	/// @param WinHeight = Height of the window
@@ -84,6 +106,7 @@ namespace Realgar
 		}
 	}
 
+	bool f11Pressed = false;
 	void Window::Display()
 	{
 		glfwSwapBuffers(GLFW_Window);
@@ -96,6 +119,14 @@ namespace Realgar
 		{
 			glClearColor(0.2f, 0.3f, 0.3f, 1.0f);
 			glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+		}
+
+		if (glfwGetKey(GLFW_Window, GLFW_KEY_F11) == GLFW_PRESS && !f11Pressed) {
+			toggleFullscreen(GLFW_Window);
+			f11Pressed = true;
+		}
+		if (glfwGetKey(GLFW_Window, GLFW_KEY_F11) == GLFW_RELEASE) {
+			f11Pressed = false;
 		}
 	}
 

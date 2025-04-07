@@ -50,7 +50,6 @@ namespace Realgar::Opengl
     }
     OpenglTexture::OpenglTexture(unsigned char* data, int format, int width, int height)
     {
-        glEnable(GL_BLEND);
         glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);  
 
         switch (format)
@@ -106,6 +105,9 @@ namespace Realgar::Opengl
     {
         this->window = window;
 
+        glEnable(GL_BLEND);
+        glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
+
         glGenFramebuffers(1, &FBO);
         glBindFramebuffer(GL_FRAMEBUFFER, FBO);
 
@@ -131,7 +133,6 @@ namespace Realgar::Opengl
         glBindTexture(GL_TEXTURE_2D, 0);
         glBindRenderbuffer(GL_RENDERBUFFER, 0);
 
-        //
 
         glGenBuffers(1, &UBO);
         glBindBuffer(GL_UNIFORM_BUFFER, UBO);

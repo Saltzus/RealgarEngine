@@ -42,6 +42,11 @@ namespace Realgar
 		}
 
 	private:
+		void toggleFullscreen(GLFWwindow* window);
+
+		bool isFullscreen = false;
+		int windowedX, windowedY, windowedWidth, windowedHeight;
+
 		static void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 		static void window_size_callback(GLFWwindow* glfwWindow, int width, int height);
 		void onResize(int width, int height);
