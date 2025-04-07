@@ -879,6 +879,8 @@ namespace Realgar::Vulkan
     }
     void Vulkan::updateUniformBuffer(uint32_t currentImage, VulkanRenderer* object) 
     {
+        float aspectRatio = swapChainExtent.width / (float)swapChainExtent.height;
+        //object->ubo.proj = glm::ortho(2.0f * -aspectRatio, 2.0f * aspectRatio, -2.0f, 2.0f, -1.0f, 10000 / 1.0f);
         object->ubo.proj[1][1] *= -1;
         memcpy(object->uniformBuffers_uniformBuffersMapped.second[currentImage], &object->ubo, sizeof(object->ubo));
     }
@@ -1781,6 +1783,17 @@ namespace Realgar::Vulkan
     {
         Vulkan* vulkan = Vulkan::vulkan;
 
+        if (camera->ortho)
+        {
+            float aspect = camera->width / (float)camera->height;
+            camera->projection = glm::ortho(2.0f * -aspect, 2.0f * aspect, -2.0f, 2.0f, -1.0f, 10000 / 1.0f);
+        }
+
+        ubo.model = model;
+        ubo.view = camera->view;
+        ubo.proj = camera->projection;
+        ubo.time = glfwGetTime();
+
         this->shader = &shader->shader;
         vertexShader = this->shader->first.c_str();
         fragmentShader = this->shader->second.c_str();
@@ -1809,10 +1822,7 @@ namespace Realgar::Vulkan
             lastTexture = vulkan->textureImageView;
         }
 
-        ubo.model = model;
-        ubo.view = camera->view;
-        ubo.proj = camera->projection;
-        ubo.time = glfwGetTime();
+
 
         objects.push_back(this);
     }

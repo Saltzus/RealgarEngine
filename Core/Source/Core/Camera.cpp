@@ -10,6 +10,7 @@ namespace Realgar
         this->fov = fov;
         this->nearPlane = nearPlane;
         this->farPlane = farPlane;
+        this->ortho = ortho;
     }
 
     void Camera::updateMatrix(GLFWwindow* window)
@@ -25,8 +26,16 @@ namespace Realgar
         else
             glfwGetFramebufferSize(window, &width, &height);
 
-    	projection = glm::perspective(glm::radians(fov), (float)width / height, nearPlane, farPlane);
-        
+        if (Renderer::GetGraphicsApi() == GraphicsApis::OpenGL && ortho)
+        {
+            float aspect = width / (float)height;
+            projection = glm::ortho(2.0f * -aspect, 2.0f * aspect, -2.0f, 2.0f, -1.0f, 10000 / 1.0f);
+        }
+
+        if (!ortho) projection = glm::perspective(glm::radians(fov), (float)width / height, nearPlane, farPlane);
+
+
+
         glm::vec3 front;
         front.x = cos(glm::radians(cameraRotation.x)) * cos(glm::radians(cameraRotation.y - 90));
         front.y = sin(glm::radians(cameraRotation.x));
@@ -39,6 +48,7 @@ namespace Realgar
 
         view = glm::lookAt(cameraPosition, cameraPosition + cameraFront, cameraUp);
     }
+
 
     int setCameraTranslation(lua_State* L) 
     {

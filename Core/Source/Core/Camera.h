@@ -35,6 +35,7 @@ namespace Realgar
         float fov;
         float nearPlane;
         float farPlane;
+        bool ortho;
 
     	Camera(glm::vec3 position, glm::vec3 rotation, float fov,  float nearPlane, float farPlane, bool ortho);
 

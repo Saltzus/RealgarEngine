@@ -25,6 +25,7 @@ namespace Realgar
         float fov = cameraData["fov"];
         float nearPlane = cameraData["nearPlane"];
         float farPlane = cameraData["farPlane"];
+
         camera = new Camera
         (
             cameraTranslation,
@@ -32,7 +33,7 @@ namespace Realgar
             fov,
             nearPlane,
             farPlane,
-            false
+            true
         );
 
         for (auto& [name, shdr] : sceneData["shaders"].items())
