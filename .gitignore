@@ -3,6 +3,7 @@
 Binaries/
 Game/Resources/Shaders/*.spv
 Libraries/vulkan/Lib/*.lib
+Editor/LanguageServer/log/cache/
 
 # Files
 *.vcxproj
