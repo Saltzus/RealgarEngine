@@ -14,7 +14,6 @@ namespace Realgar::Components
     }
     RenderComponent::~RenderComponent()
     {
-        delete texture;
         delete renderer;
     }
 

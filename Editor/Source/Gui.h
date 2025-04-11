@@ -8,6 +8,16 @@
 
 #include "Core/Scene.h"
 
+struct File
+{
+	std::string name;
+	std::string path;
+	std::string extention;
+
+	std::vector<File> children;
+	bool isDirectory;
+};
+
 class Gui
 {
 public:
@@ -21,10 +31,13 @@ private:
 
 	Realgar::Scene* scene;
 
+	void Menu();
 	void MainWindow();
 	void SceneWindow();
 
 	FileEditor fileEditor;
+
+	void showFiles(std::vector<File> files);
 
 	void ProperitiesWindow();
 	std::string selected = " ";

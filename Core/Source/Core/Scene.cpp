@@ -9,8 +9,12 @@ namespace Realgar
 
     Scene* Scene::currentScene;
 
-    Scene::Scene(const char* filepath)
+    static std::chrono::steady_clock::time_point startTime;
+
+    Scene::Scene(const char* filepath) : path(filepath)
     {
+        startTime = std::chrono::high_resolution_clock::now();
+
         currentScene = this;
 
         unsigned int SCR_WIDTH = 800;
@@ -76,12 +80,91 @@ namespace Realgar
             addComponentsFromJson(obj["components"], object, this);
             objects[obj["name"].get<std::string>()] = object;
         }
+    }
+
+    void Scene::reloadSceneLater()
+    {
+        startTime = std::chrono::high_resolution_clock::now();
+
+        std::ifstream jsonFile(reloadPath);
+        sceneData = json::parse(jsonFile);
+
+        json cameraData = sceneData["camera"];
+        glm::vec3 cameraTranslation(cameraData["translation"][0], cameraData["translation"][1], cameraData["translation"][2]);
+        glm::vec3 cameraRotation(cameraData["rotation"][0], cameraData["rotation"][1], cameraData["rotation"][2]);
+        float fov = cameraData["fov"];
+        float nearPlane = cameraData["nearPlane"];
+        float farPlane = cameraData["farPlane"];
+
+        camera->cameraPosition = -cameraTranslation;
+        camera->cameraRotation = cameraRotation;
+        camera->fov = fov;
+        camera->nearPlane = nearPlane;
+        camera->farPlane = farPlane;
+
 
         for (auto object : objects)
+            delete object.second;
+
+        for (auto texture : textures)
+            delete texture.second;
+
+        for (auto shader : shaders)
+            delete shader.second;
+
+        for (auto audio : audio_map)
+            delete audio.second;
+
+
+        shaders.clear();
+        for (auto& [name, shdr] : sceneData["shaders"].items())
         {
-            for (auto comp : object.second->components)
-                comp.second->init();
+            std::string vertex = shdr["vertex"].get<std::string>();
+            std::string fragment = shdr["fragment"].get<std::string>();
+            Shader* shader = new Shader(vertex.c_str(), fragment.c_str());
+
+            shaders[name] = shader;
         }
+
+        current_shaders = shaders;
+
+        textures.clear();
+        for (auto& [name, txtr] : sceneData["textures"].items())
+        {
+            std::string path = txtr.get<std::string>();
+            Texture* texture = new Texture(path.c_str());
+
+            textures[name] = texture;
+        }
+
+        current_textures = textures;
+
+        audio_map.clear();
+        for (auto& [name, aud] : sceneData["audio"].items())
+        {
+            std::string file = aud["file"].get<std::string>();
+            bool spatialized = aud["spatialized"].get<bool>();
+            Audio* audio = new Audio(file, spatialized);
+
+            audio_map[name] = audio;
+        }
+
+        current_audio = audio_map;
+
+        objects.clear();
+        for (json obj : sceneData["gameObjects"])
+        {
+            GameObject* object = new GameObject;
+            object->name = obj["name"].get<std::string>();
+
+            addComponentsFromJson(obj["components"], object, this);
+            objects[obj["name"].get<std::string>()] = object;
+        }
+    }
+    void Scene::reloadScene(const char* filepath)
+    {
+        reloadPath = filepath;
+        reload = true;
     }
     
     Scene::~Scene()
@@ -164,14 +247,38 @@ namespace Realgar
         }
     }
 
-    void Scene::RenderScene(GLFWwindow* window)
+    void Scene::setStatus(bool status)
     {
-        static auto startTime = std::chrono::high_resolution_clock::now();
+        startTime = std::chrono::high_resolution_clock::now();
+        this->status = status;
+
+        if (status)
+        {
+            for (auto object : objects)
+            {
+                for (auto comp : object.second->components)
+                    comp.second->init();
+            }
+        }
+    }
+
+    void Scene::RenderScene(Window* window)
+    {
+        if (!window->editor && !init)
+        {
+            init = true;
+            for (auto object : objects)
+            {
+                for (auto comp : object.second->components)
+                    comp.second->init();
+            }
+        }
+
         auto currentTime = std::chrono::high_resolution_clock::now();
         float time = std::chrono::duration<float, std::chrono::seconds::period>(currentTime - startTime).count();
 
         // TODO: change different place or put here from json
-        camera->updateMatrix(window);
+        camera->updateMatrix(*window);
 
         if (Realgar::Renderer::GetGraphicsApi() == Realgar::GraphicsApis::OpenGL && Window::editor)
         {
@@ -181,12 +288,17 @@ namespace Realgar
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
+        if (reload)
+        {
+            reload = false;
+            reloadSceneLater();
+        }
 
         for (auto object : objects)
         {
             Shader* shader = shaders["default"];
 
-            object.second->update(time);
+            if (!window->editor || status) object.second->update(time);
             object.second->render(shaders["default"], camera);
         }
 

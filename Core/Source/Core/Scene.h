@@ -17,6 +17,7 @@ namespace Realgar
         static std::map<std::string, Shader*> current_shaders;
         static std::map<std::string, Audio*> current_audio;
 
+        void reloadScene(const char* filepath);
         static void registerScene(lua_State* L);
         static Scene* currentScene;
 
@@ -25,16 +26,28 @@ namespace Realgar
 
         std::map<std::string, GameObject*> objects;
 
+        void setStatus(bool status);
+        bool getStatus() { return status; }
+        std::string getPath() { return path; }
+
         Camera* camera = nullptr;
-        void RenderScene(GLFWwindow* window);
+        void RenderScene(Window* window);
     private:
         void addComponentsFromJson(json& componentData, GameObject* object, Scene* scene);
         json sceneData;
 
-        
+        bool status = false;
+        std::string path;
+
         std::map<std::string, Texture*> textures;
         std::map<std::string, Shader*> shaders;
         std::map<std::string , Audio*> audio_map;
+
+        bool init = false;
+
+        bool reload = false;
+        std::string reloadPath;
+        void reloadSceneLater();
     };
     
 } 

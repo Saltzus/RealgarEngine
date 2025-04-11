@@ -1777,6 +1777,7 @@ namespace Realgar::Vulkan
 
     VulkanRenderer::~VulkanRenderer()
     {
+
     }
 
     void VulkanRenderer::Render(Shader* shader, Camera* camera, glm::mat4 model)

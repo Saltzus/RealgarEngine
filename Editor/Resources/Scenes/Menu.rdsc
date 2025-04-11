@@ -1,10 +1,10 @@
 {
   "camera": {
-    "translation": [0, 0, -10],
+    "translation": [0, 0, 4],
     "rotation": [0, 0, 0],
     "fov": 45.0,
-    "nearPlane": 0.01,
-    "farPlane": 10000.0
+    "nearPlane": 0.1,
+    "farPlane": 100.0
   },
   "shaders": {
     "default": {
@@ -70,3 +70,4 @@
   ]
 
 }
+

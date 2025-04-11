@@ -6,16 +6,6 @@
 
 ImGuiWindowFlags windowflags;
 
-struct File
-{
-    std::string name;
-    std::string path;
-    std::string extention;
-
-    std::vector<File> children;
-    bool isDirectory;
-};
-
 std::vector<File> files;
 
 std::vector<File> generateFileChildren(std::string path)
@@ -124,6 +114,38 @@ void Gui::Render()
 
 bool open;
 
+void Gui::Menu()
+{
+    const char* text = "Start";
+    if (scene->getStatus())
+    {
+        text = "Stop";
+    }
+
+    if (ImGui::BeginMenuBar())
+    {
+        if (ImGui::BeginMenu("Folder"))
+        {
+            if (ImGui::MenuItem("Open"))
+            {
+            }
+            ImGui::EndMenu();
+        }
+        if (ImGui::Button(text))
+        {
+            if (text == "Start")
+                scene->setStatus(true);
+            else
+            {
+                scene->reloadScene(scene->getPath().c_str());
+                scene->setStatus(false);
+            }
+        }
+        ImGui::EndMenuBar();
+    }
+    ImGui::End();
+}
+
 void Gui::MainWindow()
 {
     ImGuiWindowFlags window_flags = ImGuiWindowFlags_MenuBar | ImGuiWindowFlags_NoDocking | ImGuiWindowFlags_NoBackground;
@@ -139,7 +161,7 @@ void Gui::MainWindow()
     ImGuiID dock = ImGui::GetID("Dock");
     ImGui::DockSpace(dock, ImVec2(0.0f, 0.0f), ImGuiDockNodeFlags_PassthruCentralNode);
 
-    ImGui::End();
+    Menu();
 
     ImGui::Begin("Viewport", &open, windowflags);
 
@@ -269,7 +291,7 @@ void Gui::ProperitiesWindow()
     ImGui::End();
 }
 
-void showFiles(std::vector<File> files)
+void Gui::showFiles(std::vector<File> files)
 {
     for (File file : files)
     {  
@@ -283,7 +305,17 @@ void showFiles(std::vector<File> files)
         }
         else
         {
-            ImGui::Text(file.name.c_str());
+            if (ImGui::Selectable(file.name.c_str()))
+                ImGui::OpenPopup(("##" + file.name).c_str());
+
+            if (ImGui::BeginPopup(("##" + file.name).c_str()))
+            {
+                ImGui::Text("Unsaved changes will be discarded!");
+                if (ImGui::Button("Ok")) { fileEditor.ChangeFile(file.path.c_str()); ImGui::CloseCurrentPopup(); }
+                ImGui::SameLine();
+                if (ImGui::Button("Stop")){ ImGui::CloseCurrentPopup(); }
+                ImGui::EndPopup();
+            }
         }
     }
 }

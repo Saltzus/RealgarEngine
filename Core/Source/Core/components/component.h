@@ -9,7 +9,7 @@ namespace Realgar::Components
 	class Component
 	{
 	public:
-		~Component() {}
+		virtual ~Component() {}
 
 		virtual void update(float deltaTime) {}
 		virtual void init() {}
