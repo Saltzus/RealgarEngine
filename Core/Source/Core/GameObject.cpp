@@ -7,11 +7,10 @@ namespace Realgar
 
 	GameObject::~GameObject()
 	{
-		for (auto& comp : components)
-		{
-			components.erase(comp.first);
-			delete comp.second;
-		}
+        for (auto comp = components.begin(); comp != components.end(); ) {
+            delete comp->second;       
+            comp = components.erase(comp);
+        }
 	}
 
 	void GameObject::update(float deltaTime) {

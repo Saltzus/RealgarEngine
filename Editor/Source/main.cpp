@@ -9,7 +9,6 @@ const unsigned int SCR_HEIGHT = 360;
 
 int main()
 {
-
     Realgar::Window window ("RED - Test", SCR_WIDTH, SCR_HEIGHT, true);
     Realgar::Renderer::InitApi(window); // TODO : add automatically run compile.bat and add switch to change from opengl to vulkan
 
@@ -23,9 +22,7 @@ int main()
 
     while (!glfwWindowShouldClose(window))
     {
-        scene.RenderScene(window);
-
-
+        scene.RenderScene(&window);
 
         gui.Render();
         Realgar::Renderer::RenderGraphics();

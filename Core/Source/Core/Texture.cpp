@@ -37,7 +37,7 @@ namespace Realgar
     
     Texture::~Texture()
     {
-        delete this->impl;
+        delete impl;
     }
 
     void Texture::Bind()

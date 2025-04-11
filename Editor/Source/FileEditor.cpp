@@ -17,6 +17,18 @@ FileEditor::FileEditor()
     editor.SetLanguageDefinition(lang);
     server.startServer("LanguageServer\\bin\\server");
 }
+
+void FileEditor::ChangeFile(const char* file)
+{
+    fileToEdit = file;
+    std::ifstream t(file);
+    if (t.good())
+    {
+        std::string str((std::istreambuf_iterator<char>(t)), std::istreambuf_iterator<char>());
+        editor.SetText(str);
+    }
+}
+
 FileEditor::~FileEditor()
 {
     server.stopServer();
@@ -36,22 +48,39 @@ std::string ReplaceTabsWithSpaces(const std::string& input)
     return result;
 }
 
+void Save(TextEditor& editor, std::string fileToEdit)
+{
+    auto textToSave = editor.GetText();
+
+    std::ofstream outFile(fileToEdit);
+    if (outFile.is_open())
+    {
+        outFile << textToSave;
+
+        outFile.close();
+        editor.SetText(textToSave);
+        std::cout << "File saved successfully to " << fileToEdit << std::endl;
+    }
+    else
+    {
+        std::cerr << "Error: Could not open file for saving." << std::endl;
+    }
+}
+
 void FileEditor::Render()
 {
     editor.SetHandleKeyboardInputs(true);
 
     auto cpos = editor.GetCursorPosition();
     ImGui::Begin("Text Editor Demo", nullptr, ImGuiWindowFlags_HorizontalScrollbar | ImGuiWindowFlags_MenuBar);
+
     ImGui::SetWindowSize(ImVec2(800, 600), ImGuiCond_FirstUseEver);
     if (ImGui::BeginMenuBar())
     {
         if (ImGui::BeginMenu("File"))
         {
-            if (ImGui::MenuItem("Save"))
-            {
-                auto textToSave = editor.GetText();
-                /// save text....
-            }
+            if (ImGui::MenuItem("Save", "Ctrl-S"))
+                Save(editor, fileToEdit);
             if (ImGui::MenuItem("Quit", "Alt-F4"))
                 return;
             ImGui::EndMenu();
@@ -63,7 +92,7 @@ void FileEditor::Render()
                 editor.SetReadOnly(ro);
             ImGui::Separator();
 
-            if (ImGui::MenuItem("Undo", "ALT-Backspace", nullptr, !ro && editor.CanUndo()))
+            if (ImGui::MenuItem("Undo", "Ctrl-Z", nullptr, !ro && editor.CanUndo()))
                 editor.Undo();
             if (ImGui::MenuItem("Redo", "Ctrl-Y", nullptr, !ro && editor.CanRedo()))
                 editor.Redo();
@@ -102,7 +131,7 @@ void FileEditor::Render()
     ImGui::Text("%6d/%-6d %6d lines  | %s | %s | %s | %s", cpos.mLine + 1, cpos.mColumn + 1, editor.GetTotalLines(),
         editor.IsOverwrite() ? "Ovr" : "Ins",
         editor.CanUndo() ? "*" : " ",
-        editor.GetLanguageDefinition().mName.c_str(), fileToEdit);
+        editor.GetLanguageDefinition().mName.c_str(), fileToEdit.c_str());
 
     
     if (ImGui::IsKeyPressed(ImGuiKey_Space) && ImGui::GetIO().KeyCtrl)
@@ -111,6 +140,10 @@ void FileEditor::Render()
         server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn);
         tooltip = true; 
     }
+
+    if (ImGui::IsKeyPressed(ImGuiKey_S) && ImGui::GetIO().KeyCtrl && ImGui::IsWindowFocused(ImGuiFocusedFlags_ChildWindows))
+        Save(editor, fileToEdit);
+
 
     std::string test = ReplaceTabsWithSpaces(editor.GetCurrentLineText());
     if (test.size() > 0 && cpos.mColumn > 0 && test[cpos.mColumn - 1] == '.')
