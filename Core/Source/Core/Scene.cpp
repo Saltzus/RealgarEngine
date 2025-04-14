@@ -264,6 +264,12 @@ namespace Realgar
 
     void Scene::RenderScene(Window* window)
     {
+        if (reload)
+        {
+            reload = false;
+            reloadSceneLater();
+        }
+
         if (!window->editor && !init)
         {
             init = true;
@@ -288,19 +294,13 @@ namespace Realgar
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
         }
 
-        if (reload)
-        {
-            reload = false;
-            reloadSceneLater();
-        }
-
         for (auto object : objects)
         {
-            Shader* shader = shaders["default"];
-
             if (!window->editor || status) object.second->update(time);
             object.second->render(shaders["default"], camera);
         }
+
+
 
         if (Realgar::Renderer::GetGraphicsApi() == Realgar::GraphicsApis::OpenGL && Window::editor)
             glBindFramebuffer(GL_FRAMEBUFFER, 0);

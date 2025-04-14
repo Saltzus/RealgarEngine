@@ -118,9 +118,7 @@ void Gui::Menu()
 {
     const char* text = "Start";
     if (scene->getStatus())
-    {
         text = "Stop";
-    }
 
     if (ImGui::BeginMenuBar())
     {
@@ -192,72 +190,67 @@ void Gui::MainWindow()
 void Gui::SceneWindow()
 {
     ImGui::Begin("Scene", &open, windowflags);
-    ImGui::Text("Camera :  "); ImGui::SameLine(); ImGui::Button("+");
-
-    ImGui::Bullet();
-    if (ImGui::Button("Camera"))
+    if (ImGui::TreeNode("Camera")) 
     {
-        selected = "Camera";
-        selectedType = 1;
-    }
-
-    ImGui::NewLine();
-
-    ImGui::Text("GameObjects :  "); ImGui::SameLine(); ImGui::Button("+");
-
-    for (auto object : scene->objects)
-    {
-        ImGui::Bullet();
-        if (ImGui::Button((object.first + "##object").c_str()))
+        if (ImGui::Selectable(" Camera"))
         {
-            selected = object.first.c_str();
-            selectedType = 2;
+            selected = "Camera";
+            selectedType = 1;
         }
+        ImGui::TreePop();
     }
 
-    ImGui::NewLine();
-
-    ImGui::Text("Shaders :  "); ImGui::SameLine(); ImGui::Button("+");
-
-    for (auto object : scene->current_shaders)
+    if (ImGui::TreeNode("GameObjects"))
     {
-        ImGui::Bullet();
-        if (ImGui::Button((object.first + "##shader").c_str()))
+        for (auto object : scene->objects)
         {
-            selected = object.first.c_str();
-            selectedType = 3;
+            if (ImGui::Selectable((" " + object.first + "##object").c_str()))
+            {
+                selected = object.first.c_str();
+                selectedType = 2;
+            }
         }
+        ImGui::TreePop();
     }
 
-    ImGui::NewLine();
-
-    ImGui::Text("Textures :  "); ImGui::SameLine(); ImGui::Button("+");
-
-    for (auto object : scene->current_textures)
+    if (ImGui::TreeNode("Shaders"))
     {
-        ImGui::Bullet();
-        if (ImGui::Button((object.first + "##texture").c_str()))
+        for (auto object : scene->current_shaders)
         {
-            selected = object.first.c_str();
-            selectedType = 4;
+            if (ImGui::Selectable((" " + object.first + "##shader").c_str()))
+            {
+                selected = object.first.c_str();
+                selectedType = 3;
+            }
         }
+        ImGui::TreePop();
     }
 
-    ImGui::NewLine();
-
-    ImGui::Text("Audio :  "); ImGui::SameLine(); ImGui::Button("+");
-
-    for (auto object : scene->current_audio)
+    if (ImGui::TreeNode("Textures"))
     {
-        ImGui::Bullet();
-        if (ImGui::Button((object.first + "##audio").c_str()))
+        for (auto object : scene->current_textures)
         {
-            selected = object.first.c_str();
-            selectedType = 5;
+            if (ImGui::Selectable((" " + object.first + "##texture").c_str()))
+            {
+                selected = object.first.c_str();
+                selectedType = 4;
+            }
         }
+        ImGui::TreePop();
     }
 
-    ImGui::NewLine();
+    if (ImGui::TreeNode("Audio"))
+    {
+        for (auto object : scene->current_audio)
+        {
+            if (ImGui::Selectable((" " + object.first + "##audio").c_str()))
+            {
+                selected = object.first.c_str();
+                selectedType = 5;
+            }
+        }
+        ImGui::TreePop();
+    }
 
     ImGui::End();
 }
@@ -566,7 +559,7 @@ void Gui::ObjectProperities()
             float* pos[3] = { &speaker->translation.x, &speaker->translation.y, &speaker->translation.z };
 
             static int item_selected_idx = 0;
-            const char* combo_preview_value;
+            const char* combo_preview_value = "null";
 
             std::vector<const char*> audioItems;
             for (auto& audio : scene->current_audio)

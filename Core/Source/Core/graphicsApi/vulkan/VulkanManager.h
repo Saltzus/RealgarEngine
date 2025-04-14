@@ -78,6 +78,7 @@ namespace Realgar::Vulkan
         VkDevice device;
         VkImageView textureImageView;
         VkSampler textureSampler;
+        VkQueue graphicsQueue;
 
         std::map<std::pair<std::string, std::string>,VkPipeline> graphicsPipelines;
 
@@ -115,7 +116,7 @@ namespace Realgar::Vulkan
 
         VkPhysicalDevice physicalDevice = VK_NULL_HANDLE;
 
-        VkQueue graphicsQueue;
+
         VkQueue presentQueue;
 
         VkSwapchainKHR swapChain;

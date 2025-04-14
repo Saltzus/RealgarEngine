@@ -63,7 +63,7 @@
         },        
         "audioPlayer": {
           "translation": [0, 0, 0],
-          "audio": ""
+          "audio": "test"
         }
       }
     }

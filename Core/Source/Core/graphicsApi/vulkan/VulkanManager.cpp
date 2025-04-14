@@ -81,6 +81,8 @@ namespace Realgar::Vulkan
     }
     VulkanTexture::~VulkanTexture()
     {
+        vkDeviceWaitIdle(Vulkan::vulkan->device);
+
         vkDestroyImage(Vulkan::vulkan->device, textureImage, nullptr);
         vkFreeMemory(Vulkan::vulkan->device, textureImageMemory, nullptr);
     }
@@ -90,7 +92,7 @@ namespace Realgar::Vulkan
     }
 
 #ifdef DEBUG
-    const bool enableValidationLayers = false;
+    const bool enableValidationLayers = true;
 #else
     const bool enableValidationLayers = false;
 #endif
@@ -1793,17 +1795,21 @@ namespace Realgar::Vulkan
             float target_aspect = target_width / target_height;
             float aspect = (float)camera->width / camera->height;
 
-            if (aspect > target_aspect) {
+            if (aspect > target_aspect) 
+            {
                 float view_width = target_height * aspect;
-                camera->projection = glm::ortho(
+                camera->projection = glm::ortho
+                (
                     -view_width / 2.0f, view_width / 2.0f,
                     -target_height / 2.0f, target_height / 2.0f,
                     camera->nearPlane, camera->farPlane
                 );
             }
-            else {
+            else 
+            {
                 float view_height = target_width / aspect;
-                camera->projection = glm::ortho(
+                camera->projection = glm::ortho
+                (
                     -target_width / 2.0f, target_width / 2.0f,
                     -view_height / 2.0f, view_height / 2.0f,
                     camera->nearPlane, camera->farPlane
@@ -1841,6 +1847,7 @@ namespace Realgar::Vulkan
                 descriptorWrite.descriptorCount = 1;
                 descriptorWrite.pImageInfo = &imageInfo;
 
+                vkQueueWaitIdle(vulkan->graphicsQueue);
                 vkUpdateDescriptorSets(vulkan->device, 1, &descriptorWrite, 0, nullptr);
             }
 
