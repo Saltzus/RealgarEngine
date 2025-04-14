@@ -29,6 +29,8 @@ private:
 	ImGuiIO* io;
 	ImGuiViewport* viewport;
 
+	bool CustomTreeNode(std::string label);
+	void Popups(std::string id);
 	Realgar::Scene* scene;
 
 	void Menu();

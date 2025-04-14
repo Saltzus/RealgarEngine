@@ -170,9 +170,6 @@ void Gui::MainWindow()
 
     if (Realgar::Renderer::GetGraphicsApi() == Realgar::GraphicsApis::Vulkan)
     {
-        
-
-
         uint32_t frame = static_cast<uint32_t>(Realgar::Vulkan::Vulkan::vulkan->currentSceneImage);
         ImGui::Image((ImTextureID)Realgar::Vulkan::Vulkan::vulkan->sceneImages[frame], ImVec2{ viewportPanelSize.x, viewportPanelSize.y });
     }
@@ -187,20 +184,112 @@ void Gui::MainWindow()
     }
     ImGui::End();
 }
+
+bool CircleButton(float radius = 5.3f)
+{
+    ImVec2 cursorPos = ImGui::GetCursorScreenPos();
+    ImVec2 center = ImVec2(cursorPos.x + radius, cursorPos.y + radius + 2);
+    ImVec2 size = ImVec2(radius * 2, radius * 2);
+
+    // Create an invisible button to handle interaction
+    ImGui::SetCursorScreenPos(cursorPos);
+    ImGui::InvisibleButton("##plus_button", size);
+
+    // Get interaction state
+    bool hovered = ImGui::IsItemHovered();
+    bool held = ImGui::IsItemActive();
+    bool clicked = ImGui::IsItemClicked();
+
+    // Draw the circle
+    ImU32 color = IM_COL32(255, 255, 255, held ? 80 : hovered ? 60 : 30);
+    ImGui::GetWindowDrawList()->AddCircleFilled(center, radius, color, 20);
+
+    // Draw the plus sign
+    float plusSize = radius * 0.5f;
+    ImU32 plusColor = IM_COL32(255, 255, 255, 200);
+    ImGui::GetWindowDrawList()->AddLine(
+        ImVec2(center.x - plusSize, center.y),
+        ImVec2(center.x + plusSize, center.y),
+        plusColor, 0.005f
+    );
+    ImGui::GetWindowDrawList()->AddLine(
+        ImVec2(center.x, center.y - plusSize),
+        ImVec2(center.x, center.y + plusSize),
+        plusColor, 0.005f
+    );
+
+    return clicked;
+}
+
+void Gui::Popups(std::string id)
+{
+    char buffer[256];
+
+    strncpy(buffer, selected.c_str(), sizeof(buffer));
+    buffer[sizeof(buffer) - 1] = '\0';
+
+
+    if (id == "GameObjects" && ImGui::BeginPopup("GameObjects ##popup"))
+    {
+        ImGui::Text("Object Name:");
+        if (ImGui::InputText("##ObjectName", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+            scene->addObject(buffer);
+
+        ImGui::EndPopup();
+    }
+
+    if (id == "Shaders" && ImGui::BeginPopup("Shaders ##popup"))
+    {
+        ImGui::Text("Shader Name:");
+        if (ImGui::InputText("##ShadersName", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+            scene->addObject(buffer);
+
+        ImGui::EndPopup();
+    }
+}
+
+bool Gui::CustomTreeNode(std::string label)
+{
+    bool treeOpen = ImGui::TreeNodeEx(label.c_str(), ImGuiTreeNodeFlags_AllowOverlap | ImGuiTreeNodeFlags_SpanAvailWidth);
+    bool treeHovered = ImGui::IsItemHovered();
+
+    if (treeHovered)
+    {
+        ImGui::SameLine(0, 15);
+        if (CircleButton())
+        {
+            if (label == "GameObjects")
+                ImGui::OpenPopup("GameObjects ##popup", ImGuiPopupFlags_AnyPopupId);
+            else if (label == "Shaders")
+                ImGui::OpenPopup("Shaders ##popup");
+        }
+    }
+
+    Popups(label);
+    return treeOpen;
+}
+
 void Gui::SceneWindow()
 {
+    // Set custom button style colors for transparency.
+    ImGui::PushStyleColor(ImGuiCol_Header, ImVec4(1.0f, 1.0f, 1.0f, 0.0f));
+    ImGui::PushStyleColor(ImGuiCol_HeaderHovered, ImVec4(1.0f, 1.0f, 1.0f, 0.05f));
+    ImGui::PushStyleColor(ImGuiCol_HeaderActive, ImVec4(1.0f, 1.0f, 1.0f, 0.1f));
+
     ImGui::Begin("Scene", &open, windowflags);
-    if (ImGui::TreeNode("Camera")) 
+
+    if (ImGui::TreeNode("Camera"))
     {
         if (ImGui::Selectable(" Camera"))
         {
             selected = "Camera";
             selectedType = 1;
         }
+
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("GameObjects"))
+    if (CustomTreeNode("GameObjects"))
     {
         for (auto object : scene->objects)
         {
@@ -210,10 +299,11 @@ void Gui::SceneWindow()
                 selectedType = 2;
             }
         }
+
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Shaders"))
+    if (CustomTreeNode("Shaders"))
     {
         for (auto object : scene->current_shaders)
         {
@@ -226,7 +316,7 @@ void Gui::SceneWindow()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Textures"))
+    if (CustomTreeNode("Textures"))
     {
         for (auto object : scene->current_textures)
         {
@@ -239,7 +329,7 @@ void Gui::SceneWindow()
         ImGui::TreePop();
     }
 
-    if (ImGui::TreeNode("Audio"))
+    if (CustomTreeNode("Audio"))
     {
         for (auto object : scene->current_audio)
         {
@@ -252,6 +342,8 @@ void Gui::SceneWindow()
         ImGui::TreePop();
     }
 
+
+    ImGui::PopStyleColor(3);
     ImGui::End();
 }
 void Gui::ProperitiesWindow()

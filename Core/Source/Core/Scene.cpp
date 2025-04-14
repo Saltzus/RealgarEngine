@@ -308,6 +308,16 @@ namespace Realgar
 
     std::string Scene::addObject(std::string name)
     {
+        name.erase(name.begin(), std::find_if(name.begin(), name.end(), [](unsigned char ch) 
+        {
+            return !std::isspace(ch);
+        }));
+        name.erase(std::find_if(name.rbegin(), name.rend(), [](unsigned char ch) 
+        {
+            return !std::isspace(ch);
+        }).base(), name.end());
+
+
         if (objects.find(name) == objects.end()) 
         {
             objects[name] = new Realgar::GameObject();
