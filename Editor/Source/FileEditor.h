@@ -14,13 +14,13 @@ public:
 	~FileEditor();
 
 	void ChangeFile(const char* file);
+	TextEditor editor;
 
 	void Render();
 private:
 	std::string fileToEdit = "Resources/Scripts/test.lua";
 	static LanguageServer server;
 
-	TextEditor editor;
 	TextEditor::LanguageDefinition lang = TextEditor::LanguageDefinition::Lua();
 
 	bool tooltip = false;

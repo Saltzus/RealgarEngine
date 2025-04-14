@@ -52,11 +52,16 @@ void Save(TextEditor& editor, std::string fileToEdit)
 {
     auto textToSave = editor.GetText();
 
+    // Remove trailing newline if it exists.
+    if (!textToSave.empty() && textToSave.back() == '\n')
+    {
+        textToSave.pop_back();
+    }
+
     std::ofstream outFile(fileToEdit);
     if (outFile.is_open())
     {
         outFile << textToSave;
-
         outFile.close();
         editor.SetText(textToSave);
         std::cout << "File saved successfully to " << fileToEdit << std::endl;

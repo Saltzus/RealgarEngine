@@ -299,7 +299,12 @@ void Gui::showFiles(std::vector<File> files)
         else
         {
             if (ImGui::Selectable(file.name.c_str()))
-                ImGui::OpenPopup(("##" + file.name).c_str());
+            {
+                if (!fileEditor.editor.CanUndo())
+                    fileEditor.ChangeFile(file.path.c_str());
+                else
+                    ImGui::OpenPopup(("##" + file.name).c_str());
+            }
 
             if (ImGui::BeginPopup(("##" + file.name).c_str()))
             {
