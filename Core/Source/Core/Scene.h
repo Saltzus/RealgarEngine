@@ -10,7 +10,7 @@ namespace Realgar
     class Scene
     {
     public:
-        Scene(const char* filepath);
+        Scene(const char* filepath, bool askPath);
         ~Scene();
 
         static std::map<std::string, Texture*> current_textures;
@@ -29,6 +29,9 @@ namespace Realgar
         void setStatus(bool status);
         bool getStatus() { return status; }
         std::string getPath() { return path; }
+
+        bool askPath = false;
+
 
         Camera* camera = nullptr;
         void RenderScene(Window* window);

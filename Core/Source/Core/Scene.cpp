@@ -11,7 +11,7 @@ namespace Realgar
 
     static auto startTime = std::chrono::high_resolution_clock::now();
 
-    Scene::Scene(const char* filepath) : path(filepath)
+    Scene::Scene(const char* filepath, bool askPath = false) : path(filepath), askPath(askPath)
     {
         startTime = std::chrono::high_resolution_clock::now();
 
@@ -21,6 +21,10 @@ namespace Realgar
         unsigned int SCR_HEIGHT = 600;
 
         std::ifstream jsonFile(filepath);
+     
+        if (askPath)
+            return;
+        
         sceneData = json::parse(jsonFile);
 
         json cameraData = sceneData["camera"];

@@ -16,7 +16,7 @@ int main()
     Realgar::LuaSystem::Init();
     Realgar::AudioSystem::Init();
 
-    Realgar::Scene scene(Realgar::FileManager::getResource("Scenes/Menu.rdsc"));
+    Realgar::Scene scene(Realgar::FileManager::getResource("Scenes/Menu.rdsc"), true);
 
     Gui gui(&window,&scene);
 

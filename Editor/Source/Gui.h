@@ -25,9 +25,11 @@ public:
 	~Gui();
 
 	void Render();
+	void RenderProjectSelect();
 private:
 	ImGuiIO* io;
 	ImGuiViewport* viewport;
+	Realgar::Window* window;
 
 	bool CustomTreeNode(std::string label);
 	void Popups(std::string id);

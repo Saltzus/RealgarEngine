@@ -46,7 +46,7 @@ void generateFiles(std::string rootPath)
     }
 }
 
-Gui::Gui(Realgar::Window* window, Realgar::Scene* scene) : scene(scene)
+Gui::Gui(Realgar::Window* window, Realgar::Scene* scene) : scene(scene), window(window)
 {
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
@@ -113,6 +113,33 @@ void Gui::Render()
 }
 
 bool open;
+
+void Gui::RenderProjectSelect()
+{
+    if (Realgar::Renderer::GetGraphicsApi() == Realgar::GraphicsApis::Vulkan)
+        ImGui_ImplVulkan_NewFrame();
+    else
+        ImGui_ImplOpenGL3_NewFrame();
+
+    ImGui_ImplGlfw_NewFrame();
+    ImGui::NewFrame();
+
+    glfwSetWindowSize(*window, 640 / 2, 360 / 2);
+
+    ImGui::Begin("SelectProject");
+
+
+
+    ImGui::End();
+
+    ImGui::EndFrame();
+
+    ImGui::Render();
+
+    if (Realgar::Renderer::GetGraphicsApi() == Realgar::GraphicsApis::OpenGL)
+        ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
+}
+
 
 void Gui::Menu()
 {

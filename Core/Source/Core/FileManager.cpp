@@ -12,6 +12,7 @@ namespace Realgar
 {
     std::string editorPath = "";
     std::string currentPath = "";
+    std::string ownPath = "";
     std::string currentReturnPath = "";
 
     std::string FileManager::currentResourcePath = "";
@@ -26,12 +27,16 @@ namespace Realgar
 
         editorPath = "Game/Resources/" + path;
         currentPath = "../Game/Resources/" + path;
+        ownPath = "Resources/" + path;
 
         if (fileExists(editorPath)) {
             return editorPath.c_str();
         }
         else if (fileExists(currentPath)) {
             return currentPath.c_str();
+        }
+        else if (fileExists(ownPath)) {
+            return ownPath.c_str();
         }
         else {
             std::cout << "FileManager : could not find file - " << path << " from " << editorPath << " or " << currentPath << "\n";
