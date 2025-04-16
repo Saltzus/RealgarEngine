@@ -3,7 +3,6 @@ print("Hello from Lua")
 local object = currentObject
 local object2 = Scene:getObject("Reyalp")
 
-
 Scene:addObject("addedObject")
 local object3 = Scene:getObject("addedObject")
 
@@ -46,8 +45,8 @@ function update(deltatime)
     transformComponent.rotation:setZ(250 * deltatime)
     transformComponent2.rotation:setX(250 * deltatime)
 
-    audioPlayerComponent.position:setX(math.sin(deltatime * 10))
-    audioPlayerComponent.position:setZ(math.cos(deltatime * 10))
+    --audioPlayerComponent.position:setX(math.sin(deltatime * 10))
+    --audioPlayerComponent.position:setZ(math.cos(deltatime * 10))
 
 	if Input:keyPressed("W") then
 		print("W pressed")
@@ -63,7 +62,16 @@ function update(deltatime)
 		print("LEFT mouse button released")
 	end
 	
-    currentCamera.rotation:setZ(deltatime * 70)
-    currentCamera.position:setZ(deltatime + 4)
+    --currentCamera.rotation:setZ(deltatime * 70)
+    --currentCamera.position:setZ(deltatime + 4)
     --currentCamera:setFov(deltatime * 30)
 end
+
+
+
+
+
+
+
+
+

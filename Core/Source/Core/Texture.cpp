@@ -47,7 +47,7 @@ namespace Realgar
 
     Texture* Texture::GetDefaultTexture()
     {
-        static Texture* DEFAULT_TEXTURE = new Texture("Resources/Textures/PixelText.png");
+        static Texture* DEFAULT_TEXTURE = new Texture(Realgar::FileManager::getResource("Textures/PixelText.png"));
         return DEFAULT_TEXTURE;
     }
 }

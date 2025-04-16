@@ -9,6 +9,7 @@
 #include <vector>
 
 #include "Renderer.h"
+#include "FileManager.h"
 
 class ShaderImpl;
 
@@ -19,9 +20,9 @@ namespace Realgar
     class Shader
     {
     public:
-        std::pair<std::string, std::string> shader = { "Resources/Shaders/default.vert.spv", "Resources/Shaders/default.frag.spv" };
+        std::pair<std::string, std::string> shader = { FileManager::getResource("Shaders/default.vert"), FileManager::getResource("Shaders/default.frag") };
 
-        Shader(const char* vertexFile, const char* fragmentFile);
+        Shader(std::string vertexFile, std::string fragmentFile);
         ~Shader();
         void Activate();
         void Delete();

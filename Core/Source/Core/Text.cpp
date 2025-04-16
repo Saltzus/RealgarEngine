@@ -11,7 +11,7 @@ namespace Realgar
         }
 
         FT_Face face;
-        if (FT_New_Face(ft, "Game/Resources/Fonts/Testi.ttf", 0, &face))
+        if (FT_New_Face(ft, Realgar::FileManager::getResource("Fonts / Testi.ttf"), 0, &face))
         {
             std::cout << "ERROR::FREETYPE: Failed to load font" << std::endl;
         }

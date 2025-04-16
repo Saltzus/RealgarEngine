@@ -11,6 +11,7 @@
 #include "Scene.h"
 #include "GameObject.h"
 #include "LuaSystem.h"
+#include "FileManager.h"
 
 #include <lua.hpp>
 

@@ -1,6 +1,8 @@
 #include "LanguageServer.h"
 #include <imgui.h>
 
+#include "Core/FileManager.h"
+
 std::string get_file_uri(const std::string& path) 
 {
     std::filesystem::path abs_path = std::filesystem::absolute(path);
@@ -116,7 +118,7 @@ void LanguageServer::startServer(const std::string& serverPath)
         "    \"event\": {"
         "      \"added\": ["
         "        {"
-        "          \"uri\": \"" + get_file_uri("Resources/Scripts") + "\""
+        "          \"uri\": \"" + std::string(get_file_uri(Realgar::FileManager::getResource("Scripts"))) + "\""
         "        }"
         "      ] ,"
         "      \"removed\" : []"

@@ -16,7 +16,7 @@ namespace Realgar::Vulkan
     class VulkanShader : public ShaderImpl
     {
     public:
-        VulkanShader(const char* vertexFile, const char* fragmentFile);
+        VulkanShader(std::string vertexFile, std::string fragmentFile);
 
         void Activate() override;
         void Delete() override;

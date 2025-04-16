@@ -7,6 +7,8 @@
 #include <imgui_impl_glfw.h>
 #include <TextEditor.h> // https://github.com/BalazsJako/ImGuiColorTextEdit
 
+#include "Core/FileManager.h"
+
 class FileEditor
 {
 public:
@@ -18,7 +20,7 @@ public:
 
 	void Render();
 private:
-	std::string fileToEdit = "Resources/Scripts/test.lua";
+	std::string fileToEdit = Realgar::FileManager::getResource("Scripts/test.lua");
 	static LanguageServer server;
 
 	TextEditor::LanguageDefinition lang = TextEditor::LanguageDefinition::Lua();

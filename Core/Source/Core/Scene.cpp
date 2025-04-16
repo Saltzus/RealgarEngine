@@ -42,9 +42,9 @@ namespace Realgar
 
         for (auto& [name, shdr] : sceneData["shaders"].items())
         {
-            std::string vertex = shdr["vertex"].get<std::string>();
-            std::string fragment = shdr["fragment"].get<std::string>();
-            Shader* shader = new Shader(vertex.c_str(), fragment.c_str());
+            std::string vertex = Realgar::FileManager::getResource(shdr["vertex"].get<std::string>());
+            std::string fragment = Realgar::FileManager::getResource(shdr["fragment"].get<std::string>());
+            Shader* shader = new Shader(vertex, fragment);
 
             shaders[name] = shader;
         }
@@ -54,7 +54,7 @@ namespace Realgar
         for (auto& [name, txtr] : sceneData["textures"].items())
         {
             std::string path = txtr.get<std::string>();
-            Texture* texture = new Texture(path.c_str());
+            Texture* texture = new Texture(Realgar::FileManager::getResource(path));
 
             textures[name] = texture;
         }
@@ -65,7 +65,7 @@ namespace Realgar
         {
             std::string file = aud["file"].get<std::string>();
             bool spatialized = aud["spatialized"].get<bool>();
-            Audio* audio = new Audio(file, spatialized);
+            Audio* audio = new Audio(Realgar::FileManager::getResource(file), spatialized);
 
             audio_map[name] = audio;
         }
@@ -121,7 +121,7 @@ namespace Realgar
         {
             std::string vertex = shdr["vertex"].get<std::string>();
             std::string fragment = shdr["fragment"].get<std::string>();
-            Shader* shader = new Shader(vertex.c_str(), fragment.c_str());
+            Shader* shader = new Shader(Realgar::FileManager::getResource(vertex), Realgar::FileManager::getResource(fragment));
 
             shaders[name] = shader;
         }
@@ -132,7 +132,7 @@ namespace Realgar
         for (auto& [name, txtr] : sceneData["textures"].items())
         {
             std::string path = txtr.get<std::string>();
-            Texture* texture = new Texture(path.c_str());
+            Texture* texture = new Texture(Realgar::FileManager::getResource(path));
 
             textures[name] = texture;
         }
@@ -144,7 +144,7 @@ namespace Realgar
         {
             std::string file = aud["file"].get<std::string>();
             bool spatialized = aud["spatialized"].get<bool>();
-            Audio* audio = new Audio(file, spatialized);
+            Audio* audio = new Audio(Realgar::FileManager::getResource(file), spatialized);
 
             audio_map[name] = audio;
         }
@@ -208,7 +208,7 @@ namespace Realgar
         }
         if (components.contains("script"))
         {
-            object->addComponent<Components::ScriptComponent>(object, scene, components["script"].get<std::string>());
+            object->addComponent<Components::ScriptComponent>(object, scene, Realgar::FileManager::getResource(components["script"].get<std::string>()));
         }
         if (components.contains("audioListener"))
         {

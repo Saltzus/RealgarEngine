@@ -4,7 +4,7 @@ namespace Realgar::Opengl
 {
 
 	// Reads a text file and outputs a string with everything in the text file
-	std::string get_file_contents(const char* filename)
+	std::string get_file_contents(std::string filename)
 	{
 		std::ifstream in(filename, std::ios::binary);
 		if (in)
@@ -21,7 +21,7 @@ namespace Realgar::Opengl
 	}
 
 	// Constructor that build the Shader Program from 2 different shaders
-	OpenglShader::OpenglShader(const char* vertexFile, const char* fragmentFile)
+	OpenglShader::OpenglShader(std::string vertexFile, std::string fragmentFile)
 	{
 		// Read vertexFile and fragmentFile and store the strings
 		std::string vertexCode = get_file_contents(vertexFile);

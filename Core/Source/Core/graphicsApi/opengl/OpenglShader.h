@@ -17,7 +17,7 @@ namespace Realgar::Opengl
     class OpenglShader : public ShaderImpl
     {
     public:
-        OpenglShader(const char* vertexFile, const char* fragmentFile);
+        OpenglShader(std::string vertexFile, std::string fragmentFile);
 
         void Activate() override;
         void Delete() override;

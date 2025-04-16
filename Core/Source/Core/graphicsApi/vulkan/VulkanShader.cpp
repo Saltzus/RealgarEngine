@@ -22,7 +22,7 @@ namespace Realgar::Vulkan
 	}
 
 	// Constructor that build the Shader Program from 2 different shaders
-	VulkanShader::VulkanShader(const char* vertexFile, const char* fragmentFile)
+	VulkanShader::VulkanShader(std::string vertexFile, std::string fragmentFile)
 	{
 		Vulkan::vulkan->createGraphicsPipeline(vertexFile, fragmentFile);
 	}

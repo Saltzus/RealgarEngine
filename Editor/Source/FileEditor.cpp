@@ -3,6 +3,8 @@
 #include <filesystem>
 #include <fstream>
 
+
+
 LanguageServer FileEditor::server;
 
 FileEditor::FileEditor()
@@ -15,7 +17,7 @@ FileEditor::FileEditor()
     }
 
     editor.SetLanguageDefinition(lang);
-    server.startServer("LanguageServer\\bin\\server");
+    server.startServer(Realgar::FileManager::getLanguageServer());
 }
 
 void FileEditor::ChangeFile(const char* file)
@@ -142,7 +144,7 @@ void FileEditor::Render()
     if (ImGui::IsKeyPressed(ImGuiKey_Space) && ImGui::GetIO().KeyCtrl)
     {
         editor.SetHandleKeyboardInputs(false);
-        server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn);
+        server.complete(Realgar::FileManager::getResource("Scripts/test.lua"), cpos.mLine, cpos.mColumn);
         tooltip = true; 
     }
 
@@ -153,7 +155,7 @@ void FileEditor::Render()
     std::string test = ReplaceTabsWithSpaces(editor.GetCurrentLineText());
     if (test.size() > 0 && cpos.mColumn > 0 && test[cpos.mColumn - 1] == '.')
     {
-       server.complete("Resources/Scripts/test.lua", cpos.mLine, cpos.mColumn);
+       server.complete(Realgar::FileManager::getResource("Scripts/test.lua"), cpos.mLine, cpos.mColumn);
        tooltip = true;
     }
 
