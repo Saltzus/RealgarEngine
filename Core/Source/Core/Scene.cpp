@@ -9,7 +9,7 @@ namespace Realgar
 
     Scene* Scene::currentScene;
 
-    static std::chrono::steady_clock::time_point startTime;
+    static auto startTime = std::chrono::high_resolution_clock::now();
 
     Scene::Scene(const char* filepath) : path(filepath)
     {

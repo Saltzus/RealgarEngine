@@ -23,7 +23,7 @@ int main(int argc, char** argv)
     {
         glfwSetWindowMonitor(window, glfwGetPrimaryMonitor(), 0, 0, 0, 0, 120);
 
-        scene.RenderScene(window);
+        scene.RenderScene(&window);
 
         Realgar::Renderer::RenderGraphics();
         window.Display();
