@@ -1,15 +1,45 @@
 #include "FileManager.h"
+
 #include <iostream>
-
-bool fileExists(const std::string& filePath) {
-	std::ifstream file(filePath);
-	return file.good();
-}
-
+#include <filesystem>
 
 
 namespace Realgar
 {
+    bool FileManager::fileExists(const std::string& filePath) 
+    {
+        std::ifstream file(filePath);
+        return file.good();
+    }
+
+    bool FileManager::folderExists(const std::string& filePath)
+    {
+        return std::filesystem::is_directory(filePath);
+    }
+
+    std::vector<std::string> FileManager::getFolderChildren(const std::string& filePath)
+    {
+        std::vector<std::string> children;
+        std::filesystem::path dirPath(filePath);
+
+        try 
+        {
+            if (std::filesystem::exists(dirPath) && std::filesystem::is_directory(dirPath)) 
+            {
+                for (const auto& entry : std::filesystem::directory_iterator(dirPath)) 
+                {
+                    children.push_back(entry.path().filename().string());
+                }
+            }
+        }
+        catch (const std::filesystem::filesystem_error& e) 
+        {
+            std::cerr << "Filesystem error: " << e.what() << "\n";
+        }
+
+        return children;
+    }
+
     std::string editorPath = "";
     std::string currentPath = "";
     std::string ownPath = "";
@@ -21,7 +51,7 @@ namespace Realgar
 	{
         if (!currentResourcePath.empty())
         {
-            currentReturnPath = currentResourcePath + path;
+            currentReturnPath = currentResourcePath + "/" + path;
             return currentReturnPath.c_str();
         }
 
@@ -46,7 +76,8 @@ namespace Realgar
 
     std::string FileManager::setResourcePath(std::string path)
     {
-        if (fileExists(path)) {
+        if (folderExists(path)) {
+            currentResourcePath = path;
             return editorPath.c_str();
         }
         else {

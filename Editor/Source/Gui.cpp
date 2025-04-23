@@ -1,8 +1,11 @@
 #include "Gui.h"
+
 #include "Core/graphicsApi/opengl/OpenGlManager.h"
 #include "Core/GameObject.h"
 #include "Core/Texture.h"
+#include "Core/FileManager.h"
 
+#include <string>
 
 ImGuiWindowFlags windowflags;
 
@@ -54,6 +57,9 @@ Gui::Gui(Realgar::Window* window, Realgar::Scene* scene) : scene(scene), window(
     io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
     ImGui::StyleColorsDark();
 
+    ImGuiStyle& style = ImGui::GetStyle();
+    style.Colors[ImGuiCol_WindowBg].w = 0.0f;
+
     if (Realgar::Renderer::GetGraphicsApi() == Realgar::GraphicsApis::Vulkan)
     {
         ImGui_ImplGlfw_InitForVulkan(*window, true);
@@ -69,9 +75,6 @@ Gui::Gui(Realgar::Window* window, Realgar::Scene* scene) : scene(scene), window(
 
 
     
-
-
-
     viewport = ImGui::GetMainViewport();
 
     generateFiles("Resources");
@@ -112,7 +115,11 @@ void Gui::Render()
         ImGui_ImplOpenGL3_RenderDrawData(ImGui::GetDrawData());
 }
 
-bool open;
+bool open = true;
+std::vector<std::string> errors;
+std::vector<std::string> scenes;
+std::string selectedLocation = "";
+std::string selectedScene;
 
 void Gui::RenderProjectSelect()
 {
@@ -124,11 +131,66 @@ void Gui::RenderProjectSelect()
     ImGui_ImplGlfw_NewFrame();
     ImGui::NewFrame();
 
-    glfwSetWindowSize(*window, 640 / 2, 360 / 2);
+    glfwSetWindowSize(*window, 640, 360 / 2);
+    ImGui::SetNextWindowSize(ImVec2(640, 360 / 2));
+    ImGui::SetNextWindowPos(ImVec2(0,0));
 
-    ImGui::Begin("SelectProject");
+    ImGui::Begin("SelectProject", &open, ImGuiWindowFlags_NoDecoration);
+
+    char buffer[256 * 2];
+    strncpy(buffer, selectedLocation.c_str(), sizeof(buffer));
+    buffer[sizeof(buffer) - 1] = '\0';
+
+    ImGui::Dummy({1,1});
+    ImGui::Text("Select path to desired resource location");
+    if (ImGui::InputText("Path", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
+    {
+        selectedLocation = buffer;
+
+        errors.clear();
+        scenes.clear();
+
+        if (!Realgar::FileManager::folderExists(selectedLocation))
+            errors.push_back(selectedLocation + " not found!");
 
 
+        if (!Realgar::FileManager::folderExists(selectedLocation + "/Scenes"))
+            errors.push_back(selectedLocation + "/Scenes not found!");
+        else
+        {
+            scenes = Realgar::FileManager::getFolderChildren(selectedLocation + "/Scenes");
+            if (scenes.empty())
+                errors.push_back(selectedLocation + "/Scenes is empty!");
+        }
+    }
+
+    ImGui::Dummy({ 1,1 });
+
+    if (errors.empty() && !scenes.empty() && ImGui::BeginCombo("Scene", selectedScene.c_str()))
+    {
+        for (auto scene : scenes)
+        {
+            if (ImGui::Selectable(scene.c_str()))
+                selectedScene = scene.c_str();
+        }
+
+        ImGui::EndCombo();
+    }
+
+    ImGui::Dummy({ 1,1 });
+
+    if (!selectedScene.empty())
+    {
+        if (ImGui::Button("Confirm"))
+        {
+            glfwSetWindowSize(*window, 640, 360);
+            Realgar::FileManager::setResourcePath(selectedLocation);
+            scene->reloadScene((selectedLocation + "/Scenes/" + selectedScene).c_str());
+        }
+    }
+
+    for (auto error : errors)
+        ImGui::Text(error.c_str());
 
     ImGui::End();
 
@@ -207,7 +269,8 @@ void Gui::MainWindow()
             (ImTextureID)Realgar::Opengl::Opengl::framebufferTexture,
             ImVec2(ImGui::GetCursorScreenPos()),
             ImVec2(ImGui::GetCursorScreenPos().x + viewportPanelSize.x, ImGui::GetCursorScreenPos().y + viewportPanelSize.y),
-            ImVec2(0, 1), ImVec2(1, 0));
+            ImVec2(0, 1), ImVec2(1, 0)
+        );
     }
     ImGui::End();
 }

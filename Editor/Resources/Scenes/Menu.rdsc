@@ -8,23 +8,23 @@
   },
   "shaders": {
     "default": {
-      "vertex": "Resources/Shaders/default.vert",
-      "fragment": "Resources/Shaders/default.frag"
+      "vertex": "Shaders/default.vert",
+      "fragment": "Shaders/default.frag"
     },
     "reversedColors": {
-      "vertex": "Resources/Shaders/reversedcolors.vert",
-      "fragment": "Resources/Shaders/reversedcolors.frag"
+      "vertex": "Shaders/reversedcolors.vert",
+      "fragment": "Shaders/reversedcolors.frag"
     }
   },
 
   "textures": {
-    "default": "Resources/Textures/PixelText.png",
-    "modelface": "Resources/Textures/PixelText.png"
+    "default": "Textures/PixelText.png",
+    "modelface": "Textures/PixelText.png"
   },
 
   "audio": {
     "test": {
-      "file": "Resources/Audio/test.wav",
+      "file": "Audio/test.wav",
       "spatialized": true
     }
   },
@@ -46,7 +46,7 @@
           "translation": [0, 0, 0],
           "rotation": [0, 0, 0]
         },
-        "script" : "Resources/Scripts/test.lua"
+        "script" : "Scripts/test.lua"
       }
     },
     {

@@ -100,12 +100,26 @@ namespace Realgar
         float nearPlane = cameraData["nearPlane"];
         float farPlane = cameraData["farPlane"];
 
-        camera->cameraPosition = -cameraTranslation;
-        camera->cameraRotation = cameraRotation;
-        camera->fov = fov;
-        camera->nearPlane = nearPlane;
-        camera->farPlane = farPlane;
-
+        if (camera == nullptr)
+        {
+            camera = new Camera
+            (
+                cameraTranslation,
+                cameraRotation,
+                fov,
+                nearPlane,
+                farPlane,
+                true
+            );
+        }
+        else
+        {
+            camera->cameraPosition = -cameraTranslation;
+            camera->cameraRotation = cameraRotation;
+            camera->fov = fov;
+            camera->nearPlane = nearPlane;
+            camera->farPlane = farPlane;
+        }
 
         for (auto object : objects)
             delete object.second;
@@ -123,9 +137,9 @@ namespace Realgar
         shaders.clear();
         for (auto& [name, shdr] : sceneData["shaders"].items())
         {
-            std::string vertex = shdr["vertex"].get<std::string>();
-            std::string fragment = shdr["fragment"].get<std::string>();
-            Shader* shader = new Shader(Realgar::FileManager::getResource(vertex), Realgar::FileManager::getResource(fragment));
+            std::string vertex = Realgar::FileManager::getResource(shdr["vertex"].get<std::string>());
+            std::string fragment = Realgar::FileManager::getResource(shdr["fragment"].get<std::string>());
+            Shader* shader = new Shader(vertex, fragment);
 
             shaders[name] = shader;
         }
@@ -167,6 +181,9 @@ namespace Realgar
     }
     void Scene::reloadScene(const char* filepath)
     {
+        path = filepath;
+
+        askPath = false;
         reloadPath = filepath;
         reload = true;
     }
