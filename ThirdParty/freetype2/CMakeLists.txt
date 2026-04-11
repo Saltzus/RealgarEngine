@@ -85,14 +85,7 @@
 # FreeType explicitly marks the API to be exported and relies on the compiler
 # to hide all other symbols. CMake supports a C_VISBILITY_PRESET property
 # starting with 2.8.12.
-cmake_minimum_required(VERSION 2.8.12)
-
-if (NOT CMAKE_VERSION VERSION_LESS 3.3)
-  # Allow symbol visibility settings also on static libraries. CMake < 3.3
-  # only sets the propery on a shared library build.
-  cmake_policy(SET CMP0063 NEW)
-endif ()
-
+cmake_minimum_required(VERSION 3.5)
 include(CheckIncludeFile)
 
 # CMAKE_TOOLCHAIN_FILE must be set before `project' is called, which

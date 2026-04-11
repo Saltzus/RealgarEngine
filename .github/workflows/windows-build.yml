@@ -11,25 +11,30 @@ jobs:
     runs-on: windows-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: Add msbuild to PATH
-      uses: microsoft/setup-msbuild@v2
-    - name: Build Premake Project Files
-      working-directory: ./Scripts
-      run: ./Setup-Windows.bat
-    - name: show dir
-      run: dir
-    - name: Build the Release
-      run: msbuild.exe RealgarEngine.sln /m /p:Configuration=Release
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-    - name: Archive Editor artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Editor
-        path: Binaries/windows-x86_64/Release/Editor/Editor.exe
+      - name: Configure (Release)
+        run: |
+          cmake -S . -B cmake-build-release `
+                -G "Visual Studio 17 2022" -A x64 `
+                -DCMAKE_BUILD_TYPE=Release
 
-    - name: Archive Game artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Game
-        path: Binaries/windows-x86_64/Release/Game/Game.exe
+      - name: Build Editor
+        run: cmake --build cmake-build-release --target Editor --config Release --parallel
+
+      - name: Build Game
+        run: cmake --build cmake-build-release --target Game --config Release --parallel
+
+      - name: Archive Editor artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Editor-Windows
+          path: Binaries/windows-x86_64/Release/Editor/Editor.exe
+
+      - name: Archive Game artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Game-Windows
+          path: Binaries/windows-x86_64/Release/Game/Game.exe
