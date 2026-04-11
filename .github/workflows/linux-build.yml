@@ -1,4 +1,4 @@
-name: Linux build
+name: Linux Build
 
 on:
   push:
@@ -8,34 +8,42 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v4
-    - name: update
-      run: sudo apt update
-    - name: glfw dependencies
-      run: sudo apt install libwayland-dev libxkbcommon-dev xorg-dev
-    - name: install other dependencies
-      run: sudo apt-get install g++ build-essential libgl1-mesa-dev libpng-dev
-    - name: give permissions
-      run: sudo chmod +x Vendor/Binaries/Premake/Linux/premake5 && sudo chmod +x Scripts/Setup-Linux.sh
-    - name: build premake
-      run : cd Scripts && ./Setup-Linux.sh
-    - name: make config=release_x86_64
-      run: ls && make
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
-    - name: Archive Editor artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Editor
-        path: |
-            Binaries/linux-x86_64/Release/Editor/Editor.exe
-            
-    - name: Archive Game artifact
-      uses: actions/upload-artifact@v4
-      with:
-        name: Editor
-        path: |
-            Binaries/linux-x86_64/Release/Game/Game.exe
+      - name: Update apt
+        run: sudo apt update
+
+      - name: Install GLFW dependencies
+        run: sudo apt install -y libwayland-dev libxkbcommon-dev xorg-dev
+
+      - name: Install build dependencies
+        run: sudo apt install -y g++ build-essential cmake ninja-build libgl1-mesa-dev libpng-dev libbz2-dev
+
+      - name: Configure (Release)
+        run: |
+          cmake -S . -B cmake-build-release \
+                -G Ninja \
+                -DCMAKE_BUILD_TYPE=Release
+
+      - name: Build Editor
+        run: cmake --build cmake-build-release --target Editor --parallel
+
+      - name: Build Game
+        run: cmake --build cmake-build-release --target Game --parallel
+
+      - name: Archive Editor artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Editor-Linux
+          path: Binaries/linux-x86_64/Release/Editor/Editor
+
+      - name: Archive Game artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: Game-Linux
+          path: Binaries/linux-x86_64/Release/Game/Game
