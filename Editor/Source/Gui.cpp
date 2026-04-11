@@ -332,8 +332,13 @@ void Gui::Popups(std::string id)
     if (id == "Shaders" && ImGui::BeginPopup("Shaders ##popup"))
     {
         ImGui::Text("Shader Name:");
+
+        std::string shaderName = "";
+        std::string vertShader = "";
+        std::string fragShader = "";
+
         if (ImGui::InputText("##ShadersName", buffer, sizeof(buffer), ImGuiInputTextFlags_EnterReturnsTrue))
-            scene->addObject(buffer);
+            scene->addShader(buffer, "Resources/Shaders/default.vert", "Resources/Shaders/default.frag");
 
         ImGui::EndPopup();
     }

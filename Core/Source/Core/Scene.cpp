@@ -402,6 +402,31 @@ namespace Realgar
         return 1; // Return the component userdata
     }
 
+    std::string Scene::addShader(std::string name, std::string vert, std::string frag)
+    {
+        name.erase(name.begin(), std::find_if(name.begin(), name.end(), [](unsigned char ch)
+        {
+            return !std::isspace(ch);
+        }));
+        name.erase(std::find_if(name.rbegin(), name.rend(), [](unsigned char ch)
+        {
+            return !std::isspace(ch);
+        }).base(), name.end());
+
+
+        if (shaders.find(name) == shaders.end())
+        {
+            current_shaders[name] = new Realgar::Shader(vert,frag);
+        }
+        else
+        {
+            return "Shader already exists";
+        }
+
+        return " ";
+    }
+
+
     void registerScene(lua_State* L) {
         luaL_newmetatable(L, "Scene");
 

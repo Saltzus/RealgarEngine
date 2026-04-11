@@ -24,6 +24,8 @@ namespace Realgar
         std::string addObject(std::string);
         GameObject* getObject(std::string);
 
+        std::string addShader(std::string name, std::string vert, std::string frag);
+
         std::map<std::string, GameObject*> objects;
 
         void setStatus(bool status);
