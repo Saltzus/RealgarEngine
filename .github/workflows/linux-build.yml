@@ -23,12 +23,19 @@ jobs:
       run: sudo chmod +x Vendor/Binaries/Premake/Linux/premake5 && sudo chmod +x Scripts/Setup-Linux.sh
     - name: build premake
       run : cd Scripts && ./Setup-Linux.sh
-    - name: make
+    - name: make config=Release
       run: ls && make
 
-    - name: Archive production artifacts
+    - name: Archive Editor artifact
       uses: actions/upload-artifact@v4
       with:
-        name: dist-without-markdown
+        name: Editor
         path: |
-          Binaries
+            Binaries/linux-x86_64/Release/Editor/Editor.exe
+            
+    - name: Archive Game artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: Editor
+        path: |
+            Binaries/linux-x86_64/Release/Game/Game.exe
