@@ -19,21 +19,17 @@ jobs:
       run: ./Setup-Windows.bat
     - name: show dir
       run: dir
-    - name: Build the Solution
-      run: msbuild.exe RealgarEngine.sln /m /p:Configuration=Debug
-    - name: Build the Solution
+    - name: Build the Release
       run: msbuild.exe RealgarEngine.sln /m /p:Configuration=Release
 
     - name: Archive Editor artifact
       uses: actions/upload-artifact@v4
       with:
         name: Editor
-        path: |
-            Binaries/windows-x86_64/Release/Editor/Editor.exe
-            
+        path: Binaries/windows-x86_64/Release/Editor/Editor.exe
+
     - name: Archive Game artifact
       uses: actions/upload-artifact@v4
       with:
-        name: Editor
-        path: |
-            Binaries/windows-x86_64/Release/Game/Game.exe
+        name: Game
+        path: Binaries/windows-x86_64/Release/Game/Game.exe
