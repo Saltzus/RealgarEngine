@@ -23,7 +23,7 @@ jobs:
       run: sudo chmod +x Vendor/Binaries/Premake/Linux/premake5 && sudo chmod +x Scripts/Setup-Linux.sh
     - name: build premake
       run : cd Scripts && ./Setup-Linux.sh
-    - name: make config=Release
+    - name: make config=release_x86_64
       run: ls && make
 
     - name: Archive Editor artifact
